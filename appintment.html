@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowZap CRM - Встречи и созвоны</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel для JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Настройка Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1', // Indigo
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        gray: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6',
+                            200: '#e5e7eb',
+                            300: '#d1d5db',
+                            500: '#6b7280',
+                            700: '#374151',
+                            900: '#111827',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .fade-in { animation: fadeIn 0.2s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Стили для скроллбара */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- MOCK DATA ---
+        const MOCK_CLIENTS = [
+            { id: 1, name: 'Иван Петров', company: 'TechSoft', avatar: 'IP' },
+            { id: 2, name: 'Анна Соколова', company: 'DesignHub', avatar: 'AS' },
+            { id: 3, name: 'Данияр Ахметов', company: 'Logistics KZ', avatar: 'DA' },
+            { id: 4, name: 'Елена Ким', company: 'Retail Group', avatar: 'EK' },
+        ];
+
+        const INITIAL_APPOINTMENTS = [
+            { id: 101, client: 'Иван Петров', type: 'call', date: '2023-10-25', time: '10:00', status: 'completed', note: 'Обсуждение ТЗ' },
+            { id: 102, client: 'Анна Соколова', type: 'meeting', date: '2023-10-26', time: '14:30', status: 'scheduled', note: 'Презентация дизайна' },
+            { id: 103, client: 'Данияр Ахметов', type: 'demo', date: '2023-10-27', time: '11:00', status: 'cancelled', note: 'Демо продукта' },
+            { id: 104, client: 'Елена Ким', type: 'call', date: '2023-10-28', time: '16:00', status: 'scheduled', note: 'Уточнение деталей доставки' },
+        ];
+
+        const TIME_SLOTS = [
+            '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', 
+            '12:00', '12:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'
+        ];
+
+        // --- ICONS (SVG Components) ---
+        const Icons = {
+            Calendar: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>,
+            Clock: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+            Video: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>,
+            Phone: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+            Monitor: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>,
+            Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+            Check: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+            Copy: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>,
+            WhatsApp: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-500"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></svg>,
+            Mail: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
+            Google: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>, // Упрощенная иконка для примера
+            X: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+            Search: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
+        };
+
+        // --- UI COMPONENTS ---
+
+        const Badge = ({ status }) => {
+            const styles = {
+                scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
+                completed: 'bg-green-100 text-green-700 border-green-200',
+                cancelled: 'bg-red-100 text-red-700 border-red-200',
+            };
+            const labels = {
+                scheduled: 'Запланировано',
+                completed: 'Завершено',
+                cancelled: 'Отменено',
+            };
+            return (
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[status] || styles.scheduled}`}>
+                    {labels[status] || status}
+                </span>
+            );
+        };
+
+        const Button = ({ children, variant = 'primary', className = '', onClick, disabled, icon: Icon }) => {
+            const baseStyle = "inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed";
+            const variants = {
+                primary: "bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm hover:shadow",
+                secondary: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-gray-400 shadow-sm",
+                ghost: "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-sm"
+            };
+
+            return (
+                <button 
+                    className={`${baseStyle} ${variants[variant]} ${className}`}
+                    onClick={onClick}
+                    disabled={disabled}
+                >
+                    {Icon && <span className="mr-2"><Icon /></span>}
+                    {children}
+                </button>
+            );
+        };
+
+        const Modal = ({ isOpen, onClose, title, children }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm fade-in">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="flex justify-between items-center p-5 border-b border-gray-100">
+                            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+                                <Icons.X />
+                            </button>
+                        </div>
+                        <div className="p-6 overflow-y-auto">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- FEATURE COMPONENTS ---
+
+        const CreateAppointmentForm = ({ clients, onSubmit, onCancel }) => {
+            const [formData, setFormData] = useState({
+                clientId: '',
+                type: 'call',
+                date: new Date().toISOString().split('T')[0],
+                time: '10:00',
+                note: '',
+                syncGoogle: false,
+                syncYandex: false,
+                syncOutlook: false
+            });
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const client = clients.find(c => c.id === parseInt(formData.clientId));
+                onSubmit({ ...formData, clientName: client ? client.name : 'Неизвестный' });
+            };
+
+            return (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Выбор клиента */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Клиент</label>
+                        <select 
+                            required
+                            className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-shadow"
+                            value={formData.clientId}
+                            onChange={(e) => setFormData({...formData, clientId: e.target.value})}
+                        >
+                            <option value="" disabled>Выберите клиента...</option>
+                            {clients.map(c => (
+                                <option key={c.id} value={c.id}>{c.name} ({c.company})</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        {/* Тип встречи */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Тип</label>
+                            <div className="relative">
+                                <select 
+                                    className="w-full appearance-none rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 outline-none bg-white"
+                                    value={formData.type}
+                                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                                >
+                                    <option value="call">Звонок</option>
+                                    <option value="meeting">Встреча</option>
+                                    <option value="demo">Демо</option>
+                                </select>
+                                <div className="absolute right-3 top-2.5 pointer-events-none text-gray-500">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Дата */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Дата</label>
+                            <input 
+                                type="date" 
+                                required
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                                value={formData.date}
+                                onChange={(e) => setFormData({...formData, date: e.target.value})}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Время */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Время</label>
+                        <div className="grid grid-cols-4 gap-2 max-h-32 overflow-y-auto p-1 border border-gray-200 rounded-lg">
+                            {TIME_SLOTS.map(slot => (
+                                <button
+                                    key={slot}
+                                    type="button"
+                                    onClick={() => setFormData({...formData, time: slot})}
+                                    className={`text-xs py-1.5 rounded-md transition-colors ${
+                                        formData.time === slot 
+                                        ? 'bg-primary-600 text-white font-medium shadow-sm' 
+                                        : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-transparent hover:border-gray-200'
+                                    }`}
+                                >
+                                    {slot}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Синхронизация */}
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <label className="block text-sm font-medium text-gray-700 mb-3">Синхронизация с календарями</label>
+                        <div className="space-y-2">
+                            {[
+                                { id: 'syncGoogle', name: 'Google Calendar', color: 'text-red-500' },
+                                { id: 'syncYandex', name: 'Yandex Calendar', color: 'text-yellow-500' },
+                                { id: 'syncOutlook', name: 'Outlook', color: 'text-blue-500' }
+                            ].map(item => (
+                                <label key={item.id} className="flex items-center justify-between cursor-pointer group">
+                                    <div className="flex items-center">
+                                        <div className={`mr-3 ${item.color}`}>
+                                            <Icons.Google /> 
+                                        </div>
+                                        <span className="text-sm text-gray-600 group-hover:text-gray-900">{item.name}</span>
+                                    </div>
+                                    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input 
+                                            type="checkbox" 
+                                            className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer checked:right-0 right-5 border-gray-300 checked:border-primary-600"
+                                            checked={formData[item.id]}
+                                            onChange={(e) => setFormData({...formData, [item.id]: e.target.checked})}
+                                        />
+                                        <div className={`toggle-label block overflow-hidden h-5 rounded-full cursor-pointer ${formData[item.id] ? 'bg-primary-600' : 'bg-gray-300'}`}></div>
+                                    </div>
+                                    {/* Custom Toggle Logic for visual simplicity without external libs */}
+                                    <input 
+                                        type="checkbox" 
+                                        className="sr-only" 
+                                        checked={formData[item.id]}
+                                        onChange={(e) => setFormData({...formData, [item.id]: e.target.checked})}
+                                    />
+                                    <div className={`w-10 h-5 rounded-full relative transition-colors duration-200 ${formData[item.id] ? 'bg-primary-600' : 'bg-gray-300'}`}>
+                                        <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${formData[item.id] ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                                    </div>
+                                </label>
+                            ))}
+                        </div>
+                        {(formData.syncGoogle || formData.syncYandex || formData.syncOutlook) && (
+                            <div className="mt-3 flex items-center text-xs text-green-600 bg-green-50 p-2 rounded">
+                                <span className="mr-1"><Icons.Check /></span>
+                                Событие будет добавлено в выбранные календари
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Заметки */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Заметки (опционально)</label>
+                        <textarea 
+                            rows="2"
+                            className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 outline-none resize-none"
+                            placeholder="Цель встречи, ссылки на материалы..."
+                            value={formData.note}
+                            onChange={(e) => setFormData({...formData, note: e.target.value})}
+                        ></textarea>
+                    </div>
+
+                    <div className="flex justify-end space-x-3 pt-2">
+                        <Button variant="secondary" onClick={onCancel} type="button">Отмена</Button>
+                        <Button type="submit" icon={Icons.Check}>Сохранить и сгенерировать ссылку</Button>
+                    </div>
+                </form>
+            );
+        };
+
+        const SuccessView = ({ appointment, onReset }) => {
+            const [copied, setCopied] = useState(false);
+            const meetLink = `https://crm.flowzap.app/meet/${Math.random().toString(36).substring(7)}`;
+
+            const handleCopy = () => {
+                navigator.clipboard.writeText(meetLink);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            return (
+                <div className="text-center space-y-6 fade-in">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    
+                    <div>
+                        <h3 className="text-xl font-bold text-gray-900">Встреча создана!</h3>
+                        <p className="text-gray-500 mt-1">Ссылка на комнату сгенерирована для {appointment.clientName}</p>
+                    </div>
+
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between group">
+                        <code className="text-xs text-gray-600 truncate mr-2 font-mono">{meetLink}</code>
+                        <button 
+                            onClick={handleCopy}
+                            className="text-gray-400 hover:text-primary-600 transition-colors p-1 rounded hover:bg-white"
+                            title="Копировать ссылку"
+                        >
+                            {copied ? <span className="text-green-600 text-xs font-bold">OK</span> : <Icons.Copy />}
+                        </button>
+                    </div>
+
+                    <div className="space-y-3">
+                        <p className="text-sm font-medium text-gray-700">Отправить приглашение:</p>
+                        <div className="flex justify-center space-x-4">
+                            <button className="flex flex-col items-center group">
+                                <div className="w-12 h-12 rounded-full bg-green-50 border border-green-100 flex items-center justify-center text-green-600 group-hover:bg-green-500 group-hover:text-white transition-all shadow-sm">
+                                    <Icons.WhatsApp />
+                                </div>
+                                <span className="text-xs text-gray-500 mt-1 group-hover:text-gray-700">WhatsApp</span>
+                            </button>
+                            <button className="flex flex-col items-center group">
+                                <div className="w-12 h-12 rounded-full bg-red-50 border border-red-100 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all shadow-sm">
+                                    <Icons.Mail />
+                                </div>
+                                <span className="text-xs text-gray-500 mt-1 group-hover:text-gray-700">Email</span>
+                            </button>
+                            <button className="flex flex-col items-center group">
+                                <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                </div>
+                                <span className="text-xs text-gray-500 mt-1 group-hover:text-gray-700">Telegram</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-gray-100">
+                        <div className="inline-flex items-center text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                            <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                            Трекер статусов активен
+                        </div>
+                    </div>
+
+                    <div className="pt-2">
+                        <Button variant="ghost" onClick={onReset} className="text-sm">Вернуться к списку</Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const AppointmentCard = ({ item }) => {
+            const TypeIcon = item.type === 'call' ? Icons.Phone : item.type === 'meeting' ? Icons.Video : Icons.Monitor;
+            const typeLabel = item.type === 'call' ? 'Звонок' : item.type === 'meeting' ? 'Встреча' : 'Демо';
+
+            return (
+                <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col sm:flex-row sm:items-center justify-between group">
+                    <div className="flex items-start space-x-4">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            item.type === 'call' ? 'bg-blue-50 text-blue-600' : 
+                            item.type === 'meeting' ? 'bg-purple-50 text-purple-600' : 'bg-orange-50 text-orange-600'
+                        }`}>
+                            <TypeIcon />
+                        </div>
+                        <div>
+                            <h4 className="font-semibold text-gray-900">{item.client}</h4>
+                            <div className="flex items-center text-xs text-gray-500 mt-1 space-x-3">
+                                <span className="flex items-center">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-gray-300 mr-1.5"></span>
+                                    {typeLabel}
+                                </span>
+                                <span className="flex items-center">
+                                    <Icons.Calendar /> <span className="ml-1">{item.date}</span>
+                                </span>
+                                <span className="flex items-center">
+                                    <Icons.Clock /> <span className="ml-1">{item.time}</span>
+                                </span>
+                            </div>
+                            {item.note && <p className="text-xs text-gray-400 mt-2 line-clamp-1">{item.note}</p>}
+                        </div>
+                    </div>
+                    <div className="mt-4 sm:mt-0 flex items-center space-x-3">
+                        <Badge status={item.status} />
+                        <button className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-primary-600 transition-all p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- MAIN APP COMPONENT ---
+
+        const App = () => {
+            const [appointments, setAppointments] = useState(INITIAL_APPOINTMENTS);
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [showSuccess, setShowSuccess] = useState(false);
+            const [lastCreated, setLastCreated] = useState(null);
+            const [filter, setFilter] = useState('all');
+            const [searchTerm, setSearchTerm] = useState('');
+
+            const filteredAppointments = useMemo(() => {
+                return appointments.filter(app => {
+                    const matchesFilter = filter === 'all' || app.status === filter;
+                    const matchesSearch = app.client.toLowerCase().includes(searchTerm.toLowerCase());
+                    return matchesFilter && matchesSearch;
+                }).sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time));
+            }, [appointments, filter, searchTerm]);
+
+            const handleCreateSubmit = (data) => {
+                const newAppointment = {
+                    id: Date.now(),
+                    client: data.clientName,
+                    type: data.type,
+                    date: data.date,
+                    time: data.time,
+                    status: 'scheduled',
+                    note: data.note
+                };
+                
+                // Имитация задержки сети
+                setTimeout(() => {
+                    setAppointments(prev => [newAppointment, ...prev]);
+                    setLastCreated(newAppointment);
+                    setShowSuccess(true);
+                }, 600);
+            };
+
+            const closeSuccess = () => {
+                setShowSuccess(false);
+                setIsModalOpen(false);
+                setLastCreated(null);
+            };
+
+            return (
+                <div className="min-h-screen pb-12">
+                    {/* Header */}
+                    <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+                        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">F</div>
+                                <h1 className="text-xl font-bold text-gray-900 tracking-tight">FlowZap <span className="text-gray-500 font-normal">Встречи</span></h1>
+                            </div>
+                            <Button onClick={() => setIsModalOpen(true)} icon={Icons.Plus}>
+                                Запланировать встречу
+                            </Button>
+                        </div>
+                    </header>
+
+                    <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        
+                        {/* Filters & Search */}
+                        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
+                            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                                {['all', 'scheduled', 'completed', 'cancelled'].map((f) => (
+                                    <button
+                                        key={f}
+                                        onClick={() => setFilter(f)}
+                                        className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+                                            filter === f 
+                                            ? 'bg-white text-gray-900 shadow-sm' 
+                                            : 'text-gray-500 hover:text-gray-700'
+                                        }`}
+                                    >
+                                        {f === 'all' ? 'Все' : f === 'scheduled' ? 'Запланированные' : f === 'completed' ? 'Завершенные' : 'Отмененные'}
+                                    </button>
+                                ))}
+                            </div>
+                            
+                            <div className="relative w-full sm:w-64">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                    <Icons.Search />
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Поиск клиента..."
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-shadow"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        {/* List */}
+                        <div className="space-y-4">
+                            {filteredAppointments.length > 0 ? (
+                                filteredAppointments.map(item => (
+                                    <AppointmentCard key={item.id} item={item} />
+                                ))
+                            ) : (
+                                <div className="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
+                                    <div className="mx-auto w-12 h-12 text-gray-300 mb-3">
+                                        <Icons.Calendar />
+                                    </div>
+                                    <h3 className="text-lg font-medium text-gray-900">Нет встреч</h3>
+                                    <p className="text-gray-500 mt-1">Попробуйте изменить фильтры или создайте новую встречу.</p>
+                                </div>
+                            )}
+                        </div>
+                    </main>
+
+                    {/* Modals */}
+                    <Modal 
+                        isOpen={isModalOpen} 
+                        onClose={() => setIsModalOpen(false)} 
+                        title={showSuccess ? "Готово" : "Новая встреча"}
+                    >
+                        {showSuccess && lastCreated ? (
+                            <SuccessView appointment={lastCreated} onReset={closeSuccess} />
+                        ) : (
+                            <CreateAppointmentForm 
+                                clients={MOCK_CLIENTS} 
+                                onSubmit={handleCreateSubmit} 
+                                onCancel={() => setIsModalOpen(false)} 
+                            />
+                        )}
+                    </Modal>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
