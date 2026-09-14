@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowZap — CRM | Заказы, Товары, Склад</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/public-sans@5.0.0/index.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#2d9583',
+        primaryLight: '#57aabb',
+        primaryDark: '#1d6c5d',
+        bgDefault: '#F8F7FA',
+        bgPaper: '#FFFFFF',
+        textPrimary: 'rgba(47, 43, 61, 0.9)',
+        textSecondary: 'rgba(47, 43, 61, 0.7)',
+        textDisabled: 'rgba(47, 43, 61, 0.4)',
+        divider: 'rgba(47, 43, 61, 0.12)',
+        error: '#FF4C51',
+        warning: '#FF9F43',
+        info: '#00BAD1',
+        success: '#28C76F',
+      },
+      fontFamily: {
+        sans: ['Inter', 'Public Sans', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+  * { font-family: 'Inter', 'Public Sans', sans-serif; }
+  body { background: #F8F7FA; color: rgba(47, 43, 61, 0.9); }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(47, 43, 61, 0.2); border-radius: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .fade-in { animation: fadeIn 0.3s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .slide-in { animation: slideIn 0.3s ease-out; }
+  @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  .kanban-card { transition: all 0.2s ease; }
+  .kanban-card:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(47, 43, 61, 0.16); }
+  .nav-item { transition: all 0.2s ease; }
+  .nav-item:hover { background: rgba(47, 43, 61, 0.06); }
+  .nav-item.active { background: rgba(45, 149, 131, 0.08); color: #1d6c5d; }
+  .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #2d9583; border-radius: 0 3px 3px 0; }
+  .chip { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+  .modal-backdrop { background: rgba(47, 43, 61, 0.5); backdrop-filter: blur(4px); }
+  .toggle-switch { width: 40px; height: 22px; border-radius: 11px; background: rgba(47, 43, 61, 0.3); position: relative; cursor: pointer; transition: all 0.2s; }
+  .toggle-switch.active { background: #2d9583; }
+  .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: white; border-radius: 50%; transition: all 0.2s; }
+  .toggle-switch.active::after { left: 20px; }
+  .pulse-dot { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .btn-primary { background: #2d9583; color: white; transition: all 0.2s; }
+  .btn-primary:hover { background: #1d6c5d; box-shadow: 0 4px 16px rgba(45, 149, 131, 0.4); }
+  .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .product-card { transition: all 0.2s ease; }
+  .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(47, 43, 61, 0.12); }
+  .stock-bar { height: 6px; border-radius: 3px; background: rgba(47, 43, 61, 0.08); overflow: hidden; }
+  .stock-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .timeline-item { position: relative; padding-left: 24px; padding-bottom: 16px; border-left: 2px solid rgba(47, 43, 61, 0.12); margin-left: 8px; }
+  .timeline-item::before { content: ''; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: #2d9583; border: 2px solid white; box-shadow: 0 0 0 2px #2d9583; }
+  .timeline-item:last-child { border-left-color: transparent; }
+  .low-stock { animation: lowStock 2s infinite; }
+  @keyframes lowStock { 0%, 100% { background-color: rgba(255, 76, 81, 0.08); } 50% { background-color: rgba(255, 76, 81, 0.15); } }
+</style>
+</head>
+<body class="min-h-screen flex">
+
+<!-- Sidebar -->
+<aside class="w-64 bg-white border-r border-divider flex flex-col fixed h-screen">
+  <div class="p-5 border-b border-divider flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-lg">F</div>
+    <div>
+      <div class="font-bold text-textPrimary">FlowZap</div>
+      <div class="text-xs text-textSecondary">CRM Platform</div>
+    </div>
+  </div>
+  
+  <nav class="flex-1 overflow-y-auto scrollbar-thin py-3">
+    <div class="px-4 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Основное</div>
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Главная
+    </a>
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
+      Мессенджер
+      <span class="ml-auto bg-primary text-white text-xs px-2 py-0.5 rounded-full">12</span>
+    </a>
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      Контакты
+    </a>
+
+    <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">CRM</div>
+    <a href="#" onclick="switchTab('leads'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Лиды
+    </a>
+    <a href="#" onclick="switchTab('orders'); return false;" class="nav-item active relative flex items-center gap-3 px-5 py-2.5 text-sm font-medium">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-6-3h6m-6 3h6M9 14h6m-6 3h6"/></svg>
+      Заказы
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
+    <a href="#" onclick="switchTab('products'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      Товары
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
+    <a href="#" onclick="switchTab('warehouse'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Склад
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Задачи
+    </a>
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Аналитика
+    </a>
+
+    <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Автоматизация</div>
+    <a href="#" onclick="switchTab('triggers'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      Триггеры
+    </a>
+    <a href="#" onclick="switchTab('faq'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      FAQ ответы
+    </a>
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
+      Шаблоны
+    </a>
+
+    <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Настройки</div>
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Настройки
+    </a>
+  </nav>
+
+  <div class="p-4 border-t border-divider">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primaryDark flex items-center justify-center text-white font-semibold">АП</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-medium truncate">Александр П.</div>
+        <div class="text-xs text-textSecondary truncate">Администратор</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="flex-1 ml-64 flex flex-col">
+  <header class="bg-white border-b border-divider px-8 py-4 flex items-center justify-between sticky top-0 z-20">
+    <div>
+      <h1 id="pageTitle" class="text-xl font-semibold text-textPrimary">Заказы</h1>
+      <p id="pageSubtitle" class="text-sm text-textSecondary mt-0.5">Управление заказами, товарами и складом</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <input type="text" placeholder="Поиск..." class="pl-10 pr-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm w-64 focus:outline-none focus:border-primary transition">
+        <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+      <button class="relative p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        <span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full pulse-dot"></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 p-8 overflow-auto scrollbar-thin">
+
+    <!-- ============ TAB: ORDERS ============ -->
+    <div id="tab-orders" class="tab-content">
+      <!-- Stats -->
+      <div class="grid grid-cols-4 gap-5 mb-6">
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>
+            </div>
+            <span class="text-xs text-success font-medium">+18%</span>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="ordersTotal">0</div>
+          <div class="text-sm text-textSecondary mt-1">Всего заказов</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="ordersInProgress">0</div>
+          <div class="text-sm text-textSecondary mt-1">В обработке</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="ordersCompleted">0</div>
+          <div class="text-sm text-textSecondary mt-1">Завершено</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="ordersRevenue">₽ 0</div>
+          <div class="text-sm text-textSecondary mt-1">Выручка</div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="bg-white rounded-xl p-5 border border-divider mb-6">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="filterOrders('all')" class="order-filter-btn chip bg-primary text-white cursor-pointer" data-filter="all">Все</button>
+            <button onclick="filterOrders('new')" class="order-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="new">Новые</button>
+            <button onclick="filterOrders('processing')" class="order-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="processing">В обработке</button>
+            <button onclick="filterOrders('assembled')" class="order-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="assembled">Собран</button>
+            <button onclick="filterOrders('shipping')" class="order-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="shipping">В доставке</button>
+            <button onclick="filterOrders('delivered')" class="order-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="delivered">Доставлен</button>
+            <button onclick="filterOrders('cancelled')" class="order-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="cancelled">Отменён</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="importOrdersXls()" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm font-medium text-textPrimary hover:bg-white transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              Импорт XLS
+            </button>
+            <button onclick="downloadTemplateXls()" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm font-medium text-textPrimary hover:bg-white transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              Шаблон XLS
+            </button>
+            <button onclick="openOrderModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Создать заказ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders list -->
+      <div id="ordersList" class="space-y-3"></div>
+    </div>
+
+    <!-- ============ TAB: PRODUCTS ============ -->
+    <div id="tab-products" class="tab-content hidden">
+      <div class="grid grid-cols-4 gap-5 mb-6">
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4"/></svg>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="productsTotal">0</div>
+          <div class="text-sm text-textSecondary mt-1">Всего товаров</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="categoriesTotal">0</div>
+          <div class="text-sm text-textSecondary mt-1">Категорий</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 10v1"/></svg>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="productsAvgPrice">₽ 0</div>
+          <div class="text-sm text-textSecondary mt-1">Средняя цена</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="productsMargin">0%</div>
+          <div class="text-sm text-textSecondary mt-1">Средняя маржа</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl p-5 border border-divider mb-6">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-2 flex-wrap" id="categoryFilters"></div>
+          <button onclick="openProductModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Добавить товар
+          </button>
+        </div>
+      </div>
+
+      <div id="productsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+    </div>
+
+    <!-- ============ TAB: WAREHOUSE ============ -->
+    <div id="tab-warehouse" class="tab-content hidden">
+      <div class="grid grid-cols-4 gap-5 mb-6">
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="whTotalItems">0</div>
+          <div class="text-sm text-textSecondary mt-1">Позиций на складе</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="whReserved">0</div>
+          <div class="text-sm text-textSecondary mt-1">В резерве</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="w-10 h-10 rounded-lg bg-error/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+          <div class="text-2xl font-bold text-error" id="whLowStock">0</div>
+          <div class="text-sm text-textSecondary mt-1">Минимальный остаток</div>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-divider">
+          <div class="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+          </div>
+          <div class="text-2xl font-bold text-textPrimary" id="whLocations">0</div>
+          <div class="text-sm text-textSecondary mt-1">Складов</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl p-5 border border-divider mb-6">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="filterWarehouse('all')" class="wh-filter-btn chip bg-primary text-white cursor-pointer" data-filter="all">Все</button>
+            <button onclick="filterWarehouse('low')" class="wh-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="low">⚠️ Низкий остаток</button>
+            <button onclick="filterWarehouse('reserved')" class="wh-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="reserved">🔒 В резерве</button>
+            <button onclick="filterWarehouse('expiring')" class="wh-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary" data-filter="expiring">⏰ Истекает срок</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="whLocationFilter" onchange="renderWarehouse()" class="px-3 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+              <option value="all">Все склады</option>
+              <option value="main">Основной склад</option>
+              <option value="retail">Розничная точка</option>
+              <option value="transit">Транзит</option>
+            </select>
+            <button onclick="openWarehouseModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Добавить на склад
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-divider overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-bgDefault border-b border-divider">
+            <tr class="text-left text-xs font-semibold text-textSecondary uppercase">
+              <th class="px-5 py-3">Товар</th>
+              <th class="px-5 py-3">Склад</th>
+              <th class="px-5 py-3">Остаток</th>
+              <th class="px-5 py-3">Резерв</th>
+              <th class="px-5 py-3">Доступно</th>
+              <th class="px-5 py-3">Мин.</th>
+              <th class="px-5 py-3">Срок годности</th>
+              <th class="px-5 py-3">Партия</th>
+              <th class="px-5 py-3"></th>
+            </tr>
+          </thead>
+          <tbody id="warehouseTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ TAB: LEADS (preserved) ============ -->
+    <div id="tab-leads" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-12 border border-divider text-center">
+        <div class="w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
+          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        </div>
+        <div class="text-lg font-semibold text-textPrimary mb-2">Раздел Лиды</div>
+        <div class="text-textSecondary">Воронка продаж и управление лидами</div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: FAQ (preserved) ============ -->
+    <div id="tab-faq" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-12 border border-divider text-center">
+        <div class="w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
+          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div class="text-lg font-semibold text-textPrimary mb-2">Конструктор FAQ</div>
+        <div class="text-textSecondary">Быстрые ответы для клиентов</div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: TRIGGERS (preserved) ============ -->
+    <div id="tab-triggers" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-12 border border-divider text-center">
+        <div class="w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
+          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div class="text-lg font-semibold text-textPrimary mb-2">Триггеры CRM</div>
+        <div class="text-textSecondary">Автоматизация действий</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ============ ORDER MODAL ============ -->
+<div id="orderModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 id="orderModalTitle" class="text-lg font-semibold">Создать заказ</h3>
+      <button onclick="closeOrderModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Номер заказа</label>
+          <input id="orderNumber" type="text" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Клиент (Лид)</label>
+          <select id="orderClient" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="">Выберите клиента...</option>
+            <option value="Иван Петров">Иван Петров</option>
+            <option value="Мария Сидорова">Мария Сидорова</option>
+            <option value="Алексей Козлов">Алексей Козлов</option>
+            <option value="Дмитрий Волков">Дмитрий Волков</option>
+            <option value="Елена Новикова">Елена Новикова</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-sm font-medium">Товары в заказе</label>
+          <button onclick="addOrderItem()" class="text-primary text-sm font-medium flex items-center gap-1 hover:underline">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Добавить товар
+          </button>
+        </div>
+        <div id="orderItems" class="space-y-2"></div>
+        <div class="mt-3 flex justify-between items-center p-3 bg-bgDefault rounded-lg">
+          <span class="text-sm font-medium">Итого:</span>
+          <span id="orderTotal" class="text-lg font-bold text-primary">₽ 0</span>
+        </div>
+      </div>
+
+      <!-- Logistics -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Статус доставки</label>
+          <select id="orderLogistics" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="pending">Ожидает отгрузки</option>
+            <option value="shipping">Передан в доставку</option>
+            <option value="transit">В пути</option>
+            <option value="delivered">Доставлен</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Трек-номер</label>
+          <input id="orderTrack" type="text" placeholder="Например: RU123456789" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+      </div>
+
+      <!-- Payment -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Статус оплаты</label>
+          <select id="orderPayment" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="unpaid">Не оплачен</option>
+            <option value="partial">Частично оплачен</option>
+            <option value="paid">Оплачен</option>
+            <option value="refunded">Возврат</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Способ оплаты</label>
+          <select id="orderPaymentMethod" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option>Наличные</option>
+            <option>Карта</option>
+            <option>СБП</option>
+            <option>Безнал</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Auto notify -->
+      <div class="flex items-center justify-between p-4 bg-bgDefault rounded-lg">
+        <div>
+          <div class="text-sm font-medium">Авто-уведомление клиенту</div>
+          <div class="text-xs text-textSecondary">Отправить сообщение в чат при смене статуса</div>
+        </div>
+        <div id="orderAutoNotify" class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+      </div>
+
+      <!-- Comment -->
+      <div>
+        <label class="block text-sm font-medium mb-2">Комментарий к заказу</label>
+        <textarea id="orderComment" rows="2" placeholder="Дополнительная информация..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary resize-none"></textarea>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
+      <button onclick="closeOrderModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
+      <button onclick="saveOrder()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Сохранить заказ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ORDER DETAILS MODAL ============ -->
+<div id="orderDetailsModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <div>
+        <h3 id="odTitle" class="text-lg font-semibold">Заказ</h3>
+        <div id="odSubtitle" class="text-sm text-textSecondary"></div>
+      </div>
+      <button onclick="closeOrderDetails()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="odContent" class="p-6"></div>
+  </div>
+</div>
+
+<!-- ============ PRODUCT MODAL ============ -->
+<div id="productModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 id="productModalTitle" class="text-lg font-semibold">Добавить товар</h3>
+      <button onclick="closeProductModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Название</label>
+          <input id="prodName" type="text" placeholder="Например: Кроссовки Nike Air" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Артикул / SKU</label>
+          <input id="prodSku" type="text" placeholder="NKE-AIR-001" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-2">Категория</label>
+        <select id="prodCategory" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option>Обувь</option>
+          <option>Одежда</option>
+          <option>Электроника</option>
+          <option>Аксессуары</option>
+          <option>Косметика</option>
+          <option>Продукты питания</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-2">Фото товара (URL)</label>
+        <input id="prodPhoto" type="text" placeholder="https://..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        <div class="mt-2 text-xs text-textSecondary">Можно вставить несколько через запятую</div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-2">Описание</label>
+        <textarea id="prodDescription" rows="3" placeholder="Подробное описание товара..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary resize-none"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-2">Ссылки</label>
+        <input id="prodLinks" type="text" placeholder="https://сайт-производителя.com, https://обзор.com" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+      </div>
+
+      <!-- Financial model -->
+      <div class="border border-divider rounded-xl p-4">
+        <div class="text-sm font-semibold mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1"/></svg>
+          Финансовая модель
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-textSecondary mb-1">Себестоимость</label>
+            <input id="prodCost" type="number" placeholder="0" class="w-full px-3 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-textSecondary mb-1">Розничная цена</label>
+            <input id="prodRetail" type="number" placeholder="0" class="w-full px-3 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-textSecondary mb-1">Оптовая цена</label>
+            <input id="prodWholesale" type="number" placeholder="0" class="w-full px-3 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-textSecondary mb-1">Цена со скидкой</label>
+            <input id="prodDiscount" type="number" placeholder="0" class="w-full px-3 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
+      <button onclick="closeProductModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
+      <button onclick="saveProduct()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WAREHOUSE MODAL ============ -->
+<div id="warehouseModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 class="text-lg font-semibold">Добавить на склад</h3>
+      <button onclick="closeWarehouseModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium mb-2">Товар</label>
+        <select id="whProduct" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary"></select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Склад</label>
+          <select id="whLocation" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="main">Основной склад</option>
+            <option value="retail">Розничная точка</option>
+            <option value="transit">Транзит</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Количество</label>
+          <input id="whQty" type="number" min="0" placeholder="0" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Минимальный остаток</label>
+          <input id="whMin" type="number" min="0" placeholder="5" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Номер партии</label>
+          <input id="whBatch" type="text" placeholder="BATCH-001" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">Срок годности (опционально)</label>
+        <input id="whExpiry" type="date" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        <div class="mt-2 text-xs text-textSecondary">Используется FIFO/FEFO для продуктов питания, косметики</div>
+      </div>
+      <div class="flex items-center justify-between p-4 bg-bgDefault rounded-lg">
+        <div>
+          <div class="text-sm font-medium">Уведомление о минимальном остатке</div>
+          <div class="text-xs text-textSecondary">Создать задачу менеджеру при достижении лимита</div>
+        </div>
+        <div id="whNotify" class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
+      <button onclick="closeWarehouseModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
+      <button onclick="saveWarehouse()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-textPrimary text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3 fade-in">
+  <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+  <span id="toastMessage">Сохранено</span>
+</div>
+
+<input type="file" id="xlsFileInput" accept=".xls,.xlsx" class="hidden">
+
+<script>
+// ============ DATA ============
+let orders = [
+  { id: 1, number: 'ORD-001', client: 'Иван Петров', status: 'new', items: [{productId: 1, name: 'Кроссовки Nike Air', qty: 1, price: 8990}], total: 8990, logistics: 'pending', track: '', payment: 'paid: 'unpaid', paymentMethod: 'Карта', comments: [{author: 'Александр', text: 'Клиент просит ускорить', time: '10:30'}], history: [{action: 'Заказ создан', time: '10:00', user: 'Александр'}], createdAt: '2024-01-15 10:00', autoNotify: true },
+  { id: 2, number: 'ORD-002', client: 'Мария Сидорова', status: 'processing', items: [{productId: 2, name: 'Футболка Adidas', qty: 2, price: 2490}], total: 4980, logistics: 'pending', track: '', payment: 'paid', paymentMethod: 'СБП', comments: [], history: [{action: 'Заказ создан', time: '11:30', user: 'Александр'}, {action: 'Статус → В обработке', time: '12:00', user: 'Система'}], createdAt: '2024-01-15 11:30', autoNotify: true },
+  { id: 3, number: 'ORD-003', client: 'Алексей Козлов', status: 'shipping', items: [{productId: 3, name: 'iPhone 15', qty: 1, price: 89990}], total: 89990, logistics: 'transit', track: 'RU123456789', payment: 'paid', paymentMethod: 'Безнал', comments: [{author: 'Менеджер', text: 'Отправлено СДЭК', time: '14:20'}], history: [{action: 'Заказ создан', time: '09:00', user: 'Александр'}, {action: 'Передан в доставку', time: '14:00', user: 'Система', notify: true}], createdAt: '2024-01-14 09:00', autoNotify: true },
+  { id: 4, number: 'ORD-004', client: 'Дмитрий Волков', status: 'delivered', items: [{productId: 4, name: 'Чехол для iPhone', qty: 1, price: 1490}], total: 1490, logistics: 'delivered', track: 'RU987654321', payment: 'paid', paymentMethod: 'Наличные', comments: [], history: [{action: 'Доставлен', time: '16:30', user: 'Курьер'}], createdAt: '2024-01-13 15:00', autoNotify: true },
+];
+
+let products = [
+  { id: 1, name: 'Кроссовки Nike Air', sku: 'NKE-AIR-001', category: 'Обувь', photos: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400'], description: 'Легкие и удобные кроссовки для бега', links: ['https://nike.com'], cost: 4500, retail: 8990, wholesale: 7500, discount: 7990 },
+  { id: 2, name: 'Футболка Adidas', sku: 'ADD-TSH-002', category: 'Одежда', photos: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400'], description: 'Хлопковая футболка премиум качества', links: [], cost: 900, retail: 2490, wholesale: 1990, discount: 1990 },
+  { id: 3, name: 'iPhone 15', sku: 'APL-IP15-003', category: 'Электроника', photos: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400'], description: 'Смартфон Apple iPhone 15 128GB', links: ['https://apple.com'], cost: 65000, retail: 89990, wholesale: 84000, discount: 84990 },
+  { id: 4, name: 'Чехол для iPhone', sku: 'ACC-CASE-004', category: 'Аксессуары', photos: ['https://images.unsplash.com/photo-1601593364969-6d261d93c3ec?w=400'], description: 'Силиконовый чехол', links: [], cost: 400, retail: 1490, wholesale: 990, discount: 1190 },
+  { id: 5, name: 'Крем для лица', sku: 'COS-CRM-005', category: 'Косметика', photos: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'], description: 'Увлажняющий крем 50мл', links: [], cost: 350, retail: 890, wholesale: 690, discount: 790 },
+];
+
+let warehouse = [
+  { id: 1, productId: 1, location: 'main', qty: 45, reserved: 3, minStock: 10, expiry: null, batch: 'B-001', notify: true },
+  { id: 2, productId: 2, location: 'main', qty: 120, reserved: 5, minStock: 20, expiry: null, batch: 'B-002', notify: true },
+  { id: 3, productId: 3, location: 'main', qty: 8, reserved: 2, minStock: 5, expiry: null, batch: 'B-003', notify: true },
+  { id: 4, productId: 3, location: 'retail', qty: 3, reserved: 1, minStock: 2, expiry: null, batch: 'B-003', notify: true },
+  { id: 5, productId: 4, location: 'main', qty: 200, reserved: 10, minStock: 50, expiry: null, batch: 'B-004', notify: true },
+  { id: 6, productId: 5, location: 'main', qty: 30, reserved: 0, minStock: 15, expiry: '2024-06-15', batch: 'B-005', notify: true },
+];
+
+let currentOrderId = null;
+let currentProductId = null;
+let currentOrderFilter = 'all';
+let currentCategoryFilter = 'all';
+let currentWhFilter = 'all';
+let currentOrderItems = [];
+
+const STATUS_MAP = {
+  new: { label: 'Новый', color: 'bg-info/10 text-info', dot: 'bg-info' },
+  processing: { label: 'В обработке', color: 'bg-warning/10 text-warning', dot: 'bg-warning' },
+  assembled: { label: 'Собран', color: 'bg-primary/10 text-primary', dot: 'bg-primary' },
+  shipping: { label: 'В доставке', color: 'bg-purple-100 text-purple-700', dot: 'bg-purple-500' },
+  delivered: { label: 'Доставлен', color: 'bg-success/10 text-success', dot: 'bg-success' },
+  cancelled: { label: 'Отменён', color: 'bg-error/10 text-error', dot: 'bg-error' },
+};
+
+const PAYMENT_MAP = {
+  unpaid: { label: 'Не оплачен', color: 'bg-error/10 text-error' },
+  partial: { label: 'Частично', color: 'bg-warning/10 text-warning' },
+  paid: { label: 'Оплачен', color: 'bg-success/10 text-success' },
+  refunded: { label: 'Возврат', color: 'bg-textDisabled text-textSecondary' },
+};
+
+const LOGISTICS_MAP = {
+  pending: { label: 'Ожидает', color: 'bg-textDisabled text-textSecondary' },
+  shipping: { label: 'В доставке', color: 'bg-info/10 text-info' },
+  transit: { label: 'В пути', color: 'bg-warning/10 text-warning' },
+  delivered: { label: 'Доставлен', color: 'bg-success/10 text-success' },
+};
+
+const LOCATION_MAP = {
+  main: 'Основной склад',
+  retail: 'Розничная точка',
+  transit: 'Транзит',
+};
+
+// ============ TAB SWITCHING ============
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+  
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  event && event.target && event.target.closest('.nav-item')?.classList.add('active');
+  
+  const titles = {
+    leads: ['Лиды', 'Воронка продаж и управление лидами'],
+    orders: ['Заказы', 'Управление заказами, доставкой и оплатой'],
+    products: ['Товары', 'Каталог товаров с финансовой моделью'],
+    warehouse: ['Склад и запасы', 'Остатки, резервы и сроки годности'],
+    faq: ['FAQ ответы', 'Конструктор быстрых ответов'],
+    triggers: ['Триггеры CRM', 'Автоматизация действий'],
+  };
+  
+  document.getElementById('pageTitle').textContent = titles[tab][0];
+  document.getElementById('pageSubtitle').textContent = titles[tab][1];
+  
+  if (tab === 'orders') renderOrders();
+  if (tab === 'products') renderProducts();
+  if (tab === 'warehouse') renderWarehouse();
+}
+
+// ============ ORDERS ============
+function renderOrders() {
+  const list = document.getElementById('ordersList');
+  let filtered = currentOrderFilter === 'all' ? orders : orders.filter(o => o.status === currentOrderFilter);
+  
+  // Stats
+  document.getElementById('ordersTotal').textContent = orders.length;
+  document.getElementById('ordersInProgress').textContent = orders.filter(o => ['new', 'processing', 'assembled'].includes(o.status)).length;
+  document.getElementById('ordersCompleted').textContent = orders.filter(o => o.status === 'delivered').length;
+  const revenue = orders.filter(o => o.payment === 'paid').reduce((s, o) => s + o.total, 0);
+  document.getElementById('ordersRevenue').textContent = '₽ ' + revenue.toLocaleString('ru');
+  
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="bg-white rounded-xl p-12 border border-divider text-center">
+      <div class="w-16 h-16 rounded-full bg-bgDefault mx-auto mb-4 flex items-center justify-center">
+        <svg class="w-8 h-8 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>
+      </div>
+      <div class="text-textSecondary">Заказы не найдены</div>
+    </div>`;
+    return;
+  }
+  
+  list.innerHTML = filtered.map(o => {
+    const st = STATUS_MAP[o.status];
+    const pay = PAYMENT_MAP[o.payment];
+    const log = LOGISTICS_MAP[o.logistics];
+    return `
+    <div class="bg-white rounded-xl border border-divider p-5 hover:border-primary transition cursor-pointer fade-in" onclick="openOrderDetails(${o.id})">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex items-start gap-4 flex-1 min-w-0">
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="font-semibold text-textPrimary">${o.number}</span>
+              <span class="status-badge ${st.color}"><span class="w-1.5 h-1.5 rounded-full ${st.dot}"></span>${st.label}</span>
+              ${o.autoNotify ? '<span class="status-badge bg-primary/10 text-primary">🔔 Авто</span>' : ''}
+            </div>
+            <div class="text-sm text-textSecondary mb-2">Клиент: <span class="font-medium text-textPrimary">${o.client}</span></div>
+            <div class="flex items-center gap-3 flex-wrap text-xs">
+              <span class="flex items-center gap-1 text-textSecondary">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4"/></svg>
+                ${o.items.length} поз.
+              </span>
+              <span class="flex items-center gap-1 ${log.color.replace('bg-', 'bg-').split(' ')[0]} px-2 py-0.5 rounded">🚚 ${log.label}</span>
+              <span class="status-badge ${pay.color}">💳 ${pay.label}</span>
+              ${o.track ? `<span class="text-textSecondary">📦 ${o.track}</span>` : ''}
+              <span class="text-textDisabled">• ${o.createdAt}</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-right flex-shrink-0">
+          <div class="text-xl font-bold text-primary">₽ ${o.total.toLocaleString('ru')}</div>
+          <div class="text-xs text-textSecondary mt-1">${o.comments.length} комм.</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterOrders(filter) {
+  currentOrderFilter = filter;
+  document.querySelectorAll('.order-filter-btn').forEach(btn => {
+    if (btn.dataset.filter === filter) {
+      btn.className = 'order-filter-btn chip bg-primary text-white cursor-pointer';
+    } else {
+      btn.className = 'order-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary';
+    }
+  });
+  renderOrders();
+}
+
+function openOrderModal(id = null) {
+  currentOrderId = id;
+  currentOrderItems = [];
+  document.getElementById('orderModalTitle').textContent = id ? 'Редактировать заказ' : 'Создать заказ';
+  
+  if (id) {
+    const o = orders.find(x => x.id === id);
+    document.getElementById('orderNumber').value = o.number;
+    document.getElementById('orderClient').value = o.client;
+    document.getElementById('orderLogistics').value = o.logistics;
+    document.getElementById('orderTrack').value = o.track;
+    document.getElementById('orderPayment').value = o.payment;
+    document.getElementById('orderPaymentMethod').value = o.paymentMethod;
+    document.getElementById('orderComment').value = o.comments.map(c => c.text).join('\n');
+    currentOrderItems = JSON.parse(JSON.stringify(o.items));
+    if (o.autoNotify) document.getElementById('orderAutoNotify').classList.add('active');
+    else document.getElementById('orderAutoNotify').classList.remove('active');
+  } else {
+    document.getElementById('orderNumber').value = 'ORD-' + String(orders.length + 1).padStart(3, '0');
+    document.getElementById('orderClient').value = '';
+    document.getElementById('orderLogistics').value = 'pending';
+    document.getElementById('orderTrack').value = '';
+    document.getElementById('orderPayment').value = 'unpaid';
+    document.getElementById('orderComment').value = '';
+    document.getElementById('orderAutoNotify').classList.add('active');
+  }
+  
+  renderOrderItems();
+  document.getElementById('orderModal').classList.remove('hidden');
+}
+
+function closeOrderModal() {
+  document.getElementById('orderModal').classList.add('hidden');
+}
+
+function addOrderItem() {
+  currentOrderItems.push({ productId: null, name: '', qty: 1, price: 0 });
+  renderOrderItems();
+}
+
+function removeOrderItem(idx) {
+  currentOrderItems.splice(idx, 1);
+  renderOrderItems();
+}
+
+function updateOrderItem(idx, field, value) {
+  currentOrderItems[idx][field] = field === 'qty' || field === 'price' ? Number(value) : value;
+  if (field === 'productId') {
+    const p = products.find(p => p.id === Number(value));
+    if (p) {
+      currentOrderItems[idx].name = p.name;
+      currentOrderItems[idx].price = p.retail;
+    }
+  }
+  renderOrderItems();
+}
+
+function renderOrderItems() {
+  const list = document.getElementById('orderItems');
+  if (currentOrderItems.length === 0) {
+    list.innerHTML = `<div class="text-center py-6 text-textSecondary text-sm bg-bgDefault rounded-lg">Добавьте товары в заказ</div>`;
+  } else {
+    list.innerHTML = currentOrderItems.map((it, idx) => `
+      <div class="grid grid-cols-12 gap-2 items-center p-2 bg-bgDefault rounded-lg">
+        <select class="col-span-5 px-2 py-1.5 bg-white border border-divider rounded text-sm focus:outline-none focus:border-primary" onchange="updateOrderItem(${idx}, 'productId', this.value)">
+          <option value="">Выберите товар...</option>
+          ${products.map(p => `<option value="${p.id}" ${it.productId === p.id ? 'selected' : ''}>${p.name}</option>`).join('')}
+        </select>
+        <input type="number" min="1" value="${it.qty}" class="col-span-2 px-2 py-1.5 bg-white border border-divider rounded text-sm focus:outline-none focus:border-primary" onchange="updateOrderItem(${idx}, 'qty', this.value)">
+        <input type="number" min="0" value="${it.price}" class="col-span-3 px-2 py-1.5 bg-white border border-divider rounded text-sm focus:outline-none focus:border-primary" onchange="updateOrderItem(${idx}, 'price', this.value)">
+        <button onclick="removeOrderItem(${idx})" class="col-span-2 p-1.5 hover:bg-white rounded transition flex items-center justify-center">
+          <svg class="w-4 h-4 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>
+    `).join('');
+  }
+  const total = currentOrderItems.reduce((s, it) => s + (it.qty * it.price), 0);
+  document.getElementById('orderTotal').textContent = '₽ ' + total.toLocaleString('ru');
+}
+
+function saveOrder() {
+  const number = document.getElementById('orderNumber').value.trim();
+  const client = document.getElementById('orderClient').value;
+  if (!number || !client) { showToast('Заполните номер и клиента'); return; }
+  if (currentOrderItems.length === 0) { showToast('Добавьте товары'); return; }
+  
+  const logistics = document.getElementById('orderLogistics').value;
+  const track = document.getElementById('orderTrack').value;
+  const payment = document.getElementById('orderPayment').value;
+  const paymentMethod = document.getElementById('orderPaymentMethod').value;
+  const comment = document.getElementById('orderComment').value;
+  const autoNotify = document.getElementById('orderAutoNotify').classList.contains('active');
+  const total = currentOrderItems.reduce((s, it) => s + (it.qty * it.price), 0);
+  
+  // Reserve stock
+  currentOrderItems.forEach(it => {
+    if (it.productId) {
+      const wh = warehouse.find(w => w.productId === it.productId);
+      if (wh) {
+        wh.reserved += it.qty;
+        checkLowStock(wh);
+      }
+    }
+  });
+  
+  const now = new Date().toLocaleString('ru');
+  
+  if (currentOrderId) {
+    const o = orders.find(x => x.id === currentOrderId);
+    const oldStatus = o.status;
+    o.number = number;
+    o.client = client;
+    o.items = currentOrderItems;
+    o.total = total;
+    o.logistics = logistics;
+    o.track = track;
+    o.payment = payment;
+    o.paymentMethod = paymentMethod;
+    o.autoNotify = autoNotify;
+    if (comment) o.comments.push({ author: 'Александр', text: comment, time: now });
+    o.history.push({ action: 'Заказ обновлён', time: now, user: 'Александр' });
+    
+    // Auto-notify on status change
+    if (autoNotify && logistics === 'shipping' && o.logistics !== 'shipping') {
+      o.history.push({ action: `🔔 Авто-уведомление клиенту: "Ваш заказ ${number} передан в доставку${track ? ', трек-номер: ' + track : ''}"`, time: now, user: 'Система', notify: true });
+    }
+  } else {
+    const newOrder = {
+      id: Date.now(),
+      number, client,
+      status: 'new',
+      items: currentOrderItems,
+      total, logistics, track,
+      payment, paymentMethod,
+      comments: comment ? [{ author: 'Александр', text: comment, time: now }] : [],
+      history: [{ action: 'Заказ создан', time: now, user: 'Александр' }],
+      createdAt: now,
+      autoNotify,
+    };
+    if (autoNotify) {
+      newOrder.history.push({ action: '🔔 Авто-уведомление клиенту: "Спасибо за заказ! Мы начали его обработку"', time: now, user: 'Система', notify: true });
+    }
+    orders.unshift(newOrder);
+  }
+  
+  closeOrderModal();
+  renderOrders();
+  showToast(currentOrderId ? 'Заказ обновлён' : 'Заказ создан');
+}
+
+function openOrderDetails(id) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  
+  document.getElementById('odTitle').textContent = 'Заказ ' + o.number;
+  document.getElementById('odSubtitle').textContent = 'Клиент: ' + o.client;
+  
+  const st = STATUS_MAP[o.status];
+  const pay = PAYMENT_MAP[o.payment];
+  const log = LOGISTICS_MAP[o.logistics];
+  
+  document.getElementById('odContent').innerHTML = `
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="bg-bgDefault rounded-lg p-4">
+        <div class="text-xs text-textSecondary mb-1">Статус заказа</div>
+        <span class="status-badge ${st.color}"><span class="w-1.5 h-1.5 rounded-full ${st.dot}"></span>${st.label}</span>
+      </div>
+      <div class="bg-bgDefault rounded-lg p-4">
+        <div class="text-xs text-textSecondary mb-1">Оплата</div>
+        <span class="status-badge ${pay.color}">${pay.label} • ${o.paymentMethod}</span>
+      </div>
+      <div class="bg-bgDefault rounded-lg p-4">
+        <div class="text-xs text-textSecondary mb-1">Логистика</div>
+        <div class="text-sm font-medium">${log.label}</div>
+        ${o.track ? `<div class="text-xs text-textSecondary mt-1">📦 ${o.track}</div>` : ''}
+      </div>
+      <div class="bg-bgDefault rounded-lg p-4">
+        <div class="text-xs text-textSecondary mb-1">Сумма</div>
+        <div class="text-2xl font-bold text-primary">₽ ${o.total.toLocaleString('ru')}</div>
+      </div>
+    </div>
+    
+    <div class="mb-6">
+      <div class="text-sm font-semibold mb-3">Товары</div>
+      <div class="bg-bgDefault rounded-lg overflow-hidden">
+        <table class="w-full">
+          <thead class="text-xs text-textSecondary">
+            <tr><th class="text-left px-4 py-2">Товар</th><th class="text-right px-4 py-2">Кол-во</th><th class="text-right px-4 py-2">Цена</th><th class="text-right px-4 py-2">Сумма</th></tr>
+          </thead>
+          <tbody>
+            ${o.items.map(it => `<tr class="border-t border-divider"><td class="px-4 py-2 text-sm">${it.name}</td><td class="px-4 py-2 text-sm text-right">${it.qty}</td><td class="px-4 py-2 text-sm text-right">₽ ${it.price.toLocaleString('ru')}</td><td class="px-4 py-2 text-sm text-right font-medium">₽ ${(it.qty * it.price).toLocaleString('ru')}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div>
+        <div class="text-sm font-semibold mb-3">Комментарии</div>
+        <div class="space-y-2">
+          ${o.comments.length === 0 ? '<div class="text-sm text-textSecondary">Нет комментариев</div>' : o.comments.map(c => `
+            <div class="bg-bgDefault rounded-lg p-3">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-semibold">${c.author}</span>
+                <span class="text-xs text-textDisabled">${c.time}</span>
+              </div>
+              <div class="text-sm">${c.text}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="text-sm font-semibold mb-3">История</div>
+        <div>
+          ${o.history.map(h => `
+            <div class="timeline-item">
+              <div class="text-sm font-medium">${h.action}</div>
+              <div class="text-xs text-textSecondary">${h.user} • ${h.time}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex items-center justify-between pt-4 border-t border-divider">
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-textSecondary">Изменить статус:</span>
+        <select onchange="changeOrderStatus(${o.id}, this.value)" class="px-3 py-1.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          ${Object.entries(STATUS_MAP).map(([k, v]) => `<option value="${k}" ${o.status === k ? 'selected' : ''}>${v.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="closeOrderDetails(); openOrderModal(${o.id})" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm font-medium hover:bg-white transition">Редактировать</button>
+        <button onclick="deleteOrder(${o.id})" class="px-4 py-2 bg-error/10 text-error rounded-lg text-sm font-medium hover:bg-error/20 transition">Удалить</button>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('orderDetailsModal').classList.remove('hidden');
+}
+
+function closeOrderDetails() {
+  document.getElementById('orderDetailsModal').classList.add('hidden');
+}
+
+function changeOrderStatus(id, status) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const oldStatus = o.status;
+  o.status = status;
+  const now = new Date().toLocaleString('ru');
+  o.history.push({ action: `Статус: ${STATUS_MAP[oldStatus].label} → ${STATUS_MAP[status].label}`, time: now, user: 'Александр' });
+  
+  // Auto notify
+  if (o.autoNotify) {
+    let msg = '';
+    if (status === 'shipping') msg = `Ваш заказ ${o.number} передан в доставку${o.track ? ', трек-номер: ' + o.track : ''}`;
+    else if (status === 'delivered') msg = `Ваш заказ ${o.number} доставлен! Спасибо за покупку`;
+    else if (status === 'processing') msg = `Ваш заказ ${o.number} принят в обработку`;
+    else if (status === 'assembled') msg = `Ваш заказ ${o.number} собран и готов к отправке`;
+    
+    if (msg) {
+      o.history.push({ action: `🔔 Авто-уведомление: "${msg}"`, time: now, user: 'Система', notify: true });
+    }
+  }
+  
+  // Release reservation if delivered/cancelled
+  if (status === 'delivered' || status === 'cancelled') {
+    o.items.forEach(it => {
+      const wh = warehouse.find(w => w.productId === it.productId);
+      if (wh) {
+        if (status === 'delivered') {
+          wh.qty -= it.qty;
+          wh.reserved -= it.qty;
+        } else {
+          wh.reserved -= it.qty;
+        }
+        checkLowStock(wh);
+      }
+    });
+  }
+  
+  openOrderDetails(id);
+  renderOrders();
+  showToast('Статус обновлён');
+}
+
+function deleteOrder(id) {
+  if (!confirm('Удалить заказ?')) return;
+  orders = orders.filter(o => o.id !== id);
+  closeOrderDetails();
+  renderOrders();
+  showToast('Заказ удалён');
+}
+
+// ============ XLS IMPORT ============
+function importOrdersXls() {
+  document.getElementById('xlsFileInput').click();
+}
+
+document.getElementById('xlsFileInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      const data = new Uint8Array(evt.target.result);
+      const wb = XLSX.read(data, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws);
+      
+      let imported = 0;
+      rows.forEach(row => {
+        const newOrder = {
+          id: Date.now() + imported,
+          number: row['Номер'] || 'IMP-' + String(orders.length + imported + 1).padStart(3, '0'),
+          client: row['Клиент'] || 'Без имени',
+          status: 'new',
+          items: [{ productId: null, name: row['Товар'] || 'Товар', qty: Number(row['Кол-во']) || 1, price: Number(row['Цена']) || 0 }],
+          total: (Number(row['Кол-во']) || 1) * (Number(row['Цена']) || 0),
+          logistics: 'pending',
+          track: row['Трек'] || '',
+          payment: 'unpaid',
+          paymentMethod: 'Карта',
+          comments: [],
+          history: [{ action: 'Импортирован из XLS', time: new Date().toLocaleString('ru'), user: 'Система' }],
+          createdAt: new Date().toLocaleString('ru'),
+          autoNotify: true,
+        };
+        orders.unshift(newOrder);
+        imported++;
+      });
+      
+      renderOrders();
+      showToast(`Импортировано заказов: ${imported}`);
+    } catch (err) {
+      showToast('Ошибка импорта файла');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  e.target.value = '';
+});
+
+function downloadTemplateXls() {
+  const template = [
+    { 'Номер': 'ORD-100', 'Клиент': 'Иван Петров', 'Товар': 'Кроссовки Nike', 'Кол-во': 2, 'Цена': 8990, 'Трек': '' },
+    { 'Номер': 'ORD-101', 'Клиент': 'Мария Сидорова', 'Товар': 'Футболка Adidas', 'Кол-во': 1, 'Цена': 2490, 'Трек': '' },
+  ];
+  const ws = XLSX.utils.json_to_sheet(template);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Заказы');
+  XLSX.writeFile(wb, 'orderImport.xls');
+  showToast('Шаблон скачан');
+}
+
+// ============ PRODUCTS ============
+function renderProducts() {
+  document.getElementById('productsTotal').textContent = products.length;
+  const cats = [...new Set(products.map(p => p.category))];
+  document.getElementById('categoriesTotal').textContent = cats.length;
+  const avgPrice = products.length ? Math.round(products.reduce((s, p) => s + p.retail, 0) / products.length) : 0;
+  document.getElementById('productsAvgPrice').textContent = '₽ ' + avgPrice.toLocaleString('ru');
+  const avgMargin = products.length ? Math.round(products.reduce((s, p) => s + ((p.retail - p.cost) / p.retail * 100), 0) / products.length) : 0;
+  document.getElementById('productsMargin').textContent = avgMargin + '%';
+  
+  // Category filters
+  document.getElementById('categoryFilters').innerHTML = `
+    <button onclick="filterProducts('all')" class="prod-cat-btn chip ${currentCategoryFilter === 'all' ? 'bg-primary text-white' : 'bg-white border border-divider text-textSecondary'} cursor-pointer hover:border-primary" data-cat="all">Все</button>
+    ${cats.map(c => `<button onclick="filterProducts('${c}')" class="prod-cat-btn chip ${currentCategoryFilter === c ? 'bg-primary text-white' : 'bg-white border border-divider text-textSecondary'} cursor-pointer hover:border-primary" data-cat="${c}">${c}</button>`).join('')}
+  `;
+  
+  const filtered = currentCategoryFilter === 'all' ? products : products.filter(p => p.category === currentCategoryFilter);
+  const list = document.getElementById('productsList');
+  
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="col-span-full bg-white rounded-xl p-12 border border-divider text-center">
+      <div class="text-textSecondary">Товары не найдены</div>
+    </div>`;
+    return;
+  }
+  
+  list.innerHTML = filtered.map(p => {
+    const wh = warehouse.filter(w => w.productId === p.id);
+    const totalStock = wh.reduce((s, w) => s + w.qty, 0);
+    const totalReserved = wh.reduce((s, w) => s + w.reserved, 0);
+    const margin = ((p.retail - p.cost) / p.retail * 100).toFixed(0);
+    const photo = p.photos[0] || '';
+    
+    return `
+    <div class="product-card bg-white rounded-xl border border-divider overflow-hidden cursor-pointer fade-in" onclick="openProductModal(${p.id})">
+      <div class="aspect-square bg-bgDefault relative overflow-hidden">
+        ${photo ? `<img src="${photo}" class="w-full h-full object-cover" onerror="this.style.display='none'">` : `
+          <div class="w-full h-full flex items-center justify-center">
+            <svg class="w-16 h-16 text-textDisabled" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4"/></svg>
+          </div>
+        `}
+        <div class="absolute top-2 right-2">
+          <span class="chip bg-white/90 backdrop-blur text-textPrimary text-xs">${p.category}</span>
+        </div>
+      </div>
+      <div class="p-4">
+        <div class="font-semibold text-textPrimary mb-1 truncate">${p.name}</div>
+        <div class="text-xs text-textSecondary mb-3">SKU: ${p.sku}</div>
+        <div class="flex items-baseline justify-between mb-3">
+          <div class="text-xl font-bold text-primary">₽ ${p.retail.toLocaleString('ru')}</div>
+          ${p.discount ? `<div class="text-xs text-textDisabled line-through">₽ ${p.discount.toLocaleString('ru')}</div>` : ''}
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-bgDefault rounded p-2">
+            <div class="text-textSecondary">Себест.</div>
+            <div class="font-semibold">₽ ${p.cost.toLocaleString('ru')}</div>
+          </div>
+          <div class="bg-bgDefault rounded p-2">
+            <div class="text-textSecondary">Маржа</div>
+            <div class="font-semibold text-success">${margin}%</div>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-divider flex items-center justify-between text-xs">
+          <span class="text-textSecondary">Остаток: <span class="font-semibold text-textPrimary">${totalStock}</span></span>
+          <span class="text-textSecondary">Резерв: <span class="font-semibold text-warning">${totalReserved}</span></span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterProducts(cat) {
+  currentCategoryFilter = cat;
+  renderProducts();
+}
+
+function openProductModal(id = null) {
+  currentProductId = id;
+  document.getElementById('productModalTitle').textContent = id ? 'Редактировать товар' : 'Добавить товар';
+  
+  if (id) {
+    const p = products.find(x => x.id === id);
+    document.getElementById('prodName').value = p.name;
+    document.getElementById('prodSku').value = p.sku;
+    document.getElementById('prodCategory').value = p.category;
+    document.getElementById('prodPhoto').value = p.photos.join(', ');
+    document.getElementById('prodDescription').value = p.description;
+    document.getElementById('prodLinks').value = p.links.join(', ');
+    document.getElementById('prodCost').value = p.cost;
+    document.getElementById('prodRetail').value = p.retail;
+    document.getElementById('prodWholesale').value = p.wholesale;
+    document.getElementById('prodDiscount').value = p.discount;
+  } else {
+    ['prodName', 'prodSku', 'prodPhoto', 'prodDescription', 'prodLinks', 'prodCost', 'prodRetail', 'prodWholesale', 'prodDiscount'].forEach(id => document.getElementById(id).value = '');
+  }
+  
+  document.getElementById('productModal').classList.remove('hidden');
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').classList.add('hidden');
+}
+
+function saveProduct() {
+  const name = document.getElementById('prodName').value.trim();
+  const sku = document.getElementById('prodSku').value.trim();
+  if (!name || !sku) { showToast('Заполните название и SKU'); return; }
+  
+  const data = {
+    name,
+    sku,
+    category: document.getElementById('prodCategory').value,
+    photos: document.getElementById('prodPhoto').value.split(',').map(s => s.trim()).filter(Boolean),
+    description: document.getElementById('prodDescription').value,
+    links: document.getElementById('prodLinks').value.split(',').map(s => s.trim()).filter(Boolean),
+    cost: Number(document.getElementById('prodCost').value) || 0,
+    retail: Number(document.getElementById('prodRetail').value) || 0,
+    wholesale: Number(document.getElementById('prodWholesale').value) || 0,
+    discount: Number(document.getElementById('prodDiscount').value) || 0,
+  };
+  
+  if (currentProductId) {
+    const p = products.find(x => x.id === currentProductId);
+    Object.assign(p, data);
+  } else {
+    products.push({ id: Date.now(), ...data });
+  }
+  
+  closeProductModal();
+  renderProducts();
+  showToast(currentProductId ? 'Товар обновлён' : 'Товар добавлен');
+}
+
+// ============ WAREHOUSE ============
+function renderWarehouse() {
+  document.getElementById('whTotalItems').textContent = warehouse.length;
+  document.getElementById('whReserved').textContent = warehouse.reduce((s, w) => s + w.reserved, 0);
+  document.getElementById('whLowStock').textContent = warehouse.filter(w => w.qty <= w.minStock).length;
+  document.getElementById('whLocations').textContent = [...new Set(warehouse.map(w => w.location))].length;
+  
+  const locFilter = document.getElementById('whLocationFilter').value;
+  let filtered = warehouse;
+  if (locFilter !== 'all') filtered = filtered.filter(w => w.location === locFilter);
+  if (currentWhFilter === 'low') filtered = filtered.filter(w => w.qty <= w.minStock);
+  if (currentWhFilter === 'reserved') filtered = filtered.filter(w => w.reserved > 0);
+  if (currentWhFilter === 'expiring') filtered = filtered.filter(w => w.expiry);
+  
+  const tbody = document.getElementById('warehouseTable');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="text-center py-12 text-textSecondary">Нет позиций</td></tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = filtered.map(w => {
+    const p = products.find(x => x.id === w.productId);
+    if (!p) return '';
+    const available = w.qty - w.reserved;
+    const isLow = w.qty <= w.minStock;
+    const stockPct = Math.min(100, (w.qty / (w.minStock * 3)) * 100);
+    const stockColor = isLow ? 'bg-error' : w.qty < w.minStock * 2 ? 'bg-warning' : 'bg-success';
+    
+    let expiryHtml = '—';
+    if (w.expiry) {
+      const days = Math.ceil((new Date(w.expiry) - new Date()) / (1000 * 60 * 60 * 24));
+      if (days < 0) expiryHtml = `<span class="status-badge bg-error/10 text-error">Просрочено</span>`;
+      else if (days < 30) expiryHtml = `<span class="status-badge bg-warning/10 text-warning">${days} дн.</span>`;
+      else expiryHtml = `<span class="text-sm">${w.expiry}</span>`;
+    }
+    
+    return `
+    <tr class="border-b border-divider hover:bg-bgDefault transition ${isLow ? 'low-stock' : ''}">
+      <td class="px-5 py-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-bgDefault flex items-center justify-center overflow-hidden flex-shrink-0">
+            ${p.photos[0] ? `<img src="${p.photos[0]}" class="w-full h-full object-cover">` : `<svg class="w-5 h-5 text-textDisabled" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4"/></svg>`}
+          </div>
+          <div>
+            <div class="font-medium text-sm">${p.name}</div>
+            <div class="text-xs text-textSecondary">${p.sku}</div>
+          </div>
+        </div>
+      </td>
+      <td class="px-5 py-3 text-sm">${LOCATION_MAP[w.location]}</td>
+      <td class="px-5 py-3">
+        <div class="font-semibold">${w.qty}</div>
+        <div class="stock-bar mt-1 w-20"><div class="stock-fill ${stockColor}" style="width: ${stockPct}%"></div></div>
+      </td>
+      <td class="px-5 py-3 text-sm"><span class="font-semibold text-warning">${w.reserved}</span></td>
+      <td class="px-5 py-3 text-sm font-semibold text-success">${available}</td>
+      <td class="px-5 py-3 text-sm">${w.minStock}</td>
+      <td class="px-5 py-3">${expiryHtml}</td>
+      <td class="px-5 py-3 text-sm text-textSecondary">${w.batch}</td>
+      <td class="px-5 py-3">
+        <div class="flex items-center gap-1">
+          <button onclick="editWarehouse(${w.id})" class="p-1.5 hover:bg-white rounded transition">
+            <svg class="w-4 h-4 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button onclick="deleteWarehouse(${w.id})" class="p-1.5 hover:bg-error/10 rounded transition">
+            <svg class="w-4 h-4 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterWarehouse(filter) {
+  currentWhFilter = filter;
+  document.querySelectorAll('.wh-filter-btn').forEach(btn => {
+    if (btn.dataset.filter === filter) btn.className = 'wh-filter-btn chip bg-primary text-white cursor-pointer';
+    else btn.className = 'wh-filter-btn chip bg-white border border-divider text-textSecondary cursor-pointer hover:border-primary';
+  });
+  renderWarehouse();
+}
+
+function checkLowStock(wh) {
+  if (wh.notify && wh.qty <= wh.minStock) {
+    showToast(`⚠️ Низкий остаток: ${products.find(p => p.id === wh.productId)?.name}`);
+  }
+}
+
+function openWarehouseModal() {
+  const select = document.getElementById('whProduct');
+  select.innerHTML = '<option value="">Выберите товар...</option>' + products.map(p => `<option value="${p.id}">${p.name} (${p.sku})</option>`).join('');
+  ['whQty', 'whMin', 'whBatch', 'whExpiry'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('whMin').value = '5';
+  document.getElementById('whNotify').classList.add('active');
+  document.getElementById('warehouseModal').classList.remove('hidden');
+}
+
+function closeWarehouseModal() {
+  document.getElementById('warehouseModal').classList.add('hidden');
+}
+
+function saveWarehouse() {
+  const productId = Number(document.getElementById('whProduct').value);
+  if (!productId) { showToast('Выберите товар'); return; }
+  
+  const data = {
+    productId,
+    location: document.getElementById('whLocation').value,
+    qty: Number(document.getElementById('whQty').value) || 0,
+    reserved: 0,
+    minStock: Number(document.getElementById('whMin').value) || 0,
+    batch: document.getElementById('whBatch').value,
+    expiry: document.getElementById('whExpiry').value || null,
+    notify: document.getElementById('whNotify').classList.contains('active'),
+  };
+  
+  warehouse.push({ id: Date.now(), ...data });
+  checkLowStock(data);
+  closeWarehouseModal();
+  renderWarehouse();
+  showToast('Позиция добавлена на склад');
+}
+
+function editWarehouse(id) {
+  const w = warehouse.find(x => x.id === id);
+  if (!w) return;
+  const newQty = prompt('Новое количество:', w.qty);
+  if (newQty === null) return;
+  w.qty = Number(newQty);
+  checkLowStock(w);
+  renderWarehouse();
+  showToast('Остаток обновлён');
+}
+
+function deleteWarehouse(id) {
+  if (!confirm('Удалить позицию со склада?')) return;
+  warehouse = warehouse.filter(w => w.id !== id);
+  renderWarehouse();
+  showToast('Позиция удалена');
+}
+
+// ============ UTILS ============
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMessage').textContent = message;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 2500);
+}
+
+// Init
+renderOrders();
+</script>
+</body>
+</html>
