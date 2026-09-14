@@ -382,34 +382,93 @@ tailwind.config = {
 
     <!-- ============ TAB: LEADS (preserved) ============ -->
     <div id="tab-leads" class="tab-content hidden">
-      <div class="bg-white rounded-xl p-12 border border-divider text-center">
-        <div class="w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
-          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold">Воронка продаж</h3>
+          <button onclick="openLeadModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Добавить лид
+          </button>
         </div>
-        <div class="text-lg font-semibold text-textPrimary mb-2">Раздел Лиды</div>
-        <div class="text-textSecondary">Воронка продаж и управление лидами</div>
+        <div class="grid grid-cols-5 gap-4">
+          <div class="bg-bgDefault rounded-xl p-4">
+            <div class="text-xs text-textSecondary mb-2">Новые</div>
+            <div id="leadsNew" class="space-y-2"></div>
+          </div>
+          <div class="bg-bgDefault rounded-xl p-4">
+            <div class="text-xs text-textSecondary mb-2">В работе</div>
+            <div id="leadsWorking" class="space-y-2"></div>
+          </div>
+          <div class="bg-bgDefault rounded-xl p-4">
+            <div class="text-xs text-textSecondary mb-2">Предложение</div>
+            <div id="leadsProposal" class="space-y-2"></div>
+          </div>
+          <div class="bg-bgDefault rounded-xl p-4">
+            <div class="text-xs text-textSecondary mb-2">Переговоры</div>
+            <div id="leadsNegotiation" class="space-y-2"></div>
+          </div>
+          <div class="bg-bgDefault rounded-xl p-4">
+            <div class="text-xs text-textSecondary mb-2">Успешно</div>
+            <div id="leadsSuccess" class="space-y-2"></div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- ============ TAB: FAQ (preserved) ============ -->
+    <!-- ============ TAB: FAQ ============ -->
     <div id="tab-faq" class="tab-content hidden">
-      <div class="bg-white rounded-xl p-12 border border-divider text-center">
-        <div class="w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
-          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-semibold">FAQ ответы</h3>
+            <p class="text-sm text-textSecondary mt-1">База знаний для быстрых ответов клиентам</p>
+          </div>
+          <button onclick="openFaqModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Добавить FAQ
+          </button>
         </div>
-        <div class="text-lg font-semibold text-textPrimary mb-2">Конструктор FAQ</div>
-        <div class="text-textSecondary">Быстрые ответы для клиентов</div>
+        
+        <!-- Filters -->
+        <div class="flex items-center gap-3 mb-4">
+          <input type="text" id="faqSearch" placeholder="Поиск по вопросам..." class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm w-64 focus:outline-none focus:border-primary" oninput="renderFaqs()">
+          <select id="faqCategoryFilter" onchange="renderFaqs()" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="all">Все категории</option>
+            <option value="Доставка">Доставка</option>
+            <option value="Оплата">Оплата</option>
+            <option value="Возврат">Возврат</option>
+            <option value="Товары">Товары</option>
+            <option value="Заказ">Заказ</option>
+            <option value="Другое">Другое</option>
+          </select>
+          <select id="faqStatusFilter" onchange="renderFaqs()" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="all">Все статусы</option>
+            <option value="active">Активные</option>
+            <option value="inactive">Неактивные</option>
+          </select>
+        </div>
+        
+        <!-- FAQ List -->
+        <div id="faqList" class="space-y-3"></div>
       </div>
     </div>
 
-    <!-- ============ TAB: TRIGGERS (preserved) ============ -->
+    <!-- ============ TAB: TRIGGERS ============ -->
     <div id="tab-triggers" class="tab-content hidden">
-      <div class="bg-white rounded-xl p-12 border border-divider text-center">
-        <div class="w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
-          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-semibold">Триггеры CRM</h3>
+            <p class="text-sm text-textSecondary mt-1">Автоматизация действий при событиях</p>
+          </div>
+          <button onclick="openTriggerModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Создать триггер
+          </button>
         </div>
-        <div class="text-lg font-semibold text-textPrimary mb-2">Триггеры CRM</div>
-        <div class="text-textSecondary">Автоматизация действий</div>
+        
+        <!-- Trigger List -->
+        <div id="triggerList" class="space-y-3"></div>
       </div>
     </div>
 
@@ -683,6 +742,218 @@ tailwind.config = {
   <span id="toastMessage">Сохранено</span>
 </div>
 
+<!-- ============ FAQ MODAL ============ -->
+<div id="faqModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 id="faqModalTitle" class="text-lg font-semibold">Добавить FAQ</h3>
+      <button onclick="closeFaqModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium mb-2">Вопрос</label>
+        <input id="faqQuestion" type="text" placeholder="Например: Как оформить доставку?" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">Ответ</label>
+        <textarea id="faqAnswer" rows="4" placeholder="Подробный ответ на вопрос..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary resize-none"></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Категория</label>
+          <select id="faqCategory" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="Доставка">Доставка</option>
+            <option value="Оплата">Оплата</option>
+            <option value="Возврат">Возврат</option>
+            <option value="Товары">Товары</option>
+            <option value="Заказ">Заказ</option>
+            <option value="Другое">Другое</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Статус</label>
+          <select id="faqStatus" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="active">Активен</option>
+            <option value="inactive">Неактивен</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
+      <button onclick="closeFaqModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
+      <button onclick="saveFaq()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Сохранить FAQ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TRIGGER MODAL ============ -->
+<div id="triggerModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 id="triggerModalTitle" class="text-lg font-semibold">Создать триггер</h3>
+      <button onclick="closeTriggerModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium mb-2">Название триггера</label>
+        <input id="triggerName" type="text" placeholder="Например: Новый заказ → сообщение клиенту" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+      </div>
+      
+      <!-- ЕСЛИ (Event) -->
+      <div class="border border-divider rounded-xl p-4 bg-bgDefault">
+        <div class="text-sm font-semibold mb-3 flex items-center gap-2">
+          <span class="chip bg-primary text-white">ЕСЛИ</span>
+          Произошло событие
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-textSecondary mb-2">Событие</label>
+          <select id="triggerEvent" onchange="renderTriggerConditions()" class="w-full px-4 py-2.5 bg-white border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="lead_created">Создание лида</option>
+            <option value="order_created">Создание заказа</option>
+            <option value="stage_changed">Переход на следующую стадию</option>
+          </select>
+        </div>
+        <div id="triggerStageFrom" class="hidden mt-3">
+          <label class="block text-xs font-medium text-textSecondary mb-2">С стадии</label>
+          <select id="triggerStageFromSelect" class="w-full px-4 py-2.5 bg-white border border-divider rounded-lg text-sm">
+            <option value="new">Новый</option>
+            <option value="working">В работе</option>
+            <option value="proposal">Предложение</option>
+          </select>
+        </div>
+        <div id="triggerStageTo" class="hidden mt-3">
+          <label class="block text-xs font-medium text-textSecondary mb-2">На стадию</label>
+          <select id="triggerStageToSelect" class="w-full px-4 py-2.5 bg-white border border-divider rounded-lg text-sm">
+            <option value="working">В работе</option>
+            <option value="proposal">Предложение</option>
+            <option value="negotiation">Переговоры</option>
+            <option value="success">Успешно</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- УСЛОВИЕ (Condition) -->
+      <div class="border border-divider rounded-xl p-4">
+        <div class="text-sm font-semibold mb-3 flex items-center gap-2">
+          <span class="chip bg-warning text-white">ЕСЛИ НЕОБХОДИМО</span>
+          Условие
+        </div>
+        <div class="flex items-center gap-3">
+          <select id="triggerConditionField" class="px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm">
+            <option value="amount">Сумма заказа</option>
+            <option value="category">Категория товара</option>
+            <option value="client">Тип клиента</option>
+          </select>
+          <select id="triggerConditionOp" class="px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm">
+            <option value="gt">&gt;</option>
+            <option value="gte">&gt;=</option>
+            <option value="lt">&lt;</option>
+            <option value="eq">=</option>
+          </select>
+          <input id="triggerConditionValue" type="text" placeholder="50000" class="flex-1 px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm">
+        </div>
+      </div>
+      
+      <!-- ТО (Action) -->
+      <div class="border border-divider rounded-xl p-4 bg-bgDefault">
+        <div class="text-sm font-semibold mb-3 flex items-center gap-2">
+          <span class="chip bg-success text-white">ТО</span>
+          Выполнить действие
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-textSecondary mb-2">Действие</label>
+          <select id="triggerAction" onchange="renderTriggerActionFields()" class="w-full px-4 py-2.5 bg-white border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="send_message">Отправить сообщение</option>
+            <option value="create_task">Создать задачу</option>
+            <option value="move_lead">Передвинуть лид</option>
+            <option value="create_lead">Создать лид</option>
+          </select>
+        </div>
+        <div id="actionMessage" class="mt-3">
+          <label class="block text-xs font-medium text-textSecondary mb-2">Текст сообщения</label>
+          <textarea id="triggerMessageText" rows="3" placeholder="Спасибо за заказ! Мы начали его обработку." class="w-full px-4 py-2.5 bg-white border border-divider rounded-lg text-sm resize-none"></textarea>
+        </div>
+        <div id="actionTask" class="hidden mt-3 space-y-3">
+          <input id="triggerTaskName" type="text" placeholder="Название задачи" class="w-full px-4 py-2.5 bg-white border border-divider rounded-lg text-sm">
+          <select id="triggerTaskPriority" class="w-full px-4 py-2.5 bg-white border border-divider rounded-lg text-sm">
+            <option value="low">Низкий приоритет</option>
+            <option value="medium">Средний приоритет</option>
+            <option value="high">Высокий приоритет</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between p-4 bg-bgDefault rounded-lg">
+        <div>
+          <div class="text-sm font-medium">Статус триггера</div>
+          <div class="text-xs text-textSecondary">Включить или выключить триггер</div>
+        </div>
+        <div id="triggerActive" class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
+      <button onclick="closeTriggerModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
+      <button onclick="saveTrigger()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Сохранить триггер</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LEAD MODAL ============ -->
+<div id="leadModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 id="leadModalTitle" class="text-lg font-semibold">Добавить лид</h3>
+      <button onclick="closeLeadModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Имя клиента</label>
+          <input id="leadName" type="text" placeholder="Иван Петров" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Телефон</label>
+          <input id="leadPhone" type="text" placeholder="+7 777 123 4567" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">Источник</label>
+        <select id="leadSource" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option value="whatsapp">WhatsApp</option>
+          <option value="instagram">Instagram</option>
+          <option value="website">Сайт</option>
+          <option value="call">Звонок</option>
+          <option value="other">Другое</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">Стадия</label>
+        <select id="leadStage" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option value="new">Новый</option>
+          <option value="working">В работе</option>
+          <option value="proposal">Предложение</option>
+          <option value="negotiation">Переговоры</option>
+          <option value="success">Успешно</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">Комментарий</label>
+        <textarea id="leadComment" rows="3" placeholder="Дополнительная информация о лиде..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary resize-none"></textarea>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
+      <button onclick="closeLeadModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
+      <button onclick="saveLead()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Сохранить лид</button>
+    </div>
+  </div>
+</div>
+
 <input type="file" id="xlsFileInput" accept=".xls,.xlsx" class="hidden">
 
 <script>
@@ -770,6 +1041,9 @@ function switchTab(tab) {
   if (tab === 'orders') renderOrders();
   if (tab === 'products') renderProducts();
   if (tab === 'warehouse') renderWarehouse();
+  if (tab === 'faq') renderFaqs();
+  if (tab === 'triggers') renderTriggers();
+  if (tab === 'leads') renderLeads();
 }
 
 // ============ ORDERS ============
@@ -988,6 +1262,9 @@ function saveOrder() {
       newOrder.history.push({ action: '🔔 Авто-уведомление клиенту: "Спасибо за заказ! Мы начали его обработку"', time: now, user: 'Система', notify: true });
     }
     orders.unshift(newOrder);
+    
+    // Check triggers for order_created
+    checkTriggers('order_created', { order: newOrder });
   }
   
   closeOrderModal();
@@ -1482,8 +1759,398 @@ function showToast(message) {
   setTimeout(() => toast.classList.add('hidden'), 2500);
 }
 
+// ============ FAQ ============
+let faqs = [
+  { id: 1, question: 'Как оформить доставку?', answer: 'Доставка осуществляется по Алматы и другим городам Казахстана. Срок доставки 2-5 рабочих дней.', category: 'Доставка', status: 'active', uses: 45, author: 'Александр', updatedAt: '2024-01-15' },
+  { id: 2, question: 'Какие способы оплаты доступны?', answer: 'Мы принимаем наличные, банковские карты, СБП и безналичный расчет для юридических лиц.', category: 'Оплата', status: 'active', uses: 38, author: 'Мария', updatedAt: '2024-01-14' },
+  { id: 3, question: 'Можно ли вернуть товар?', answer: 'Да, вы можете вернуть товар в течение 14 дней с момента покупки при сохранении чека и упаковки.', category: 'Возврат', status: 'active', uses: 22, author: 'Александр', updatedAt: '2024-01-13' },
+  { id: 4, question: 'Есть ли гарантия на товары?', answer: 'На все товары действует гарантия от производителя. Срок гарантии указан в гарантийном талоне.', category: 'Товары', status: 'active', uses: 31, author: 'Мария', updatedAt: '2024-01-12' },
+  { id: 5, question: 'Как изменить заказ?', answer: 'Вы можете изменить заказ до момента его отгрузки. Свяжитесь с менеджером для внесения изменений.', category: 'Заказ', status: 'inactive', uses: 15, author: 'Александр', updatedAt: '2024-01-10' },
+];
+
+let triggers = [
+  { id: 1, name: 'Новый заказ → сообщение клиенту', event: 'order_created', condition: { field: 'amount', op: 'gt', value: '50000' }, action: 'send_message', message: 'Спасибо за заказ! Мы начали его обработку.', active: true, createdAt: '2024-01-15' },
+  { id: 2, name: 'Лид создан → задача менеджеру', event: 'lead_created', condition: null, action: 'create_task', taskName: 'Обработать новый лид', taskPriority: 'high', active: true, createdAt: '2024-01-14' },
+  { id: 3, name: 'Переход в Успешно → отправить благодарность', event: 'stage_changed', stageFrom: 'negotiation', stageTo: 'success', condition: null, action: 'send_message', message: 'Благодарим за сотрудничество!', active: false, createdAt: '2024-01-13' },
+];
+
+let leads = [
+  { id: 1, name: 'Иван Петров', phone: '+7 777 123 4567', source: 'whatsapp', stage: 'new', comment: 'Интересуются кроссовками Nike', createdAt: '2024-01-15 10:00' },
+  { id: 2, name: 'Мария Сидорова', phone: '+7 777 987 6543', source: 'instagram', stage: 'working', comment: 'Запрос на опт', createdAt: '2024-01-14 14:30' },
+  { id: 3, name: 'Алексей Козлов', phone: '+7 777 555 1234', source: 'website', stage: 'proposal', comment: 'Отправлено КП', createdAt: '2024-01-13 09:15' },
+  { id: 4, name: 'Дмитрий Волков', phone: '+7 777 333 9876', source: 'call', stage: 'negotiation', comment: 'Обсуждаем условия доставки', createdAt: '2024-01-12 16:45' },
+  { id: 5, name: 'Елена Новикова', phone: '+7 777 111 2233', source: 'whatsapp', stage: 'success', comment: 'Успешно закрыто', createdAt: '2024-01-11 11:20' },
+];
+
+function renderFaqs() {
+  const search = document.getElementById('faqSearch').value.toLowerCase();
+  const catFilter = document.getElementById('faqCategoryFilter').value;
+  const statusFilter = document.getElementById('faqStatusFilter').value;
+  
+  let filtered = faqs.filter(f => {
+    const matchSearch = f.question.toLowerCase().includes(search) || f.answer.toLowerCase().includes(search);
+    const matchCat = catFilter === 'all' || f.category === catFilter;
+    const matchStatus = statusFilter === 'all' || f.status === statusFilter;
+    return matchSearch && matchCat && matchStatus;
+  });
+  
+  const list = document.getElementById('faqList');
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="bg-bgDefault rounded-xl p-12 text-center text-textSecondary">FAQ не найдены</div>`;
+    return;
+  }
+  
+  list.innerHTML = filtered.map(f => `
+    <div class="bg-white rounded-xl border border-divider p-5 hover:border-primary transition fade-in">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="chip bg-primary/10 text-primary">${f.category}</span>
+            <span class="chip ${f.status === 'active' ? 'bg-success/10 text-success' : 'bg-textDisabled text-textSecondary'}">${f.status === 'active' ? 'Активен' : 'Неактивен'}</span>
+          </div>
+          <div class="font-semibold text-textPrimary mb-2">${f.question}</div>
+          <div class="text-sm text-textSecondary">${f.answer}</div>
+          <div class="flex items-center gap-4 mt-3 text-xs text-textDisabled">
+            <span>✍️ ${f.author}</span>
+            <span>📅 ${f.updatedAt}</span>
+            <span>👁️ Использован: ${f.uses} раз</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="editFaq(${f.id})" class="p-2 hover:bg-bgDefault rounded-lg transition">
+            <svg class="w-4 h-4 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button onclick="deleteFaq(${f.id})" class="p-2 hover:bg-error/10 rounded-lg transition">
+            <svg class="w-4 h-4 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openFaqModal(id = null) {
+  document.getElementById('faqModalTitle').textContent = id ? 'Редактировать FAQ' : 'Добавить FAQ';
+  if (id) {
+    const f = faqs.find(x => x.id === id);
+    document.getElementById('faqQuestion').value = f.question;
+    document.getElementById('faqAnswer').value = f.answer;
+    document.getElementById('faqCategory').value = f.category;
+    document.getElementById('faqStatus').value = f.status;
+  } else {
+    ['faqQuestion', 'faqAnswer'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('faqCategory').value = 'Доставка';
+    document.getElementById('faqStatus').value = 'active';
+  }
+  document.getElementById('faqModal').classList.remove('hidden');
+}
+
+function closeFaqModal() {
+  document.getElementById('faqModal').classList.add('hidden');
+}
+
+function saveFaq() {
+  const question = document.getElementById('faqQuestion').value.trim();
+  const answer = document.getElementById('faqAnswer').value.trim();
+  if (!question || !answer) { showToast('Заполните вопрос и ответ'); return; }
+  
+  const data = {
+    question,
+    answer,
+    category: document.getElementById('faqCategory').value,
+    status: document.getElementById('faqStatus').value,
+    author: 'Александр',
+    updatedAt: new Date().toISOString().split('T')[0],
+    uses: 0,
+  };
+  
+  faqs.unshift({ id: Date.now(), ...data });
+  closeFaqModal();
+  renderFaqs();
+  showToast('FAQ сохранён');
+}
+
+function editFaq(id) {
+  openFaqModal(id);
+}
+
+function deleteFaq(id) {
+  if (!confirm('Удалить этот FAQ?')) return;
+  faqs = faqs.filter(f => f.id !== id);
+  renderFaqs();
+  showToast('FAQ удалён');
+}
+
+// ============ TRIGGERS ============
+function renderTriggers() {
+  const list = document.getElementById('triggerList');
+  if (triggers.length === 0) {
+    list.innerHTML = `<div class="bg-bgDefault rounded-xl p-12 text-center text-textSecondary">Триггеры не созданы</div>`;
+    return;
+  }
+  
+  const eventMap = {
+    lead_created: 'Создание лида',
+    order_created: 'Создание заказа',
+    stage_changed: 'Переход стадии',
+  };
+  
+  const actionMap = {
+    send_message: 'Отправить сообщение',
+    create_task: 'Создать задачу',
+    move_lead: 'Передвинуть лид',
+    create_lead: 'Создать лид',
+  };
+  
+  list.innerHTML = triggers.map(t => `
+    <div class="bg-white rounded-xl border border-divider p-5 hover:border-primary transition fade-in">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <span class="toggle-switch ${t.active ? 'active' : ''}" onclick="toggleTrigger(${t.id})"></span>
+          <span class="font-semibold text-textPrimary">${t.name}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="editTrigger(${t.id})" class="px-3 py-1.5 text-sm hover:bg-bgDefault rounded-lg transition">Редактировать</button>
+          <button onclick="deleteTrigger(${t.id})" class="px-3 py-1.5 text-sm text-error hover:bg-error/10 rounded-lg transition">Удалить</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4 text-sm">
+        <div class="bg-bgDefault rounded-lg p-3">
+          <div class="text-xs text-textSecondary mb-1">ЕСЛИ</div>
+          <div class="font-medium">${eventMap[t.event] || t.event}</div>
+          ${t.stageFrom ? `<div class="text-xs text-textSecondary mt-1">С: ${t.stageFrom} → На: ${t.stageTo}</div>` : ''}
+        </div>
+        <div class="bg-bgDefault rounded-lg p-3">
+          <div class="text-xs text-text-secondary mb-1">УСЛОВИЕ</div>
+          ${t.condition ? `<div class="font-medium">${t.condition.field} ${t.condition.op} ${t.condition.value}</div>` : '<div class="text-textSecondary">—</div>'}
+        </div>
+        <div class="bg-bgDefault rounded-lg p-3">
+          <div class="text-xs text-text-secondary mb-1">ТО</div>
+          <div class="font-medium">${actionMap[t.action] || t.action}</div>
+          ${t.message ? `<div class="text-xs text-textSecondary mt-1 truncate">"${t.message}"</div>` : ''}
+          ${t.taskName ? `<div class="text-xs text-text-secondary mt-1">Задача: ${t.taskName}</div>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTriggerConditions() {
+  const event = document.getElementById('triggerEvent').value;
+  const fromDiv = document.getElementById('triggerStageFrom');
+  const toDiv = document.getElementById('triggerStageTo');
+  if (event === 'stage_changed') {
+    fromDiv.classList.remove('hidden');
+    toDiv.classList.remove('hidden');
+  } else {
+    fromDiv.classList.add('hidden');
+    toDiv.classList.add('hidden');
+  }
+}
+
+function renderTriggerActionFields() {
+  const action = document.getElementById('triggerAction').value;
+  const msgDiv = document.getElementById('actionMessage');
+  const taskDiv = document.getElementById('actionTask');
+  msgDiv.classList.add('hidden');
+  taskDiv.classList.add('hidden');
+  if (action === 'send_message') msgDiv.classList.remove('hidden');
+  if (action === 'create_task') taskDiv.classList.remove('hidden');
+}
+
+function openTriggerModal(id = null) {
+  document.getElementById('triggerModalTitle').textContent = id ? 'Редактировать триггер' : 'Создать триггер';
+  if (id) {
+    const t = triggers.find(x => x.id === id);
+    document.getElementById('triggerName').value = t.name;
+    document.getElementById('triggerEvent').value = t.event;
+    document.getElementById('triggerConditionField').value = t.condition?.field || 'amount';
+    document.getElementById('triggerConditionOp').value = t.condition?.op || 'gt';
+    document.getElementById('triggerConditionValue').value = t.condition?.value || '';
+    document.getElementById('triggerAction').value = t.action;
+    document.getElementById('triggerMessageText').value = t.message || '';
+    document.getElementById('triggerTaskName').value = t.taskName || '';
+    document.getElementById('triggerTaskPriority').value = t.taskPriority || 'medium';
+    if (t.active) document.getElementById('triggerActive').classList.add('active');
+    else document.getElementById('triggerActive').classList.remove('active');
+    renderTriggerConditions();
+    renderTriggerActionFields();
+  } else {
+    ['triggerName', 'triggerConditionValue', 'triggerMessageText', 'triggerTaskName'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('triggerEvent').value = 'order_created';
+    document.getElementById('triggerAction').value = 'send_message';
+    document.getElementById('triggerActive').classList.add('active');
+    renderTriggerConditions();
+    renderTriggerActionFields();
+  }
+  document.getElementById('triggerModal').classList.remove('hidden');
+}
+
+function closeTriggerModal() {
+  document.getElementById('triggerModal').classList.add('hidden');
+}
+
+function saveTrigger() {
+  const name = document.getElementById('triggerName').value.trim();
+  if (!name) { showToast('Введите название триггера'); return; }
+  
+  const event = document.getElementById('triggerEvent').value;
+  const data = {
+    name,
+    event,
+    condition: document.getElementById('triggerConditionValue').value ? {
+      field: document.getElementById('triggerConditionField').value,
+      op: document.getElementById('triggerConditionOp').value,
+      value: document.getElementById('triggerConditionValue').value,
+    } : null,
+    action: document.getElementById('triggerAction').value,
+    active: document.getElementById('triggerActive').classList.contains('active'),
+    createdAt: new Date().toISOString().split('T')[0],
+  };
+  
+  if (event === 'stage_changed') {
+    data.stageFrom = document.getElementById('triggerStageFromSelect').value;
+    data.stageTo = document.getElementById('triggerStageToSelect').value;
+  }
+  
+  if (data.action === 'send_message') {
+    data.message = document.getElementById('triggerMessageText').value;
+  }
+  if (data.action === 'create_task') {
+    data.taskName = document.getElementById('triggerTaskName').value;
+    data.taskPriority = document.getElementById('triggerTaskPriority').value;
+  }
+  
+  triggers.unshift({ id: Date.now(), ...data });
+  closeTriggerModal();
+  renderTriggers();
+  showToast('Триггер сохранён');
+}
+
+function editTrigger(id) {
+  openTriggerModal(id);
+}
+
+function toggleTrigger(id) {
+  const t = triggers.find(x => x.id === id);
+  if (t) {
+    t.active = !t.active;
+    renderTriggers();
+    showToast(t.active ? 'Триггер включён' : 'Триггер выключен');
+  }
+}
+
+function deleteTrigger(id) {
+  if (!confirm('Удалить триггер?')) return;
+  triggers = triggers.filter(t => t.id !== id);
+  renderTriggers();
+  showToast('Триггер удалён');
+}
+
+// ============ LEADS ============
+const STAGE_MAP = {
+  new: 'Новые',
+  working: 'В работе',
+  proposal: 'Предложение',
+  negotiation: 'Переговоры',
+  success: 'Успешно',
+};
+
+function renderLeads() {
+  document.getElementById('leadsNew').innerHTML = renderLeadColumn('new');
+  document.getElementById('leadsWorking').innerHTML = renderLeadColumn('working');
+  document.getElementById('leadsProposal').innerHTML = renderLeadColumn('proposal');
+  document.getElementById('leadsNegotiation').innerHTML = renderLeadColumn('negotiation');
+  document.getElementById('leadsSuccess').innerHTML = renderLeadColumn('success');
+}
+
+function renderLeadColumn(stage) {
+  const filtered = leads.filter(l => l.stage === stage);
+  if (filtered.length === 0) return `<div class="text-xs text-textSecondary text-center py-4">Нет лидов</div>`;
+  return filtered.map(l => `
+    <div class="bg-white rounded-lg border border-divider p-3 cursor-pointer hover:border-primary transition fade-in" onclick="openLeadModal(${l.id})">
+      <div class="font-medium text-sm text-textPrimary mb-1">${l.name}</div>
+      <div class="text-xs text-textSecondary mb-2">${l.phone}</div>
+      <div class="flex items-center justify-between">
+        <span class="chip bg-bgDefault text-textSecondary text-xs">${l.source}</span>
+        <span class="text-xs text-textDisabled">${l.createdAt.split(' ')[0]}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openLeadModal(id = null) {
+  document.getElementById('leadModalTitle').textContent = id ? 'Редактировать лид' : 'Добавить лид';
+  if (id) {
+    const l = leads.find(x => x.id === id);
+    document.getElementById('leadName').value = l.name;
+    document.getElementById('leadPhone').value = l.phone;
+    document.getElementById('leadSource').value = l.source;
+    document.getElementById('leadStage').value = l.stage;
+    document.getElementById('leadComment').value = l.comment || '';
+  } else {
+    ['leadName', 'leadPhone', 'leadComment'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('leadSource').value = 'whatsapp';
+    document.getElementById('leadStage').value = 'new';
+  }
+  document.getElementById('leadModal').classList.remove('hidden');
+}
+
+function closeLeadModal() {
+  document.getElementById('leadModal').classList.add('hidden');
+}
+
+function saveLead() {
+  const name = document.getElementById('leadName').value.trim();
+  const phone = document.getElementById('leadPhone').value.trim();
+  if (!name) { showToast('Введите имя клиента'); return; }
+  
+  const data = {
+    name,
+    phone,
+    source: document.getElementById('leadSource').value,
+    stage: document.getElementById('leadStage').value,
+    comment: document.getElementById('leadComment').value,
+    createdAt: new Date().toLocaleString('ru'),
+  };
+  
+  leads.unshift({ id: Date.now(), ...data });
+  closeLeadModal();
+  renderLeads();
+  showToast('Лид сохранён');
+  
+  // Check triggers for lead_created
+  checkTriggers('lead_created', { lead: data });
+}
+
+// ============ TRIGGER CHECKER ============
+function checkTriggers(event, context) {
+  triggers.filter(t => t.active && t.event === event).forEach(t => {
+    let shouldFire = true;
+    if (t.condition) {
+      const val = event === 'order_created' ? context.order?.total : 0;
+      const threshold = Number(t.condition.value);
+      if (t.condition.op === 'gt' && val <= threshold) shouldFire = false;
+      if (t.condition.op === 'gte' && val < threshold) shouldFire = false;
+      if (t.condition.op === 'lt' && val >= threshold) shouldFire = false;
+      if (t.condition.op === 'eq' && val !== threshold) shouldFire = false;
+    }
+    if (shouldFire) {
+      if (t.action === 'send_message') {
+        showToast(`🔔 Триггер "${t.name}": Сообщение отправлено`);
+      }
+      if (t.action === 'create_task') {
+        showToast(`🔔 Триггер "${t.name}": Задача "${t.taskName}" создана`);
+      }
+    }
+  });
+}
+
 // Init
 renderOrders();
+renderFaqs();
+renderTriggers();
+renderLeads();
 </script>
 </body>
 </html>
