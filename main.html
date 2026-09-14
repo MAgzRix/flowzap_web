@@ -95,6 +95,11 @@ tailwind.config = {
       Мессенджер
       <span class="ml-auto bg-primary text-white text-xs px-2 py-0.5 rounded-full">12</span>
     </a>
+    <a href="#" onclick="switchTab('appointments'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="appointments">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      Встречи
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
     <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       Контакты
@@ -469,6 +474,39 @@ tailwind.config = {
         
         <!-- Trigger List -->
         <div id="triggerList" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: APPOINTMENTS ============ -->
+    <div id="tab-appointments" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">Встречи и созвоны</h3>
+            <p class="text-sm text-textSecondary mt-1">Планирование встреч, звонков и демо-сессий с клиентами</p>
+          </div>
+          <button onclick="openAppointmentModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Запланировать встречу
+          </button>
+        </div>
+        
+        <!-- Filters -->
+        <div class="flex items-center gap-3 mb-6">
+          <div class="relative flex-1 max-w-md">
+            <input type="text" id="appointmentSearch" placeholder="Поиск по клиенту..." onkeyup="renderAppointments()" class="w-full pl-10 pr-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary transition">
+            <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <select id="appointmentStatusFilter" onchange="renderAppointments()" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="all">Все статусы</option>
+            <option value="scheduled">Запланировано</option>
+            <option value="completed">Завершено</option>
+            <option value="cancelled">Отменено</option>
+          </select>
+        </div>
+        
+        <!-- Appointments List -->
+        <div id="appointmentsList" class="space-y-3"></div>
       </div>
     </div>
 
@@ -954,6 +992,155 @@ tailwind.config = {
   </div>
 </div>
 
+<!-- ============ APPOINTMENT MODAL ============ -->
+<div id="appointmentModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 id="appointmentModalTitle" class="text-lg font-semibold">Запланировать встречу</h3>
+      <button onclick="closeAppointmentModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium mb-2">Клиент</label>
+        <select id="appointmentClient" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option value="">Выберите клиента...</option>
+          <option value="Иван Петров">Иван Петров</option>
+          <option value="Мария Сидорова">Мария Сидорова</option>
+          <option value="Алексей Козлов">Алексей Козлов</option>
+          <option value="Дмитрий Волков">Дмитрий Волков</option>
+          <option value="Елена Новикова">Елена Новикова</option>
+          <option value="ТОО «Алма»">ТОО «Алма»</option>
+          <option value="Данияр Ахметов">Данияр Ахметов</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium mb-2">Тип встречи</label>
+        <select id="appointmentType" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option value="call">📞 Телефонный звонок</option>
+          <option value="meeting">👥 Встреча в офисе</option>
+          <option value="demo">💻 Демо-сессия</option>
+          <option value="video">📹 Видеозвонок</option>
+        </select>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Дата</label>
+          <input id="appointmentDate" type="date" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Время</label>
+          <select id="appointmentTime" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="09:00">09:00</option>
+            <option value="09:30">09:30</option>
+            <option value="10:00">10:00</option>
+            <option value="10:30">10:30</option>
+            <option value="11:00">11:00</option>
+            <option value="11:30">11:30</option>
+            <option value="12:00">12:00</option>
+            <option value="12:30">12:30</option>
+            <option value="14:00">14:00</option>
+            <option value="14:30">14:30</option>
+            <option value="15:00">15:00</option>
+            <option value="15:30">15:30</option>
+            <option value="16:00">16:00</option>
+            <option value="16:30">16:30</option>
+            <option value="17:00">17:00</option>
+            <option value="17:30">17:30</option>
+            <option value="18:00">18:00</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Calendar Sync -->
+      <div class="border border-divider rounded-xl p-4 bg-bgDefault">
+        <div class="text-sm font-semibold mb-3">Синхронизация с календарями</div>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              <span class="text-sm">Google Calendar</span>
+            </div>
+            <div id="syncGoogle" class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span class="text-sm">Yandex Calendar</span>
+            </div>
+            <div id="syncYandex" class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span class="text-sm">Outlook Calendar</span>
+            </div>
+            <div id="syncOutlook" class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium mb-2">Заметки</label>
+        <textarea id="appointmentNotes" rows="3" placeholder="Дополнительная информация о встрече..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm resize-none focus:outline-none focus:border-primary"></textarea>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
+      <button onclick="closeAppointmentModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
+      <button onclick="saveAppointment()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Сохранить и сгенерировать ссылку
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APPOINTMENT SUCCESS MODAL ============ -->
+<div id="appointmentSuccessModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-md w-full slide-in">
+    <div class="p-6 text-center">
+      <div class="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h3 class="text-lg font-semibold mb-2">Встреча создана!</h3>
+      <p class="text-sm text-textSecondary mb-6">Ссылка на встречу сгенерирована и готова к отправке</p>
+      
+      <div class="bg-bgDefault rounded-lg p-4 mb-6">
+        <div class="text-xs text-textSecondary mb-1">Ваша ссылка на встречу</div>
+        <div class="flex items-center gap-2">
+          <code id="meetingLink" class="flex-1 text-sm font-mono text-primary truncate">crm.app/meet/abc123</code>
+          <button onclick="copyMeetingLink()" class="p-2 hover:bg-white rounded-lg transition" title="Копировать">
+            <svg class="w-4 h-4 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="mb-6">
+        <div class="text-xs text-text-secondary mb-3">Отправить приглашение клиенту</div>
+        <div class="flex items-center justify-center gap-3">
+          <button onclick="sendInvite('whatsapp')" class="p-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition" title="WhatsApp">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          </button>
+          <button onclick="sendInvite('telegram')" class="p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition" title="Telegram">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.52-1.4.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.37-.49 1.03-.75 4.04-1.76 6.74-2.92 8.09-3.48 3.85-1.6 4.64-1.89 5.17-1.9.11 0 .37.03.54.17.14.12.18.28.2.45-.01.06-.01.13-.02.21z"/></svg>
+          </button>
+          <button onclick="sendInvite('email')" class="p-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition" title="Email">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-center gap-2 text-xs text-textSecondary">
+        <svg class="w-4 h-4 text-success pulse-dot" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Приглашение отправлено, трекер статусов активен</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <input type="file" id="xlsFileInput" accept=".xls,.xlsx" class="hidden">
 
 <script>
@@ -1032,6 +1219,7 @@ function switchTab(tab) {
     warehouse: ['Склад и запасы', 'Остатки, резервы и сроки годности'],
     faq: ['FAQ ответы', 'Конструктор быстрых ответов'],
     triggers: ['Триггеры CRM', 'Автоматизация действий'],
+    appointments: ['Встречи и созвоны', 'Планирование встреч, звонков и демо-сессий с клиентами'],
   };
   
   document.getElementById('pageTitle').textContent = titles[tab][0];
@@ -1043,6 +1231,7 @@ function switchTab(tab) {
   if (tab === 'faq') renderFaqs();
   if (tab === 'triggers') renderTriggers();
   if (tab === 'leads') renderLeads();
+  if (tab === 'appointments') renderAppointments();
 }
 
 // ============ ORDERS ============
@@ -2145,6 +2334,151 @@ function checkTriggers(event, context) {
   });
 }
 
+// ============ APPOINTMENTS DATA ============
+let appointments = [
+  { id: 1, client: 'Иван Петров', type: 'call', date: '2024-01-16', time: '10:00', status: 'scheduled', notes: 'Обсудить детали заказа', link: 'crm.app/meet/abc123' },
+  { id: 2, client: 'Мария Сидорова', type: 'meeting', date: '2024-01-16', time: '14:00', status: 'scheduled', notes: 'Встреча в офисе', link: 'crm.app/meet/def456' },
+  { id: 3, client: 'Алексей Козлов', type: 'demo', date: '2024-01-15', time: '11:00', status: 'completed', notes: 'Демо продукта', link: 'crm.app/meet/ghi789' },
+  { id: 4, client: 'ТОО «Алма»', type: 'video', date: '2024-01-14', time: '15:00', status: 'cancelled', notes: 'Отменено по запросу клиента', link: 'crm.app/meet/jkl012' },
+  { id: 5, client: 'Дмитрий Волков', type: 'call', date: '2024-01-17', time: '09:00', status: 'scheduled', notes: 'Уточнение требований', link: 'crm.app/meet/mno345' },
+];
+
+function renderAppointments() {
+  const list = document.getElementById('appointmentsList');
+  const search = (document.getElementById('appointmentSearch')?.value || '').toLowerCase();
+  const statusFilter = document.getElementById('appointmentStatusFilter')?.value || 'all';
+  
+  let filtered = appointments.filter(a => {
+    const matchesSearch = a.client.toLowerCase().includes(search);
+    const matchesStatus = statusFilter === 'all' || a.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+  
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="bg-white rounded-xl p-12 border border-divider text-center">
+      <div class="w-16 h-16 rounded-full bg-bgDefault mx-auto mb-4 flex items-center justify-center">
+        <svg class="w-8 h-8 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      </div>
+      <div class="text-sm font-medium text-textPrimary mb-1">Нет встреч</div>
+      <div class="text-xs text-textSecondary">Запланируйте первую встречу с клиентом</div>
+    </div>`;
+    return;
+  }
+  
+  const typeIcons = { call: '📞', meeting: '👥', demo: '💻', video: '📹' };
+  const typeLabels = { call: 'Звонок', meeting: 'Встреча', demo: 'Демо', video: 'Видео' };
+  const statusStyles = { 
+    scheduled: 'bg-blue-100 text-blue-700', 
+    completed: 'bg-green-100 text-green-700', 
+    cancelled: 'bg-red-100 text-red-700' 
+  };
+  const statusLabels = { scheduled: 'Запланировано', completed: 'Завершено', cancelled: 'Отменено' };
+  
+  list.innerHTML = filtered.map(a => `
+    <div class="bg-white rounded-xl p-4 border border-divider hover:border-primary/30 transition cursor-pointer" onclick="viewAppointment(${a.id})">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4 flex-1">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primaryLight/10 flex items-center justify-center text-2xl">${typeIcons[a.type]}</div>
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-textPrimary truncate">${a.client}</div>
+            <div class="text-xs text-text-secondary mt-0.5">${typeLabels[a.type]} • ${a.date} в ${a.time}</div>
+            ${a.notes ? `<div class="text-xs text-textSecondary mt-1 truncate">${a.notes}</div>` : ''}
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="chip ${statusStyles[a.status]}">${statusLabels[a.status]}</span>
+          <button onclick="event.stopPropagation(); copyMeetingLink('${a.link}')" class="p-2 hover:bg-bgDefault rounded-lg transition" title="Копировать ссылку">
+            <svg class="w-4 h-4 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAppointmentModal() {
+  document.getElementById('appointmentModal').classList.remove('hidden');
+  document.getElementById('appointmentClient').value = '';
+  document.getElementById('appointmentType').value = 'call';
+  document.getElementById('appointmentDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('appointmentTime').value = '10:00';
+  document.getElementById('appointmentNotes').value = '';
+  document.getElementById('syncGoogle').classList.remove('active');
+  document.getElementById('syncYandex').classList.remove('active');
+  document.getElementById('syncOutlook').classList.remove('active');
+}
+
+function closeAppointmentModal() {
+  document.getElementById('appointmentModal').classList.add('hidden');
+}
+
+function saveAppointment() {
+  const client = document.getElementById('appointmentClient').value;
+  const type = document.getElementById('appointmentType').value;
+  const date = document.getElementById('appointmentDate').value;
+  const time = document.getElementById('appointmentTime').value;
+  const notes = document.getElementById('appointmentNotes').value;
+  
+  if (!client) {
+    alert('Выберите клиента');
+    return;
+  }
+  
+  const link = 'crm.app/meet/' + Math.random().toString(36).substr(2, 8);
+  
+  appointments.unshift({
+    id: Date.now(),
+    client,
+    type,
+    date,
+    time,
+    status: 'scheduled',
+    notes,
+    link
+  });
+  
+  closeAppointmentModal();
+  
+  // Show success modal
+  document.getElementById('meetingLink').textContent = link;
+  document.getElementById('appointmentSuccessModal').classList.remove('hidden');
+  
+  renderAppointments();
+}
+
+function closeAppointmentSuccessModal() {
+  document.getElementById('appointmentSuccessModal').classList.add('hidden');
+}
+
+function copyMeetingLink(link) {
+  const linkToCopy = link || document.getElementById('meetingLink').textContent;
+  navigator.clipboard.writeText(linkToCopy).then(() => {
+    alert('Ссылка скопирована в буфер обмена');
+  });
+}
+
+function sendInvite(channel) {
+  const link = document.getElementById('meetingLink').textContent;
+  const message = `Приглашение на встречу: ${link}`;
+  
+  if (channel === 'whatsapp') {
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  } else if (channel === 'telegram') {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}`, '_blank');
+  } else if (channel === 'email') {
+    window.open(`mailto:?subject=Приглашение на встречу&body=${encodeURIComponent(message)}`, '_blank');
+  }
+  
+  closeAppointmentSuccessModal();
+}
+
+function viewAppointment(id) {
+  const appt = appointments.find(a => a.id === id);
+  if (!appt) return;
+  
+  alert(`Встреча с ${appt.client}\nТип: ${appt.type}\nДата: ${appt.date} ${appt.time}\nСтатус: ${appt.status}\nЗаметки: ${appt.notes || 'Нет'}\nСсылка: ${appt.link}`);
+}
+
 // Init
 renderOrders();
 renderProducts();
@@ -2152,6 +2486,7 @@ renderWarehouse();
 renderFaqs();
 renderTriggers();
 renderLeads();
+renderAppointments();
 </script>
 </body>
 </html>
