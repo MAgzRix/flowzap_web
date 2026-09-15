@@ -162,6 +162,11 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16a4 4 0 118 0 4 4 0 01-8 0z"/></svg>
       Предложения
     </a>
+    <a href="#" onclick="switchTab('connectors'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="connectors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1m-1.1 1.1a4 4 0 005.656 0l4-4a4 4 0 10-5.656-5.656L9.5 5.5m0 0a4 4 0 10-5.656 0l-4 4a4 4 0 005.656 5.656l1.102-1.101"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+      Коннекторы
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
   </nav>
 
   <div class="p-4 border-t border-divider">
@@ -522,6 +527,150 @@ tailwind.config = {
         
         <!-- Proposals List -->
         <div id="proposalList" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: CONNECTORS ============ -->
+    <div id="tab-connectors" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <div class="flex items-center gap-3">
+              <h3 class="text-lg font-semibold">Коннекторы</h3>
+              <span class="bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Интеграции с внешними сервисами и платформами</p>
+          </div>
+        </div>
+        
+        <!-- Connectors Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- amoCRM -->
+          <div class="border border-divider rounded-xl p-5 hover:shadow-lg transition-shadow cursor-pointer group">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                <svg class="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-textPrimary">amoCRM</h4>
+                <p class="text-xs text-textSecondary">Облачная CRM-система</p>
+              </div>
+              <span class="bg-success/10 text-success text-xs px-2 py-1 rounded-full font-medium">Активен</span>
+            </div>
+            <p class="text-sm text-textSecondary mb-3">Синхронизация лидов, сделок и контактов в реальном времени</p>
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Лиды</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Сделки</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Контакты</span>
+            </div>
+          </div>
+
+          <!-- Bitrix24 -->
+          <div class="border border-divider rounded-xl p-5 hover:shadow-lg transition-shadow cursor-pointer group">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
+                <svg class="w-7 h-7 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l4.59-4.58L18 11l-6 6z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-textPrimary">Bitrix24</h4>
+                <p class="text-xs text-textSecondary">Платформа для бизнеса</p>
+              </div>
+              <button class="text-primary hover:text-primaryDark text-sm font-medium">Подключить</button>
+            </div>
+            <p class="text-sm text-textSecondary mb-3">Интеграция с задачами, проектами и CRM Битрикс24</p>
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Задачи</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Проекты</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">CRM</span>
+            </div>
+          </div>
+
+          <!-- Google Docs -->
+          <div class="border border-divider rounded-xl p-5 hover:shadow-lg transition-shadow cursor-pointer group">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
+                <svg class="w-7 h-7 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-textPrimary">Google Docs</h4>
+                <p class="text-xs text-textSecondary">Документы Google</p>
+              </div>
+              <button class="text-primary hover:text-primaryDark text-sm font-medium">Подключить</button>
+            </div>
+            <p class="text-sm text-textSecondary mb-3">Автоматическое создание документов и отчетов</p>
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Документы</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Таблицы</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Отчеты</span>
+            </div>
+          </div>
+
+          <!-- Telegram -->
+          <div class="border border-divider rounded-xl p-5 hover:shadow-lg transition-shadow cursor-pointer group">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 rounded-lg bg-sky-100 flex items-center justify-center">
+                <svg class="w-7 h-7 text-sky-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-textPrimary">Telegram</h4>
+                <p class="text-xs text-textSecondary">Мессенджер</p>
+              </div>
+              <span class="bg-success/10 text-success text-xs px-2 py-1 rounded-full font-medium">Активен</span>
+            </div>
+            <p class="text-sm text-textSecondary mb-3">Уведомления и боты для автоматизации коммуникации</p>
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Боты</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Уведомления</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Рассылки</span>
+            </div>
+          </div>
+
+          <!-- WhatsApp -->
+          <div class="border border-divider rounded-xl p-5 hover:shadow-lg transition-shadow cursor-pointer group">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 rounded-lg bg-green-50 flex items-center justify-center">
+                <svg class="w-7 h-7 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.249-.694.249-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-textPrimary">WhatsApp</h4>
+                <p class="text-xs text-textSecondary">Мессенджер</p>
+              </div>
+              <button class="text-primary hover:text-primaryDark text-sm font-medium">Подключить</button>
+            </div>
+            <p class="text-sm text-textSecondary mb-3">Интеграция с WhatsApp Business API для рассылок</p>
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Business API</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Рассылки</span>
+            </div>
+          </div>
+
+          <!-- Slack -->
+          <div class="border border-divider rounded-xl p-5 hover:shadow-lg transition-shadow cursor-pointer group">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                <svg class="w-7 h-7 text-purple-600" fill="currentColor" viewBox="0 0 24 24"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52h-2.52zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.522 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.522 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.522 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.522 2.527 2.527 0 0 1 2.52-2.521h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.522h-6.313z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-textPrimary">Slack</h4>
+                <p class="text-xs text-textSecondary">Корпоративный чат</p>
+              </div>
+              <button class="text-primary hover:text-primaryDark text-sm font-medium">Подключить</button>
+            </div>
+            <p class="text-sm text-textSecondary mb-3">Уведомления в каналы Slack о событиях CRM</p>
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Каналы</span>
+              <span class="text-xs bg-bgDefault px-2 py-1 rounded">Уведомления</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coming Soon -->
+        <div class="mt-8 p-6 bg-bgDefault rounded-xl border border-dashed border-divider text-center">
+          <svg class="w-12 h-12 mx-auto text-textDisabled mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+          <h4 class="font-semibold text-textPrimary mb-1">Нужен другой коннектор?</h4>
+          <p class="text-sm text-textSecondary mb-3">Перейдите в раздел «Предложения» и напишите, какую интеграцию вы хотите видеть</p>
+          <button onclick="switchTab('proposals')" class="text-primary hover:text-primaryDark text-sm font-medium">→ Перейти к предложениям</button>
+        </div>
       </div>
     </div>
 
@@ -1796,6 +1945,7 @@ function switchTab(tab) {
     faq: ['FAQ ответы', 'Конструктор быстрых ответов'],
     triggers: ['Триггеры CRM', 'Автоматизация действий'],
     proposals: ['Предложения клиентов', 'Тикеты с предложениями по улучшению платформы'],
+    connectors: ['Коннекторы', 'Интеграции с внешними сервисами и платформами'],
     appointments: ['Встречи и созвоны', 'Планирование встреч, звонков и демо-сессий с клиентами'],
     'ai-automation': ['AI Автоматизация', 'Управление искусственным интеллектом'],
   };
