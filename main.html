@@ -89,107 +89,98 @@ tailwind.config = {
   </div>
   
   <nav class="flex-1 overflow-y-auto scrollbar-thin py-3">
-    <div class="px-4 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Основное</div>
     <a href="#" onclick="switchTab('dashboard'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary active" data-tab="dashboard">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Главная
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
       Мессенджер
       <span class="ml-auto bg-primary text-white text-xs px-2 py-0.5 rounded-full">12</span>
     </a>
-    <a href="#" onclick="switchTab('appointments'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="appointments">
+    <a href="#" onclick="switchTab('appointments'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="appointments">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
       Встречи
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       Контакты
     </a>
-
-    <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">CRM</div>
-    <a href="#" onclick="switchTab('leads'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="leads">
+    <a href="#" onclick="switchTab('leads'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="leads">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       Лиды
     </a>
-    <a href="#" onclick="switchTab('orders'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="orders">
+    <a href="#" onclick="switchTab('orders'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="orders">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-6-3h6m-6 3h6M9 14h6m-6 3h6"/></svg>
       Заказы
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" onclick="switchTab('products'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="products">
+    <a href="#" onclick="switchTab('products'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="products">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
       Товары
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" onclick="switchTab('warehouse'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="warehouse">
+    <a href="#" onclick="switchTab('warehouse'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="warehouse">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
       Склад
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       Задачи
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
       Аналитика
     </a>
-
-    <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Автоматизация</div>
-    <a href="#" onclick="switchTab('ai-automation'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="ai-automation">
+    <a href="#" onclick="switchTab('ai-automation'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="ai-automation">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
       AI Автоматизация
       <span class="ml-auto bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">PRO</span>
     </a>
-    <a href="#" onclick="switchTab('triggers'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="triggers">
+    <a href="#" onclick="switchTab('triggers'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="triggers">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       Триггеры
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" onclick="switchTab('faq'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="faq">
+    <a href="#" onclick="switchTab('faq'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="faq">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       FAQ ответы
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
       Шаблоны
     </a>
-
-    <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Настройки</div>
-    <a href="#" onclick="switchTab('settings'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="settings">
+    <a href="#" onclick="switchTab('settings'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="settings">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Настройки
     </a>
-    <a href="#" onclick="switchTab('connectors'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="connectors">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-      Коннекторы
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
-    </a>
-    <a href="#" onclick="switchTab('employees'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="employees">
+    <a href="#" onclick="switchTab('employees'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="employees">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
       Сотрудники
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" onclick="switchTab('whatsapp-flows'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="whatsapp-flows">
+    <a href="#" onclick="switchTab('whatsapp-flows'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="whatsapp-flows">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
       WhatsApp Flows
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" onclick="switchTab('event-log'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="event-log">
+    <a href="#" onclick="switchTab('event-log'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="event-log">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
       Журнал событий
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
     </a>
-
-    <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Финансы</div>
-    <a href="#" onclick="switchTab('subscription'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="subscription">
+    <a href="#" onclick="switchTab('subscription'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="subscription">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
       Оплата и подписка
-      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+      <span class="ml-auto badge-new">NEW</span>
+    </a>
+    <a href="#" onclick="startOnboardingTour()" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary cursor-pointer hover:bg-bgDefault">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+      Тур по платформе
+      <span class="ml-auto badge-new">NEW</span>
     </a>
   </nav>
 
@@ -3926,6 +3917,175 @@ function toggleAutoLead() {
   const toggle = document.getElementById('autoLeadToggle');
   const isActive = toggle.classList.contains('active');
   alert(isActive ? 'Автосоздание лидов отключено' : 'Автосоздание лидов включено\n\nВсе новые сообщения WhatsApp будут автоматически создавать лиды в CRM');
+}
+
+// ============ INTERACTIVE ONBOARDING TOUR ============
+let tourStep = 0;
+const tourSteps = [
+  {
+    target: '[data-tab="dashboard"]',
+    title: 'Главная панель',
+    description: 'Здесь вы видите общую статистику и ключевые метрики вашего бизнеса.',
+    position: 'right'
+  },
+  {
+    target: '[data-tab="leads"]',
+    title: 'Лиды',
+    description: 'Управляйте потенциальными клиентами. Все входящие заявки автоматически создаются здесь.',
+    position: 'right'
+  },
+  {
+    target: '[data-tab="orders"]',
+    title: 'Заказы',
+    description: 'Отслеживайте статусы заказов от создания до доставки.',
+    position: 'right'
+  },
+  {
+    target: '[data-tab="warehouse"]',
+    title: 'Склад',
+    description: 'Контролируйте запасы товаров, получайте уведомления о низких остатках.',
+    position: 'right'
+  },
+  {
+    target: '[data-tab="ai-automation"]',
+    title: 'AI Автоматизация',
+    description: 'Настройте AI-агентов для автоматических ответов клиентам 24/7.',
+    position: 'right'
+  },
+  {
+    target: '[data-tab="employees"]',
+    title: 'Сотрудники',
+    description: 'Добавляйте команду, назначайте роли и отслеживайте активные сессии.',
+    position: 'right'
+  },
+  {
+    target: '[data-tab="whatsapp-flows"]',
+    title: 'WhatsApp Flows',
+    description: 'Создавайте интерактивные формы для записи клиентов, опросов и сбора данных.',
+    position: 'right'
+  },
+  {
+    target: '[data-tab="settings"]',
+    title: 'Настройки',
+    description: 'Конфигурируйте платформу под ваши нужды, включая автосоздание лидов.',
+    position: 'right'
+  },
+  {
+    target: '[onclick="startOnboardingTour()"]',
+    title: 'Тур по платформе',
+    description: 'Вы всегда можете перезапустить этот тур, чтобы освежить знания!',
+    position: 'left'
+  }
+];
+
+function startOnboardingTour() {
+  tourStep = 0;
+  showTourStep();
+}
+
+function showTourStep() {
+  if (tourStep >= tourSteps.length) {
+    closeTourModal();
+    alert('🎉 Тур завершен!\n\nТеперь вы знаете основы работы с FlowZap.\n\nЕсли понадобятся подсказки — нажмите "Тур по платформе" в меню.');
+    return;
+  }
+  
+  const step = tourSteps[tourStep];
+  const targetEl = document.querySelector(step.target);
+  
+  if (!targetEl) {
+    tourStep++;
+    showTourStep();
+    return;
+  }
+  
+  // Highlight target
+  targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  targetEl.style.transition = 'all 0.3s';
+  targetEl.style.boxShadow = '0 0 0 4px rgba(45, 149, 131, 0.3)';
+  targetEl.style.borderRadius = '8px';
+  
+  // Show tooltip
+  const rect = targetEl.getBoundingClientRect();
+  const isRight = step.position === 'right';
+  const tooltipX = isRight ? rect.right + 20 : rect.left - 320;
+  const tooltipY = rect.top + (rect.height / 2) - 60;
+  
+  let tourTooltip = document.getElementById('tour-tooltip');
+  if (!tourTooltip) {
+    tourTooltip = document.createElement('div');
+    tourTooltip.id = 'tour-tooltip';
+    tourTooltip.className = 'fixed z-50 bg-gray-900 text-white rounded-xl p-5 shadow-2xl max-w-xs';
+    tourTooltip.style.transition = 'all 0.3s ease-out';
+    document.body.appendChild(tourTooltip);
+    
+    // Add overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'tour-overlay';
+    overlay.className = 'fixed inset-0 bg-black/50 z-40 backdrop-blur-sm';
+    overlay.onclick = nextTourStep;
+    document.body.appendChild(overlay);
+  }
+  
+  tourTooltip.innerHTML = `
+    <div class="flex items-start justify-between mb-3">
+      <h4 class="font-bold text-lg">${step.title}</h4>
+      <button onclick="closeTourModal()" class="text-gray-400 hover:text-white transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="text-sm text-gray-300 mb-4">${step.description}</p>
+    <div class="flex items-center justify-between">
+      <span class="text-xs text-gray-400">Шаг ${tourStep + 1} из ${tourSteps.length}</span>
+      <button onclick="nextTourStep()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+        ${tourStep === tourSteps.length - 1 ? 'Завершить' : 'Далее'}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  `;
+  
+  tourTooltip.style.left = `${tooltipX}px`;
+  tourTooltip.style.top = `${tooltipY}px`;
+  tourTooltip.style.opacity = '0';
+  tourTooltip.style.transform = 'translateY(10px)';
+  
+  setTimeout(() => {
+    tourTooltip.style.opacity = '1';
+    tourTooltip.style.transform = 'translateY(0)';
+  }, 50);
+}
+
+function nextTourStep() {
+  const currentTarget = document.querySelector(tourSteps[tourStep].target);
+  if (currentTarget) {
+    currentTarget.style.boxShadow = '';
+    currentTarget.style.borderRadius = '';
+  }
+  
+  tourStep++;
+  showTourStep();
+}
+
+function closeTourModal() {
+  const tooltip = document.getElementById('tour-tooltip');
+  const overlay = document.getElementById('tour-overlay');
+  
+  if (tooltip) {
+    tooltip.style.opacity = '0';
+    tooltip.style.transform = 'translateY(10px)';
+    setTimeout(() => tooltip.remove(), 300);
+  }
+  
+  if (overlay) {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 300);
+  }
+  
+  const currentTarget = document.querySelector(tourSteps[tourStep]?.target);
+  if (currentTarget) {
+    currentTarget.style.boxShadow = '';
+    currentTarget.style.borderRadius = '';
+  }
 }
 </script>
 </body>
