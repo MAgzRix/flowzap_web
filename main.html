@@ -101,7 +101,7 @@ tailwind.config = {
       Встречи
       <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" onclick="switchTab('contacts'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="contacts">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       Контакты
     </a>
@@ -126,11 +126,11 @@ tailwind.config = {
       Склад
       <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" onclick="switchTab('tasks'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="tasks">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       Задачи
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" onclick="switchTab('analytics'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="analytics">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
       Аналитика
     </a>
@@ -151,13 +151,13 @@ tailwind.config = {
       FAQ ответы
       <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" onclick="switchTab('templates'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="templates">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
       Шаблоны
     </a>
 
     <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Настройки</div>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" onclick="switchTab('settings'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="settings">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Настройки
     </a>
@@ -751,6 +751,46 @@ tailwind.config = {
           <p class="text-sm text-textSecondary mb-3">Перейдите в раздел «Предложения» и напишите, какую интеграцию вы хотите видеть</p>
           <button onclick="switchTab('proposals')" class="text-primary hover:text-primaryDark text-sm font-medium">→ Перейти к предложениям</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: CONTACTS ============ -->
+    <div id="tab-contacts" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-8 border border-divider mb-6">
+        <h2 class="text-2xl font-bold text-textPrimary mb-2">Контакты</h2>
+        <p class="text-textSecondary">Управление контактами клиентов и партнеров</p>
+      </div>
+    </div>
+
+    <!-- ============ TAB: TASKS ============ -->
+    <div id="tab-tasks" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-8 border border-divider mb-6">
+        <h2 class="text-2xl font-bold text-textPrimary mb-2">Задачи</h2>
+        <p class="text-textSecondary">Управление задачами и проектами</p>
+      </div>
+    </div>
+
+    <!-- ============ TAB: ANALYTICS ============ -->
+    <div id="tab-analytics" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-8 border border-divider mb-6">
+        <h2 class="text-2xl font-bold text-textPrimary mb-2">Аналитика</h2>
+        <p class="text-textSecondary">Отчеты и аналитика по продажам и эффективности</p>
+      </div>
+    </div>
+
+    <!-- ============ TAB: TEMPLATES ============ -->
+    <div id="tab-templates" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-8 border border-divider mb-6">
+        <h2 class="text-2xl font-bold text-textPrimary mb-2">Шаблоны</h2>
+        <p class="text-textSecondary">Библиотека шаблонов сообщений и документов</p>
+      </div>
+    </div>
+
+    <!-- ============ TAB: SETTINGS ============ -->
+    <div id="tab-settings" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-8 border border-divider mb-6">
+        <h2 class="text-2xl font-bold text-textPrimary mb-2">Настройки</h2>
+        <p class="text-textSecondary">Основные настройки системы</p>
       </div>
     </div>
 
@@ -2481,6 +2521,11 @@ function switchTab(tab) {
     'ai-automation': ['AI Автоматизация', 'Управление искусственным интеллектом'],
     flows: ['WhatsApp Flows', 'Конструктор интерактивных форм для WhatsApp'],
     'event-log': ['Журнал событий', 'Логирование действий сотрудников и системы'],
+    contacts: ['Контакты', 'Управление контактами клиентов и партнеров'],
+    tasks: ['Задачи', 'Управление задачами и проектами'],
+    analytics: ['Аналитика', 'Отчеты и аналитика по продажам и эффективности'],
+    templates: ['Шаблоны', 'Библиотека шаблонов сообщений и документов'],
+    settings: ['Настройки', 'Основные настройки системы'],
   };
   
   document.getElementById('pageTitle').textContent = titles[tab] ? titles[tab][0] : 'FlowZap';
