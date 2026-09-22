@@ -157,6 +157,11 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Настройки
     </a>
+    <a href="#" onclick="switchTab('connectors'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="connectors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+      Коннекторы
+      <span class="ml-auto badge-new">NEW</span>
+    </a>
     <a href="#" onclick="switchTab('employees'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="employees">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
       Сотрудники
@@ -3926,55 +3931,92 @@ const tourSteps = [
     target: '[data-tab="dashboard"]',
     title: 'Главная панель',
     description: 'Здесь вы видите общую статистику и ключевые метрики вашего бизнеса.',
-    position: 'right'
+    position: 'right',
+    clickable: false
   },
   {
     target: '[data-tab="leads"]',
     title: 'Лиды',
     description: 'Управляйте потенциальными клиентами. Все входящие заявки автоматически создаются здесь.',
-    position: 'right'
+    position: 'right',
+    clickable: true
   },
   {
     target: '[data-tab="orders"]',
     title: 'Заказы',
     description: 'Отслеживайте статусы заказов от создания до доставки.',
-    position: 'right'
+    position: 'right',
+    clickable: true
   },
   {
     target: '[data-tab="warehouse"]',
     title: 'Склад',
     description: 'Контролируйте запасы товаров, получайте уведомления о низких остатках.',
-    position: 'right'
+    position: 'right',
+    clickable: true
   },
   {
     target: '[data-tab="ai-automation"]',
     title: 'AI Автоматизация',
     description: 'Настройте AI-агентов для автоматических ответов клиентам 24/7.',
-    position: 'right'
+    position: 'right',
+    clickable: true
   },
   {
     target: '[data-tab="employees"]',
     title: 'Сотрудники',
     description: 'Добавляйте команду, назначайте роли и отслеживайте активные сессии.',
-    position: 'right'
+    position: 'right',
+    clickable: true
   },
   {
     target: '[data-tab="whatsapp-flows"]',
     title: 'WhatsApp Flows',
     description: 'Создавайте интерактивные формы для записи клиентов, опросов и сбора данных.',
-    position: 'right'
+    position: 'right',
+    clickable: true
+  },
+  {
+    target: '[data-tab="event-log"]',
+    title: 'Журнал событий',
+    description: 'Отслеживайте все действия в системе: кто отправил шаблон, кто зашел в аккаунт и т.д.',
+    position: 'right',
+    clickable: true
+  },
+  {
+    target: '[data-tab="subscription"]',
+    title: 'Оплата и подписка',
+    description: 'Управляйте тарифом, оплачивайте подписку через Kaspi Pay или получите счет для юр лиц.',
+    position: 'right',
+    clickable: true
   },
   {
     target: '[data-tab="settings"]',
     title: 'Настройки',
-    description: 'Конфигурируйте платформу под ваши нужды, включая автосоздание лидов.',
-    position: 'right'
+    description: 'Конфигурируйте платформу под ваши нужды, включая автосоздание лидов и коннекторы.',
+    position: 'right',
+    clickable: true
+  },
+  {
+    target: '[data-tab="connectors"]',
+    title: 'Коннекторы',
+    description: 'Интеграции с CRM, мессенджерами и другими сервисами. Подключайте AmoCRM, Bitrix24, Google Docs и другие.',
+    position: 'right',
+    clickable: true
+  },
+  {
+    target: '[data-tab="suggestions"]',
+    title: 'Предложения',
+    description: 'Отправьте идею улучшения платформы или поддержите предложения других пользователей.',
+    position: 'right',
+    clickable: true
   },
   {
     target: '[onclick="startOnboardingTour()"]',
     title: 'Тур по платформе',
     description: 'Вы всегда можете перезапустить этот тур, чтобы освежить знания!',
-    position: 'left'
+    position: 'left',
+    clickable: false
   }
 ];
 
@@ -3985,8 +4027,7 @@ function startOnboardingTour() {
 
 function showTourStep() {
   if (tourStep >= tourSteps.length) {
-    closeTourModal();
-    alert('🎉 Тур завершен!\n\nТеперь вы знаете основы работы с FlowZap.\n\nЕсли понадобятся подсказки — нажмите "Тур по платформе" в меню.');
+    endTour();
     return;
   }
   
@@ -4001,9 +4042,6 @@ function showTourStep() {
   
   // Highlight target
   targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  targetEl.style.transition = 'all 0.3s';
-  targetEl.style.boxShadow = '0 0 0 4px rgba(45, 149, 131, 0.3)';
-  targetEl.style.borderRadius = '8px';
   
   // Show tooltip
   const rect = targetEl.getBoundingClientRect();
@@ -4011,33 +4049,53 @@ function showTourStep() {
   const tooltipX = isRight ? rect.right + 20 : rect.left - 320;
   const tooltipY = rect.top + (rect.height / 2) - 60;
   
+  // Create spotlight effect instead of full blur overlay
+  let spotlight = document.getElementById('tour-spotlight');
+  if (!spotlight) {
+    spotlight = document.createElement('div');
+    spotlight.id = 'tour-spotlight';
+    spotlight.className = 'fixed z-30 pointer-events-none transition-all duration-500 ease-in-out';
+    spotlight.style.boxShadow = '0 0 0 9999px rgba(0, 0, 0, 0.6)';
+    spotlight.style.borderRadius = '8px';
+    document.body.appendChild(spotlight);
+  }
+  
+  // Position and size the spotlight to match the target element
+  spotlight.style.left = `${rect.left - 4}px`;
+  spotlight.style.top = `${rect.top - 4}px`;
+  spotlight.style.width = `${rect.width + 8}px`;
+  spotlight.style.height = `${rect.height + 8}px`;
+  spotlight.classList.remove('hidden');
+  
+  // Add highlight to the target element
+  targetEl.style.zIndex = '100';
+  targetEl.style.boxShadow = '0 0 0 3px rgba(45, 149, 131, 0.3), 0 8px 24px rgba(45, 149, 131, 0.2)';
+  targetEl.style.borderRadius = '8px';
+  targetEl.style.transition = 'all 0.3s ease';
+  
   let tourTooltip = document.getElementById('tour-tooltip');
   if (!tourTooltip) {
     tourTooltip = document.createElement('div');
     tourTooltip.id = 'tour-tooltip';
-    tourTooltip.className = 'fixed z-50 bg-gray-900 text-white rounded-xl p-5 shadow-2xl max-w-xs';
+    tourTooltip.className = 'fixed z-50 bg-white text-textPrimary rounded-xl p-5 shadow-2xl max-w-xs border border-divider';
     tourTooltip.style.transition = 'all 0.3s ease-out';
     document.body.appendChild(tourTooltip);
-    
-    // Add overlay
-    const overlay = document.createElement('div');
-    overlay.id = 'tour-overlay';
-    overlay.className = 'fixed inset-0 bg-black/50 z-40 backdrop-blur-sm';
-    overlay.onclick = nextTourStep;
-    document.body.appendChild(overlay);
   }
   
   tourTooltip.innerHTML = `
     <div class="flex items-start justify-between mb-3">
-      <h4 class="font-bold text-lg">${step.title}</h4>
-      <button onclick="closeTourModal()" class="text-gray-400 hover:text-white transition">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">${tourStep + 1}</div>
+        <h4 class="font-semibold text-lg">${step.title}</h4>
+      </div>
+      <button onclick="endTour()" class="text-textSecondary hover:text-red-500 transition">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
-    <p class="text-sm text-gray-300 mb-4">${step.description}</p>
-    <div class="flex items-center justify-between">
-      <span class="text-xs text-gray-400">Шаг ${tourStep + 1} из ${tourSteps.length}</span>
-      <button onclick="nextTourStep()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+    <p class="text-sm text-textSecondary mb-4">${step.description}</p>
+    <div class="flex justify-end gap-2">
+      <button onclick="endTour()" class="px-3 py-2 text-sm text-textSecondary hover:text-textPrimary font-medium transition">Пропустить</button>
+      <button onclick="nextTourStep()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow-lg shadow-primary/20">
         ${tourStep === tourSteps.length - 1 ? 'Завершить' : 'Далее'}
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       </button>
@@ -4047,11 +4105,11 @@ function showTourStep() {
   tourTooltip.style.left = `${tooltipX}px`;
   tourTooltip.style.top = `${tooltipY}px`;
   tourTooltip.style.opacity = '0';
-  tourTooltip.style.transform = 'translateY(10px)';
+  tourTooltip.style.transform = 'translateY(10px) scale(0.95)';
   
   setTimeout(() => {
     tourTooltip.style.opacity = '1';
-    tourTooltip.style.transform = 'translateY(0)';
+    tourTooltip.style.transform = 'translateY(0) scale(1)';
   }, 50);
 }
 
@@ -4059,33 +4117,62 @@ function nextTourStep() {
   const currentTarget = document.querySelector(tourSteps[tourStep].target);
   if (currentTarget) {
     currentTarget.style.boxShadow = '';
-    currentTarget.style.borderRadius = '';
+    currentTarget.style.zIndex = '';
   }
   
   tourStep++;
+  
+  if (tourStep >= tourSteps.length) {
+    endTour();
+    return;
+  }
+  
   showTourStep();
 }
 
-function closeTourModal() {
-  const tooltip = document.getElementById('tour-tooltip');
-  const overlay = document.getElementById('tour-overlay');
+function endTour() {
+  // Remove spotlight
+  const spotlight = document.getElementById('tour-spotlight');
+  if (spotlight) {
+    spotlight.classList.add('hidden');
+  }
   
+  // Remove tooltip
+  const tooltip = document.getElementById('tour-tooltip');
   if (tooltip) {
     tooltip.style.opacity = '0';
-    tooltip.style.transform = 'translateY(10px)';
+    tooltip.style.transform = 'translateY(10px) scale(0.95)';
     setTimeout(() => tooltip.remove(), 300);
   }
   
-  if (overlay) {
-    overlay.style.opacity = '0';
-    setTimeout(() => overlay.remove(), 300);
-  }
+  // Reset any highlighted elements
+  tourSteps.forEach(step => {
+    const el = document.querySelector(step.target);
+    if (el) {
+      el.style.boxShadow = '';
+      el.style.zIndex = '';
+      el.style.borderRadius = '';
+      el.style.transition = '';
+    }
+  });
   
-  const currentTarget = document.querySelector(tourSteps[tourStep]?.target);
-  if (currentTarget) {
-    currentTarget.style.boxShadow = '';
-    currentTarget.style.borderRadius = '';
-  }
+  tourStep = 0;
+}
+
+// Add click handlers for tour targets to advance on click
+function setupTourClickHandlers() {
+  tourSteps.forEach((step, index) => {
+    const el = document.querySelector(step.target);
+    if (el && step.clickable) {
+      el.addEventListener('click', function handleTourClick(e) {
+        if (index === tourStep) {
+          e.preventDefault();
+          e.stopPropagation();
+          nextTourStep();
+        }
+      }, { once: false });
+    }
+  });
 }
 </script>
 </body>
