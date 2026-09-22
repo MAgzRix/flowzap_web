@@ -179,10 +179,8 @@ tailwind.config = {
       Журнал событий
       <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
     </a>
-  </nav>
-  
-  <nav class="flex-1 overflow-y-auto scrollbar-thin py-3 border-t border-divider">
-    <div class="px-4 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Финансы</div>
+
+    <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Финансы</div>
     <a href="#" onclick="switchTab('subscription'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="subscription">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
       Оплата и подписка
@@ -557,18 +555,134 @@ tailwind.config = {
 
     <!-- ============ TAB: AI AUTOMATION ============ -->
     <div id="tab-ai-automation" class="tab-content hidden p-6">
-      <div id="ai-dashboard" class="p-8">
-        <div class="bg-white rounded-xl border border-divider p-6 text-center">
-          <h3 class="text-lg font-semibold mb-2">Главная панель AI</h3>
-          <p class="text-textSecondary">Выберите раздел в меню слева для работы с AI функциями</p>
+      <!-- AI Dashboard - Main View -->
+      <div id="ai-main-view" class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- AI Chat Card -->
+          <div class="bg-white rounded-xl border border-divider p-6 hover:shadow-lg transition cursor-pointer" onclick="switchAiTab('ai-chat')">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+              </div>
+              <span class="status-badge bg-success/10 text-success">Online</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">AI Чат</h4>
+            <p class="text-sm text-textSecondary">Интеллектуальный помощник для ответов клиентам</p>
+            <div class="mt-4 flex items-center gap-2 text-xs text-textSecondary">
+              <span class="flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full"></span> Активен</span>
+              <span>•</span>
+              <span>1,248 сообщений</span>
+            </div>
+          </div>
+          
+          <!-- AI Studio Card -->
+          <div class="bg-white rounded-xl border border-divider p-6 hover:shadow-lg transition cursor-pointer" onclick="switchAiTab('ai-studio')">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+              </div>
+              <span class="badge-new">NEW</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">Агент Студио</h4>
+            <p class="text-sm text-textSecondary">Конструктор AI агентов без кода</p>
+            <div class="mt-4 flex items-center gap-2 text-xs text-textSecondary">
+              <span>3 агента</span>
+              <span>•</span>
+              <span>Drag & Drop интерфейс</span>
+            </div>
+          </div>
+          
+          <!-- AI Agents Card -->
+          <div class="bg-white rounded-xl border border-divider p-6 hover:shadow-lg transition cursor-pointer" onclick="switchAiTab('ai-agents')">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              </div>
+              <span class="badge-new">NEW</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">Мои Агенты</h4>
+            <p class="text-sm text-textSecondary">Управление созданными AI агентами</p>
+            <div class="mt-4 flex items-center gap-2 text-xs text-textSecondary">
+              <span>5 агентов</span>
+              <span>•</span>
+              <span>2 активных</span>
+            </div>
+          </div>
+          
+          <!-- Knowledge Base Card -->
+          <div class="bg-white rounded-xl border border-divider p-6 hover:shadow-lg transition cursor-pointer" onclick="switchAiTab('ai-knowledge')">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              </div>
+              <span class="badge-new">NEW</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">База знаний</h4>
+            <p class="text-sm text-textSecondary">Обучающие материалы для AI моделей</p>
+            <div class="mt-4 flex items-center gap-2 text-xs text-textSecondary">
+              <span>127 документов</span>
+              <span>•</span>
+              <span>Обновлено вчера</span>
+            </div>
+          </div>
+          
+          <!-- Analytics Card -->
+          <div class="bg-white rounded-xl border border-divider p-6 hover:shadow-lg transition cursor-pointer">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              </div>
+              <span class="text-xs text-textSecondary">PRO</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">AI Аналитика</h4>
+            <p class="text-sm text-textSecondary">Статистика и метрики эффективности</p>
+            <div class="mt-4 flex items-center gap-2 text-xs text-textSecondary">
+              <span>Точность: 94%</span>
+              <span>•</span>
+              <span>+12% к конверсии</span>
+            </div>
+          </div>
+          
+          <!-- Settings Card -->
+          <div class="bg-white rounded-xl border border-dashed border-divider p-6 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition">
+            <div class="w-12 h-12 rounded-xl bg-bgDefault flex items-center justify-center mb-3">
+              <svg class="w-6 h-6 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            </div>
+            <h4 class="font-medium text-textSecondary">Настроить AI</h4>
+            <p class="text-xs text-textSecondary mt-1">Персонализация под ваш бизнес</p>
+          </div>
+        </div>
+        
+        <!-- Token Usage Section -->
+        <div class="mt-6 bg-gradient-to-r from-indigo-600 to-purple-700 rounded-xl p-6 text-white">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h4 class="font-semibold text-lg">Использование токенов</h4>
+              <p class="text-sm opacity-80 mt-1">Тариф Pro • 12,450 / 50,000 токенов</p>
+            </div>
+            <button class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition">Upgrade</button>
+          </div>
+          <div class="w-full bg-white/20 rounded-full h-3">
+            <div class="bg-white rounded-full h-3 transition-all" style="width: 25%"></div>
+          </div>
+          <div class="flex justify-between mt-2 text-xs opacity-80">
+            <span>Использовано: 12,450</span>
+            <span>Осталось: 37,550</span>
+          </div>
         </div>
       </div>
-      <div class="flex h-full hidden">
+      
+      <!-- AI Sub Interface (hidden by default) -->
+      <div id="ai-sub-interface" class="hidden h-full">
         <!-- AI Sub Sidebar -->
-        <div class="w-64 bg-gray-50 border-r border-divider flex-shrink-0 flex flex-col">
+        <div class="w-64 bg-gray-50 border-r border-divider flex-shrink-0 flex flex-col absolute left-0 top-0 h-full z-10">
           <div class="p-6 border-b border-divider">
+            <button onclick="closeAiSubInterface()" class="flex items-center gap-2 text-sm text-textSecondary mb-4 hover:text-primary transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Назад к обзору
+            </button>
             <h2 class="text-xl font-bold text-textPrimary flex items-center gap-2">
-              <i class="fas fa-brain text-indigo-600"></i>
+              <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
               AI Центр
             </h2>
             <p class="text-xs text-textSecondary mt-1">Управление интеллектом</p>
@@ -580,11 +694,11 @@ tailwind.config = {
               <span class="ml-auto bg-green-100 text-green-700 py-0.5 px-2 rounded-full text-xs">Online</span>
             </button>
             <button onclick="switchAiTab('ai-studio')" class="ai-nav-item w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-textSecondary hover:bg-gray-100">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
               Агент Студио
             </button>
             <button onclick="switchAiTab('ai-agents')" class="ai-nav-item w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-textSecondary hover:bg-gray-100">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
               Мои Агенты
             </button>
             <button onclick="switchAiTab('ai-knowledge')" class="ai-nav-item w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-textSecondary hover:bg-gray-100">
@@ -605,7 +719,7 @@ tailwind.config = {
         </div>
 
         <!-- AI Content Area -->
-        <div class="flex-1 overflow-y-auto bg-bgDefault">
+        <div class="flex-1 ml-64 overflow-y-auto bg-bgDefault p-8">
           
           <!-- AI Dashboard -->
           <div id="ai-dashboard" class="ai-tab-content p-8 hidden">
