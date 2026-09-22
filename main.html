@@ -156,14 +156,47 @@ tailwind.config = {
     </a>
 
     <div class="px-4 mt-5 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Настройки</div>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary">
+    <a href="#" onclick="switchTab('settings'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="settings">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Настройки
+    </a>
+    <a href="#" onclick="switchTab('employees'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="employees">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      Сотрудники
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
+    <a href="#" onclick="switchTab('whatsapp-flows'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="whatsapp-flows">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+      WhatsApp Flows
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
+    <a href="#" onclick="switchTab('event-log'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="event-log">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+      Журнал событий
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
+  </nav>
+  
+  <nav class="flex-1 overflow-y-auto scrollbar-thin py-3 border-t border-divider">
+    <div class="px-4 mb-2 text-xs font-semibold text-textDisabled uppercase tracking-wider">Финансы</div>
+    <a href="#" onclick="switchTab('subscription'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="subscription">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+      Оплата и подписка
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
+    <a href="#" onclick="switchTab('connectors'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="connectors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+      Коннекторы
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
     </a>
   </nav>
 
   <div class="p-4 border-t border-divider">
-    <div class="flex items-center gap-3">
+    <a href="#" onclick="switchTab('suggestions'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary mb-2" data-tab="suggestions">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      Предложения
+    </a>
+    <div class="flex items-center gap-3 pt-2 border-t border-divider">
       <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primaryDark flex items-center justify-center text-white font-semibold">АП</div>
       <div class="flex-1 min-w-0">
         <div class="text-sm font-medium truncate">Александр П.</div>
@@ -1000,6 +1033,629 @@ tailwind.config = {
     </div>
 
   </div>
+
+    <!-- ============ TAB: SETTINGS ============ -->
+    <div id="tab-settings" class="tab-content hidden">
+      <div class="max-w-4xl">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold">Настройки платформы</h3>
+          <p class="text-sm text-textSecondary mt-1">Общие настройки и конфигурация системы</p>
+        </div>
+        
+        <div class="bg-white rounded-xl border border-divider p-6 space-y-6">
+          <div class="flex items-center justify-between pb-4 border-b border-divider">
+            <div>
+              <h4 class="font-medium">Автосоздание лидов</h4>
+              <p class="text-sm text-textSecondary mt-1">Автоматически создавать лиды из входящих сообщений WhatsApp</p>
+            </div>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')" id="autoLeadToggle"></div>
+          </div>
+          
+          <div class="flex items-center justify-between pb-4 border-b border-divider">
+            <div>
+              <h4 class="font-medium">Уведомления о новых лидах</h4>
+              <p class="text-sm text-textSecondary mt-1">Получать уведомления при создании нового лида</p>
+            </div>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+          </div>
+          
+          <div class="flex items-center justify-between pb-4 border-b border-divider">
+            <div>
+              <h4 class="font-medium">Интеграция с календарем</h4>
+              <p class="text-sm text-textSecondary mt-1">Синхронизация встреч с Google Calendar</p>
+            </div>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="font-medium">Режим разработки</h4>
+              <p class="text-sm text-textSecondary mt-1">Включить отладочную информацию в интерфейсе</p>
+            </div>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: EMPLOYEES ============ -->
+    <div id="tab-employees" class="tab-content hidden">
+      <div class="max-w-6xl">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">Сотрудники</h3>
+            <p class="text-sm text-textSecondary mt-1">Управление доступом и ролями сотрудников</p>
+          </div>
+          <button onclick="openEmployeeModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            Добавить сотрудника
+          </button>
+        </div>
+        
+        <!-- Active Sessions -->
+        <div class="bg-white rounded-xl border border-divider p-6 mb-6">
+          <h4 class="font-medium mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Активные сессии
+          </h4>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 bg-bgDefault rounded-lg">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-medium">АП</div>
+                <div>
+                  <div class="text-sm font-medium">Александр П.</div>
+                  <div class="text-xs text-textSecondary">Администратор</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-textSecondary">IP: 192.168.1.105</div>
+                <div class="text-xs text-text-secondary">Chrome • macOS • Алматы</div>
+              </div>
+              <span class="status-badge bg-success/10 text-success">Активен</span>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-bgDefault rounded-lg">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-info/10 flex items-center justify-center text-info text-sm font-medium">МК</div>
+                <div>
+                  <div class="text-sm font-medium">Мария К.</div>
+                  <div class="text-xs text-textSecondary">Менеджер</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-text-secondary">IP: 192.168.1.112</div>
+                <div class="text-xs text-text-secondary">Firefox • Windows • Астана</div>
+              </div>
+              <span class="status-badge bg-success/10 text-success">Активен</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Employees List -->
+        <div class="bg-white rounded-xl border border-divider overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-bgDefault border-b border-divider">
+              <tr>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Сотрудник</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Роль</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Доступ</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Статус</th>
+                <th class="text-right py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Действия</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-divider">
+              <tr>
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primaryDark flex items-center justify-center text-white text-sm font-medium">АП</div>
+                    <div>
+                      <div class="font-medium">Александр П.</div>
+                      <div class="text-xs text-text-secondary">alex@flowzap.kz</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3 px-4"><span class="chip bg-primary/10 text-primary">Администратор</span></td>
+                <td class="py-3 px-4 text-sm text-textSecondary">Все права</td>
+                <td class="py-3 px-4"><span class="status-badge bg-success/10 text-success">Онлайн</span></td>
+                <td class="py-3 px-4 text-right">
+                  <button class="text-primary hover:text-primaryDark text-sm mr-3">Редактировать</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-info to-blue-600 flex items-center justify-center text-white text-sm font-medium">МК</div>
+                    <div>
+                      <div class="font-medium">Мария К.</div>
+                      <div class="text-xs text-text-secondary">maria@flowzap.kz</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3 px-4"><span class="chip bg-info/10 text-info">Менеджер</span></td>
+                <td class="py-3 px-4 text-sm text-textSecondary">Заказы, Лиды, Встречи</td>
+                <td class="py-3 px-4"><span class="status-badge bg-success/10 text-success">Онлайн</span></td>
+                <td class="py-3 px-4 text-right">
+                  <button class="text-primary hover:text-primaryDark text-sm mr-3">Редактировать</button>
+                  <button class="text-error hover:text-red-700 text-sm">Удалить</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: WHATSAPP FLOWS ============ -->
+    <div id="tab-whatsapp-flows" class="tab-content hidden">
+      <div class="max-w-6xl">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">WhatsApp Flows</h3>
+            <p class="text-sm text-textSecondary mt-1">Конструктор интерактивных форм для WhatsApp</p>
+          </div>
+          <button onclick="openFlowModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            Создать Flow
+          </button>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-5">
+          <div class="bg-white rounded-xl border border-divider p-5 hover:shadow-lg transition cursor-pointer">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              </div>
+              <span class="status-badge bg-success/10 text-success">Активен</span>
+            </div>
+            <h4 class="font-medium">Запись на встречу</h4>
+            <p class="text-sm text-textSecondary mt-2">Форма для записи клиентов на демонстрацию продукта</p>
+            <div class="mt-3 flex items-center gap-2 text-xs text-textSecondary">
+              <span>5 полей</span>
+              <span>•</span>
+              <span>234 использования</span>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-xl border border-divider p-5 hover:shadow-lg transition cursor-pointer">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              </div>
+              <span class="status-badge bg-gray-100 text-textSecondary">Черновик</span>
+            </div>
+            <h4 class="font-medium">Опрос удовлетворенности</h4>
+            <p class="text-sm text-textSecondary mt-2">Сбор обратной связи после завершения заказа</p>
+            <div class="mt-3 flex items-center gap-2 text-xs text-textSecondary">
+              <span>3 поля</span>
+              <span>•</span>
+              <span>0 использований</span>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-xl border border-dashed border-divider p-5 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition" onclick="openFlowModal()">
+            <div class="w-12 h-12 rounded-xl bg-bgDefault flex items-center justify-center mb-3">
+              <svg class="w-6 h-6 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            </div>
+            <h4 class="font-medium text-textSecondary">Создать новый Flow</h4>
+            <p class="text-xs text-textSecondary mt-1">Интерактивная форма для WhatsApp</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: EVENT LOG ============ -->
+    <div id="tab-event-log" class="tab-content hidden">
+      <div class="max-w-6xl">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">Журнал событий</h3>
+            <p class="text-sm text-textSecondary mt-1">Логирование действий сотрудников и системы</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="openLogSettingsModal()" class="px-4 py-2 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Настройки логов
+            </button>
+            <button class="px-4 py-2 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              Экспорт
+            </button>
+          </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="bg-white rounded-xl border border-divider p-4 mb-6">
+          <div class="flex items-center gap-3">
+            <select class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+              <option>Все события</option>
+              <option>Вход в систему</option>
+              <option>Отправка шаблонов</option>
+              <option>Создание лидов</option>
+              <option>Изменение заказов</option>
+            </select>
+            <input type="date" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <select class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+              <option>Все сотрудники</option>
+              <option>Александр П.</option>
+              <option>Мария К.</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Event Log Table -->
+        <div class="bg-white rounded-xl border border-divider overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-bgDefault border-b border-divider">
+              <tr>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Время</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Событие</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Сотрудник</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">IP / Устройство</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textDisabled uppercase">Детали</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-divider">
+              <tr>
+                <td class="py-3 px-4 text-sm text-textSecondary">15.01.2025 14:32</td>
+                <td class="py-3 px-4"><span class="chip bg-success/10 text-success">Отправка шаблона Meta</span></td>
+                <td class="py-3 px-4 text-sm">Мария К.</td>
+                <td class="py-3 px-4 text-xs text-text-secondary">192.168.1.112 • Firefox</td>
+                <td class="py-3 px-4 text-sm text-text-secondary">Шаблон "Подтверждение встречи" отправлен клиенту +7 777 123 4567</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 text-sm text-text-secondary">15.01.2025 14:15</td>
+                <td class="py-3 px-4"><span class="chip bg-info/10 text-info">Вход в систему</span></td>
+                <td class="py-3 px-4 text-sm">Александр П.</td>
+                <td class="py-3 px-4 text-xs text-text-secondary">192.168.1.105 • Chrome</td>
+                <td class="py-3 px-4 text-sm text-text-secondary">Успешная авторизация</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 text-sm text-text-secondary">15.01.2025 13:45</td>
+                <td class="py-3 px-4"><span class="chip bg-warning/10 text-warning">Создание лида</span></td>
+                <td class="py-3 px-4 text-sm">Система</td>
+                <td class="py-3 px-4 text-xs text-text-secondary">Auto</td>
+                <td class="py-3 px-4 text-sm text-text-secondary">Лид создан из входящего сообщения WhatsApp</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 text-sm text-text-secondary">15.01.2025 12:30</td>
+                <td class="py-3 px-4"><span class="chip bg-primary/10 text-primary">Изменение заказа</span></td>
+                <td class="py-3 px-4 text-sm">Мария К.</td>
+                <td class="py-3 px-4 text-xs text-text-secondary">192.168.1.112 • Firefox</td>
+                <td class="py-3 px-4 text-sm text-text-secondary">Статус заказа #1234 изменен на "В доставке"</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: SUBSCRIPTION ============ -->
+    <div id="tab-subscription" class="tab-content hidden">
+      <div class="max-w-4xl">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold">Оплата и подписка</h3>
+          <p class="text-sm text-textSecondary mt-1">Управление тарифом и оплатой</p>
+        </div>
+        
+        <!-- Current Plan -->
+        <div class="bg-gradient-to-r from-primary to-primaryDark rounded-xl p-6 text-white mb-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-sm opacity-80">Текущий тариф</div>
+              <div class="text-2xl font-bold mt-1">Business Pro</div>
+              <div class="text-sm opacity-80 mt-2">До окончания подписки: <span class="font-bold text-white">28 дней</span></div>
+            </div>
+            <div class="text-right">
+              <div class="text-3xl font-bold">14 900 ₸</div>
+              <div class="text-sm opacity-80">в месяц</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Payment Options -->
+        <div class="grid grid-cols-2 gap-5 mb-6">
+          <div class="bg-white rounded-xl border border-divider p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+              </div>
+              <h4 class="font-medium">Для физических лиц</h4>
+            </div>
+            <p class="text-sm text-textSecondary mb-4">Оплата картой или через Kaspi Pay</p>
+            <button class="w-full btn-primary px-4 py-2.5 rounded-lg text-sm font-medium">Привязать карту</button>
+          </div>
+          
+          <div class="bg-white rounded-xl border border-divider p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <h4 class="font-medium">Для юридических лиц</h4>
+            </div>
+            <p class="text-sm text-textSecondary mb-4">Получить счет на оплату с НДС</p>
+            <button class="w-full px-4 py-2.5 rounded-lg text-sm font-medium border border-divider hover:bg-bgDefault transition">Получить счет</button>
+          </div>
+        </div>
+        
+        <!-- Plan Features -->
+        <div class="bg-white rounded-xl border border-divider p-6">
+          <h4 class="font-medium mb-4">Что включено в тариф Business Pro:</h4>
+          <ul class="space-y-2">
+            <li class="flex items-center gap-2 text-sm text-textSecondary">
+              <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              До 5 сотрудников
+            </li>
+            <li class="flex items-center gap-2 text-sm text-textSecondary">
+              <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Неограниченное количество лидов и заказов
+            </li>
+            <li class="flex items-center gap-2 text-sm text-textSecondary">
+              <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              AI Автоматизация (PRO функции)
+            </li>
+            <li class="flex items-center gap-2 text-sm text-textSecondary">
+              <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              WhatsApp Flows конструктор
+            </li>
+            <li class="flex items-center gap-2 text-sm text-textSecondary">
+              <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Интеграции (CRM, Google Docs, и др.)
+            </li>
+            <li class="flex items-center gap-2 text-sm text-textSecondary">
+              <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Приоритетная поддержка
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: CONNECTORS ============ -->
+    <div id="tab-connectors" class="tab-content hidden">
+      <div class="max-w-6xl">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold">Коннекторы</h3>
+          <p class="text-sm text-textSecondary mt-1">Интеграции со сторонними сервисами</p>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-5">
+          <!-- AmoCRM -->
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
+                  <span class="text-lg font-bold text-red-600">a</span>
+                </div>
+                <div>
+                  <h4 class="font-medium">AmoCRM</h4>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="status-badge bg-success/10 text-success">Доступен</span>
+                    <span class="badge-new bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+                  </div>
+                </div>
+              </div>
+              <button class="px-3 py-1.5 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition">Настроить</button>
+            </div>
+            <p class="text-sm text-textSecondary">Синхронизация лидов и сделок с AmoCRM</p>
+          </div>
+          
+          <!-- Bitrix24 -->
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                  <span class="text-lg font-bold text-blue-600">B24</span>
+                </div>
+                <div>
+                  <h4 class="font-medium">Bitrix24</h4>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="status-badge bg-success/10 text-success">Доступен</span>
+                    <span class="badge-new bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+                  </div>
+                </div>
+              </div>
+              <button class="px-3 py-1.5 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition">Настроить</button>
+            </div>
+            <p class="text-sm text-textSecondary">Интеграция с задачами и CRM Bitrix24</p>
+          </div>
+          
+          <!-- Google Docs -->
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v6h6v10H6z"/></svg>
+                </div>
+                <div>
+                  <h4 class="font-medium">Google Docs</h4>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="status-badge bg-success/10 text-success">Доступен</span>
+                    <span class="badge-new bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+                  </div>
+                </div>
+              </div>
+              <button class="px-3 py-1.5 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition">Настроить</button>
+            </div>
+            <p class="text-sm text-textSecondary">Экспорт отчетов и документов в Google Docs</p>
+          </div>
+          
+          <!-- Google Sheets -->
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v6h6v10H6z"/></svg>
+                </div>
+                <div>
+                  <h4 class="font-medium">Google Sheets</h4>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="status-badge bg-success/10 text-success">Доступен</span>
+                    <span class="badge-new bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+                  </div>
+                </div>
+              </div>
+              <button class="px-3 py-1.5 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition">Настроить</button>
+            </div>
+            <p class="text-sm text-textSecondary">Синхронизация данных с таблицами Google</p>
+          </div>
+          
+          <!-- Telegram -->
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-sky-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.647 7.407c-.175 1.85-.936 6.236-1.322 8.29-.163.872-.484 1.165-.793 1.193-.675.062-1.187-.446-1.837-.872-1.016-.666-1.59-1.078-2.575-1.728-1.142-.753-.402-1.17.25-1.84.17-.175 3.112-2.847 3.17-3.09.017-.073.034-.35-.13-.498-.164-.148-.408-.099-.582-.059-.248.056-1.583 1.008-4.43 2.933-.42.286-.801.425-1.144.417-.376-.008-1.102-.213-1.64-.392-.663-.22-1.187-.337-1.14-.71.024-.193.289-.388.79-.587 3.085-1.342 5.142-2.233 6.157-2.657 2.932-1.224 3.534-1.44 3.92-1.448.086-.002.278.02.405.123.105.085.134.2.146.288.014.083.03.27.016.427z"/></svg>
+                </div>
+                <div>
+                  <h4 class="font-medium">Telegram Bot</h4>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="status-badge bg-success/10 text-success">Доступен</span>
+                    <span class="badge-new bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+                  </div>
+                </div>
+              </div>
+              <button class="px-3 py-1.5 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition">Настроить</button>
+            </div>
+            <p class="text-sm text-textSecondary">Уведомления и управление через Telegram</p>
+          </div>
+          
+          <!-- Zapier -->
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
+                  <span class="text-lg font-bold text-orange-600">Z</span>
+                </div>
+                <div>
+                  <h4 class="font-medium">Zapier</h4>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="status-badge bg-gray-100 text-textSecondary">Скоро</span>
+                    <span class="badge-new bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+                  </div>
+                </div>
+              </div>
+              <button class="px-3 py-1.5 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition" disabled>Скоро</button>
+            </div>
+            <p class="text-sm text-text-secondary">Автоматизация через Zapier</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: SUGGESTIONS (FEATURE REQUESTS) ============ -->
+    <div id="tab-suggestions" class="tab-content hidden">
+      <div class="max-w-4xl">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold">Предложения</h3>
+          <p class="text-sm text-textSecondary mt-1">Поделитесь идеями по улучшению платформы</p>
+        </div>
+        
+        <!-- Create Suggestion Form -->
+        <div class="bg-white rounded-xl border border-divider p-6 mb-6">
+          <h4 class="font-medium mb-4">Новое предложение</h4>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-textPrimary mb-2">Тема предложения</label>
+              <input type="text" placeholder="Краткое описание идеи..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary transition">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-textPrimary mb-2">Описание</label>
+              <textarea rows="4" placeholder="Подробно опишите, что вы хотели бы увидеть в платформе..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary transition resize-none"></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-textPrimary mb-2">Категория</label>
+              <select class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+                <option>Функциональность</option>
+                <option>Интерфейс</option>
+                <option>Интеграции</option>
+                <option>Производительность</option>
+                <option>Другое</option>
+              </select>
+            </div>
+            <button class="btn-primary px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+              Отправить предложение
+            </button>
+          </div>
+        </div>
+        
+        <!-- Popular Suggestions -->
+        <div class="bg-white rounded-xl border border-divider p-6">
+          <h4 class="font-medium mb-4">Популярные предложения</h4>
+          <div class="space-y-4">
+            <div class="p-4 bg-bgDefault rounded-lg border border-divider">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="chip bg-blue-100 text-blue-700">Функциональность</span>
+                    <span class="text-xs text-textSecondary">#SR-001</span>
+                  </div>
+                  <h5 class="font-medium mt-2">Массовая рассылка по сегментам</h5>
+                  <p class="text-sm text-textSecondary mt-1">Возможность создавать сегменты клиентов и отправлять им персонализированные рассылки</p>
+                </div>
+                <div class="text-right ml-4">
+                  <button class="flex items-center gap-1 px-3 py-1.5 bg-white border border-divider rounded-lg text-sm hover:bg-bgDefault transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                    <span class="font-medium">142</span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 mt-3 pt-3 border-t border-divider">
+                <span class="text-xs text-text-secondary">Статус: <span class="chip bg-yellow-100 text-yellow-700">В разработке</span></span>
+                <span class="text-xs text-text-secondary">Автор: Иван К.</span>
+              </div>
+            </div>
+            
+            <div class="p-4 bg-bgDefault rounded-lg border border-divider">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="chip bg-purple-100 text-purple-700">Интеграции</span>
+                    <span class="text-xs text-text-secondary">#SR-002</span>
+                  </div>
+                  <h5 class="font-medium mt-2">Интеграция с Instagram Direct</h5>
+                  <p class="text-sm text-text-secondary mt-1">Поддержка сообщений из Instagram Direct для управления клиентами из всех соцсетей</p>
+                </div>
+                <div class="text-right ml-4">
+                  <button class="flex items-center gap-1 px-3 py-1.5 bg-white border border-divider rounded-lg text-sm hover:bg-bgDefault transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                    <span class="font-medium">98</span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 mt-3 pt-3 border-t border-divider">
+                <span class="text-xs text-text-secondary">Статус: <span class="chip bg-blue-100 text-blue-700">Планируется</span></span>
+                <span class="text-xs text-text-secondary">Автор: Елена М.</span>
+              </div>
+            </div>
+            
+            <div class="p-4 bg-bgDefault rounded-lg border border-divider">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="chip bg-green-100 text-green-700">Интерфейс</span>
+                    <span class="text-xs text-text-secondary">#SR-003</span>
+                  </div>
+                  <h5 class="font-medium mt-2">Темная тема оформления</h5>
+                  <p class="text-sm text-text-secondary mt-1">Добавьте возможность переключения на темную тему для комфортной работы вечером</p>
+                </div>
+                <div class="text-right ml-4">
+                  <button class="flex items-center gap-1 px-3 py-1.5 bg-white border border-divider rounded-lg text-sm hover:bg-bgDefault transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                    <span class="font-medium">76</span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 mt-3 pt-3 border-t border-divider">
+                <span class="text-xs text-text-secondary">Статус: <span class="chip bg-blue-100 text-blue-700">Планируется</span></span>
+                <span class="text-xs text-text-secondary">Автор: Дмитрий С.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </main>
 
 <!-- ============ ORDER MODAL ============ -->
@@ -1710,6 +2366,13 @@ function switchTab(tab) {
     triggers: ['Триггеры CRM', 'Автоматизация действий'],
     appointments: ['Встречи и созвоны', 'Планирование встреч, звонков и демо-сессий с клиентами'],
     'ai-automation': ['AI Автоматизация', 'Управление искусственным интеллектом'],
+    settings: ['Настройки платформы', 'Общие настройки и конфигурация системы'],
+    employees: ['Сотрудники', 'Управление доступом и ролями сотрудников'],
+    'whatsapp-flows': ['WhatsApp Flows', 'Конструктор интерактивных форм для WhatsApp'],
+    'event-log': ['Журнал событий', 'Логирование действий сотрудников и системы'],
+    subscription: ['Оплата и подписка', 'Управление тарифом и оплатой'],
+    connectors: ['Коннекторы', 'Интеграции со сторонними сервисами'],
+    suggestions: ['Предложения', 'Поделитесь идеями по улучшению платформы'],
   };
   
   document.getElementById('pageTitle').textContent = titles[tab] ? titles[tab][0] : 'FlowZap';
@@ -3095,6 +3758,22 @@ renderFaqs();
 renderTriggers();
 renderLeads();
 renderAppointments();
+
+// ============ EMPLOYEE MODAL FUNCTIONS ============
+function openEmployeeModal(id = null) {
+  // Placeholder for employee modal functionality
+  alert('Функция добавления/редактирования сотрудника будет доступна в следующей версии');
+}
+
+function openFlowModal() {
+  // Placeholder for WhatsApp Flow modal functionality
+  alert('Конструктор WhatsApp Flows будет доступен в следующей версии');
+}
+
+function openLogSettingsModal() {
+  // Placeholder for log settings modal functionality
+  alert('Настройки логирования будут доступны в следующей версии');
+}
 </script>
 </body>
 </html>
