@@ -180,6 +180,16 @@ tailwind.config = {
       Оплата и подписка
       <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
     </a>
+    <a href="#" onclick="switchTab('flows'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="flows">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      WhatsApp Flows
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
+    <a href="#" onclick="switchTab('event-log'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="event-log">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+      Журнал событий
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
   </nav>
 
   <div class="p-4 border-t border-divider">
@@ -864,6 +874,85 @@ tailwind.config = {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: WHATSAPP FLOWS ============ -->
+    <div id="tab-flows" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <div class="flex items-center gap-3">
+              <h3 class="text-lg font-semibold">WhatsApp Flows</h3>
+              <span class="bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Конструктор интерактивных форм для WhatsApp</p>
+          </div>
+          <button onclick="openFlowModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Создать Flow
+          </button>
+        </div>
+
+        <!-- Flows List -->
+        <div id="flowsList" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: EVENT LOG ============ -->
+    <div id="tab-event-log" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <div class="flex items-center gap-3">
+              <h3 class="text-lg font-semibold">Журнал событий</h3>
+              <span class="bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Логирование действий сотрудников и системы</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="exportLogs('csv')" class="px-4 py-2 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition">Экспорт CSV</button>
+            <button onclick="openLogSettings()" class="px-4 py-2 bg-bgDefault rounded-lg text-sm font-medium hover:bg-gray-100 transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Настройки логов
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex flex-wrap gap-3 mb-6">
+          <select id="logEventFilter" onchange="renderEventLogs()" class="px-4 py-2 border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="all">Все события</option>
+            <option value="login">Входы в систему</option>
+            <option value="template">Отправка шаблонов</option>
+            <option value="data_change">Изменения данных</option>
+            <option value="delete">Удаления</option>
+            <option value="permission">Права доступа</option>
+            <option value="export">Экспорт данных</option>
+          </select>
+          <select id="logUserFilter" onchange="renderEventLogs()" class="px-4 py-2 border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="all">Все сотрудники</option>
+          </select>
+          <input type="date" id="logDateFrom" onchange="renderEventLogs()" class="px-4 py-2 border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <span class="self-center text-textSecondary">—</span>
+          <input type="date" id="logDateTo" onchange="renderEventLogs()" class="px-4 py-2 border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+
+        <!-- Event Logs Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-divider">
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textSecondary uppercase tracking-wider">Время</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textSecondary uppercase tracking-wider">Событие</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textSecondary uppercase tracking-wider">Сотрудник</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textSecondary uppercase tracking-wider">Детали</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-textSecondary uppercase tracking-wider">IP / Устройство</th>
+              </tr>
+            </thead>
+            <tbody id="eventLogsBody" class="divide-y divide-divider"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -2360,6 +2449,8 @@ function switchTab(tab) {
     employees: ['Сотрудники', 'Управление доступом, ролями и активными сессиями сотрудников'],
     appointments: ['Встречи и созвоны', 'Планирование встреч, звонков и демо-сессий с клиентами'],
     'ai-automation': ['AI Автоматизация', 'Управление искусственным интеллектом'],
+    flows: ['WhatsApp Flows', 'Конструктор интерактивных форм для WhatsApp'],
+    'event-log': ['Журнал событий', 'Логирование действий сотрудников и системы'],
   };
   
   document.getElementById('pageTitle').textContent = titles[tab] ? titles[tab][0] : 'FlowZap';
@@ -2376,6 +2467,8 @@ function switchTab(tab) {
   if (tab === 'appointments') renderAppointments();
   if (tab === 'subscription') renderSubscription();
   if (tab === 'employees') { renderEmployees(); renderActiveSessions(); }
+  if (tab === 'flows') renderFlows();
+  if (tab === 'event-log') renderEventLogs();
 }
 
 // ============ AI AUTOMATION TABS ============
@@ -4283,6 +4376,340 @@ function openPaymentModal() {
   selectPaymentType('individual');
 }
 
+// ============ WHATSAPP FLOWS DATA & FUNCTIONS ============
+let flows = [
+  {
+    id: 1,
+    name: "Запись на услугу",
+    description: "Форма записи клиентов с выбором услуги, даты и времени",
+    status: "active",
+    screens: 4,
+    lastModified: "2 часа назад",
+    category: "booking"
+  },
+  {
+    id: 2,
+    name: "Опрос удовлетворенности",
+    description: "Сбор обратной связи после покупки",
+    status: "moderation",
+    screens: 3,
+    lastModified: "1 день назад",
+    category: "feedback"
+  },
+  {
+    id: 3,
+    name: "Квалификация лида",
+    description: "Сбор информации о потребностях клиента",
+    status: "draft",
+    screens: 5,
+    lastModified: "3 дня назад",
+    category: "qualification"
+  }
+];
+
+const flowCategories = {
+  booking: "Бронирование",
+  feedback: "Обратная связь",
+  qualification: "Квалификация",
+  survey: "Опрос",
+  registration: "Регистрация",
+  other: "Другое"
+};
+
+const flowStatuses = {
+  draft: { label: "Черновик", class: "bg-gray-100 text-textSecondary" },
+  moderation: { label: "На модерации", class: "bg-warning/10 text-warning" },
+  active: { label: "Активен", class: "bg-success/10 text-success" },
+  rejected: { label: "Отклонен", class: "bg-error/10 text-error" }
+};
+
+function renderFlows() {
+  const container = document.getElementById('flowsList');
+  if (!container) return;
+  
+  container.innerHTML = flows.map(flow => `
+    <div class="border border-divider rounded-xl p-5 hover:shadow-lg transition-shadow">
+      <div class="flex items-start justify-between mb-3">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <div>
+            <h4 class="font-semibold text-textPrimary">${flow.name}</h4>
+            <p class="text-sm text-textSecondary">${flow.description}</p>
+          </div>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-medium ${flowStatuses[flow.status].class}">${flowStatuses[flow.status].label}</span>
+      </div>
+      <div class="flex items-center justify-between pt-3 border-t border-divider">
+        <div class="flex items-center gap-4 text-xs text-textSecondary">
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            ${flow.screens} экранов
+          </span>
+          <span>•</span>
+          <span>${flowCategories[flow.category]}</span>
+          <span>•</span>
+          <span>Изменено ${flow.lastModified}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="editFlow(${flow.id})" class="px-3 py-1.5 text-xs font-medium text-textSecondary hover:text-primary transition">Редактировать</button>
+          <button onclick="sendFlowToModeration(${flow.id})" class="px-3 py-1.5 text-xs font-medium btn-primary rounded-lg transition">Отправить</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openFlowModal(flowId = null) {
+  // Modal implementation for creating/editing flows
+  showToast(flowId ? 'Редактирование Flow' : 'Создание нового Flow');
+}
+
+function editFlow(id) {
+  openFlowModal(id);
+}
+
+function sendFlowToModeration(id) {
+  const flow = flows.find(f => f.id === id);
+  if (flow) {
+    flow.status = 'moderation';
+    renderFlows();
+    showToast('Flow отправлен на модерацию в Meta');
+  }
+}
+
+// ============ EVENT LOG DATA & FUNCTIONS ============
+let eventLogs = [
+  {
+    id: 1,
+    timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 min ago
+    eventType: 'login',
+    employee: 'Александр П.',
+    details: 'Вход в систему',
+    ip: '192.168.1.100',
+    device: 'Chrome / macOS',
+    location: 'Алматы'
+  },
+  {
+    id: 2,
+    timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 min ago
+    eventType: 'template',
+    employee: 'Мария К.',
+    details: 'Отправка шаблона "Подтверждение встречи"',
+    ip: '192.168.1.105',
+    device: 'Safari / iOS',
+    location: 'Астана'
+  },
+  {
+    id: 3,
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+    eventType: 'data_change',
+    employee: 'Александр П.',
+    details: 'Изменение статуса заказа #1234',
+    ip: '192.168.1.100',
+    device: 'Chrome / macOS',
+    location: 'Алматы'
+  },
+  {
+    id: 4,
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 hours ago
+    eventType: 'delete',
+    employee: 'Елена С.',
+    details: 'Удаление лида #5678',
+    ip: '192.168.1.110',
+    device: 'Firefox / Windows',
+    location: 'Шымкент'
+  },
+  {
+    id: 5,
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+    eventType: 'permission',
+    employee: 'Александр П.',
+    details: 'Изменение прав доступа для сотрудника "Мария К."',
+    ip: '192.168.1.100',
+    device: 'Chrome / macOS',
+    location: 'Алматы'
+  },
+  {
+    id: 6,
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
+    eventType: 'export',
+    employee: 'Елена С.',
+    details: 'Экспорт отчетов за ноябрь в CSV',
+    ip: '192.168.1.110',
+    device: 'Firefox / Windows',
+    location: 'Шымкент'
+  }
+];
+
+let logSettings = {
+  trackLogin: true,
+  trackTemplate: true,
+  trackDataChange: true,
+  trackDelete: true,
+  trackPermission: true,
+  trackExport: true,
+  retentionDays: 90
+};
+
+const eventTypes = {
+  login: { label: 'Вход в систему', icon: 'login', color: 'text-info' },
+  template: { label: 'Отправка шаблона', icon: 'template', color: 'text-primary' },
+  data_change: { label: 'Изменение данных', icon: 'edit', color: 'text-warning' },
+  delete: { label: 'Удаление', icon: 'delete', color: 'text-error' },
+  permission: { label: 'Права доступа', icon: 'permission', color: 'text-purple-600' },
+  export: { label: 'Экспорт данных', icon: 'export', color: 'text-success' }
+};
+
+function renderEventLogs() {
+  const tbody = document.getElementById('eventLogsBody');
+  if (!tbody) return;
+  
+  const eventFilter = document.getElementById('logEventFilter')?.value || 'all';
+  const userFilter = document.getElementById('logUserFilter')?.value || 'all';
+  const dateFrom = document.getElementById('logDateFrom')?.value;
+  const dateTo = document.getElementById('logDateTo')?.value;
+  
+  let filteredLogs = [...eventLogs];
+  
+  if (eventFilter !== 'all') {
+    filteredLogs = filteredLogs.filter(log => log.eventType === eventFilter);
+  }
+  
+  if (userFilter !== 'all') {
+    filteredLogs = filteredLogs.filter(log => log.employee === userFilter);
+  }
+  
+  if (dateFrom) {
+    const fromDate = new Date(dateFrom);
+    filteredLogs = filteredLogs.filter(log => log.timestamp >= fromDate);
+  }
+  
+  if (dateTo) {
+    const toDate = new Date(dateTo);
+    toDate.setHours(23, 59, 59, 999);
+    filteredLogs = filteredLogs.filter(log => log.timestamp <= toDate);
+  }
+  
+  // Populate user filter dropdown
+  const userSelect = document.getElementById('logUserFilter');
+  if (userSelect && userSelect.options.length === 1) {
+    const uniqueUsers = [...new Set(eventLogs.map(log => log.employee))];
+    uniqueUsers.forEach(user => {
+      const option = document.createElement('option');
+      option.value = user;
+      option.textContent = user;
+      userSelect.appendChild(option);
+    });
+  }
+  
+  tbody.innerHTML = filteredLogs.map(log => {
+    const typeInfo = eventTypes[log.eventType] || { label: log.eventType, color: 'text-textSecondary' };
+    const timeStr = log.timestamp.toLocaleString('ru-RU', { 
+      day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
+    });
+    
+    return `
+      <tr class="hover:bg-bgDefault transition">
+        <td class="py-3 px-4 text-sm text-textSecondary whitespace-nowrap">${timeStr}</td>
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium ${typeInfo.color}">${typeInfo.label}</span>
+          </div>
+        </td>
+        <td class="py-3 px-4 text-sm text-textPrimary">${log.employee}</td>
+        <td class="py-3 px-4 text-sm text-textSecondary">${log.details}</td>
+        <td class="py-3 px-4 text-sm text-textSecondary">
+          <div>${log.ip}</div>
+          <div class="text-xs text-textDisabled">${log.device} • ${log.location}</div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function exportLogs(format) {
+  showToast(`Экспорт логов в формате ${format.toUpperCase()}...`);
+  setTimeout(() => {
+    showToast('Файл скачан');
+  }, 1500);
+}
+
+function openLogSettings() {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
+  modal.innerHTML = `
+    <div class="absolute inset-0 modal-backdrop" onclick="this.parentElement.remove()"></div>
+    <div class="relative bg-white rounded-2xl p-6 max-w-lg w-full mx-4 shadow-2xl fade-in">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold text-textPrimary">Настройки логирования</h3>
+        <button onclick="this.closest('.fixed').remove()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+          <svg class="w-5 h-5 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      
+      <div class="space-y-4">
+        <p class="text-sm text-textSecondary mb-4">Выберите события для отслеживания:</p>
+        
+        <label class="flex items-center justify-between p-3 bg-bgDefault rounded-lg cursor-pointer">
+          <span class="text-sm text-textPrimary">Входы в систему</span>
+          <div class="toggle-switch ${logSettings.trackLogin ? 'active' : ''}" onclick="toggleLogSetting('trackLogin')"></div>
+        </label>
+        
+        <label class="flex items-center justify-between p-3 bg-bgDefault rounded-lg cursor-pointer">
+          <span class="text-sm text-textPrimary">Отправка шаблонов Meta</span>
+          <div class="toggle-switch ${logSettings.trackTemplate ? 'active' : ''}" onclick="toggleLogSetting('trackTemplate')"></div>
+        </label>
+        
+        <label class="flex items-center justify-between p-3 bg-bgDefault rounded-lg cursor-pointer">
+          <span class="text-sm text-textPrimary">Изменения данных</span>
+          <div class="toggle-switch ${logSettings.trackDataChange ? 'active' : ''}" onclick="toggleLogSetting('trackDataChange')"></div>
+        </label>
+        
+        <label class="flex items-center justify-between p-3 bg-bgDefault rounded-lg cursor-pointer">
+          <span class="text-sm text-textPrimary">Удаления</span>
+          <div class="toggle-switch ${logSettings.trackDelete ? 'active' : ''}" onclick="toggleLogSetting('trackDelete')"></div>
+        </label>
+        
+        <label class="flex items-center justify-between p-3 bg-bgDefault rounded-lg cursor-pointer">
+          <span class="text-sm text-textPrimary">Изменения прав доступа</span>
+          <div class="toggle-switch ${logSettings.trackPermission ? 'active' : ''}" onclick="toggleLogSetting('trackPermission')"></div>
+        </label>
+        
+        <label class="flex items-center justify-between p-3 bg-bgDefault rounded-lg cursor-pointer">
+          <span class="text-sm text-textPrimary">Экспорт данных</span>
+          <div class="toggle-switch ${logSettings.trackExport ? 'active' : ''}" onclick="toggleLogSetting('trackExport')"></div>
+        </label>
+        
+        <div class="pt-4 border-t border-divider">
+          <label class="block text-sm text-textPrimary mb-2">Период хранения логов:</label>
+          <select onchange="logSettings.retentionDays = parseInt(this.value); showToast('Настройки сохранены')" class="w-full px-4 py-2 border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            <option value="30" ${logSettings.retentionDays === 30 ? 'selected' : ''}>30 дней</option>
+            <option value="90" ${logSettings.retentionDays === 90 ? 'selected' : ''}>90 дней</option>
+            <option value="365" ${logSettings.retentionDays === 365 ? 'selected' : ''}>1 год</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="mt-6 flex justify-end gap-3">
+        <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 border border-divider rounded-lg text-sm font-medium hover:bg-bgDefault transition">Отмена</button>
+        <button onclick="saveLogSettings(); this.closest('.fixed').remove()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Сохранить</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function toggleLogSetting(setting) {
+  logSettings[setting] = !logSettings[setting];
+  renderEventLogs();
+}
+
+function saveLogSettings() {
+  showToast('Настройки логирования сохранены');
+}
+
 // Init
 renderOrders();
 renderProducts();
@@ -4293,6 +4720,8 @@ renderProposals();
 renderLeads();
 renderAppointments();
 renderSubscription();
+renderFlows();
+renderEventLogs();
 </script>
 </body>
 </html>
