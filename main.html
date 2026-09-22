@@ -3925,99 +3925,22 @@ function toggleAutoLead() {
 }
 
 // ============ INTERACTIVE ONBOARDING TOUR ============
+// ============ INTERACTIVE ONBOARDING TOUR ============
 let tourStep = 0;
 const tourSteps = [
-  {
-    target: '[data-tab="dashboard"]',
-    title: 'Главная панель',
-    description: 'Здесь вы видите общую статистику и ключевые метрики вашего бизнеса.',
-    position: 'right',
-    clickable: false
-  },
-  {
-    target: '[data-tab="leads"]',
-    title: 'Лиды',
-    description: 'Управляйте потенциальными клиентами. Все входящие заявки автоматически создаются здесь.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="orders"]',
-    title: 'Заказы',
-    description: 'Отслеживайте статусы заказов от создания до доставки.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="warehouse"]',
-    title: 'Склад',
-    description: 'Контролируйте запасы товаров, получайте уведомления о низких остатках.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="ai-automation"]',
-    title: 'AI Автоматизация',
-    description: 'Настройте AI-агентов для автоматических ответов клиентам 24/7.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="employees"]',
-    title: 'Сотрудники',
-    description: 'Добавляйте команду, назначайте роли и отслеживайте активные сессии.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="whatsapp-flows"]',
-    title: 'WhatsApp Flows',
-    description: 'Создавайте интерактивные формы для записи клиентов, опросов и сбора данных.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="event-log"]',
-    title: 'Журнал событий',
-    description: 'Отслеживайте все действия в системе: кто отправил шаблон, кто зашел в аккаунт и т.д.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="subscription"]',
-    title: 'Оплата и подписка',
-    description: 'Управляйте тарифом, оплачивайте подписку через Kaspi Pay или получите счет для юр лиц.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="settings"]',
-    title: 'Настройки',
-    description: 'Конфигурируйте платформу под ваши нужды, включая автосоздание лидов и коннекторы.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="connectors"]',
-    title: 'Коннекторы',
-    description: 'Интеграции с CRM, мессенджерами и другими сервисами. Подключайте AmoCRM, Bitrix24, Google Docs и другие.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[data-tab="suggestions"]',
-    title: 'Предложения',
-    description: 'Отправьте идею улучшения платформы или поддержите предложения других пользователей.',
-    position: 'right',
-    clickable: true
-  },
-  {
-    target: '[onclick="startOnboardingTour()"]',
-    title: 'Тур по платформе',
-    description: 'Вы всегда можете перезапустить этот тур, чтобы освежить знания!',
-    position: 'left',
-    clickable: false
-  }
+  { target: '[data-tab="dashboard"]', title: 'Главная панель', description: 'Здесь вы видите общую статистику и ключевые метрики вашего бизнеса.', position: 'right' },
+  { target: '[data-tab="leads"]', title: 'Лиды', description: 'Управляйте потенциальными клиентами. Все входящие заявки автоматически создаются здесь.', position: 'right' },
+  { target: '[data-tab="orders"]', title: 'Заказы', description: 'Отслеживайте статусы заказов от создания до доставки.', position: 'right' },
+  { target: '[data-tab="warehouse"]', title: 'Склад', description: 'Контролируйте запасы товаров, получайте уведомления о низких остатках.', position: 'right' },
+  { target: '[data-tab="ai-automation"]', title: 'AI Автоматизация', description: 'Настройте AI-агентов для автоматических ответов клиентам 24/7.', position: 'right' },
+  { target: '[data-tab="employees"]', title: 'Сотрудники', description: 'Добавляйте команду, назначайте роли и отслеживайте активные сессии.', position: 'right' },
+  { target: '[data-tab="whatsapp-flows"]', title: 'WhatsApp Flows', description: 'Создавайте интерактивные формы для записи клиентов, опросов и сбора данных.', position: 'right' },
+  { target: '[data-tab="event-log"]', title: 'Журнал событий', description: 'Отслеживайте все действия в системе: кто отправил шаблон, кто зашел в аккаунт и т.д.', position: 'right' },
+  { target: '[data-tab="subscription"]', title: 'Оплата и подписка', description: 'Управляйте тарифом, оплачивайте подписку через Kaspi Pay или получите счет для юр лиц.', position: 'right' },
+  { target: '[data-tab="settings"]', title: 'Настройки', description: 'Конфигурируйте платформу под ваши нужды, включая автосоздание лидов и коннекторы.', position: 'right' },
+  { target: '[data-tab="connectors"]', title: 'Коннекторы', description: 'Интеграции с CRM, мессенджерами и другими сервисами. Подключайте AmoCRM, Bitrix24, Google Docs и другие.', position: 'right' },
+  { target: '[data-tab="suggestions"]', title: 'Предложения', description: 'Отправьте идею улучшения платформы или поддержите предложения других пользователей.', position: 'right' },
+  { target: '[onclick="startOnboardingTour()"]', title: 'Тур по платформе', description: 'Вы всегда можете перезапустить этот тур, чтобы освежить знания!', position: 'left' }
 ];
 
 function startOnboardingTour() {
@@ -4026,58 +3949,46 @@ function startOnboardingTour() {
 }
 
 function showTourStep() {
-  if (tourStep >= tourSteps.length) {
-    endTour();
-    return;
-  }
+  if (tourStep >= tourSteps.length) { endTour(); return; }
   
   const step = tourSteps[tourStep];
   const targetEl = document.querySelector(step.target);
+  if (!targetEl) { tourStep++; showTourStep(); return; }
   
-  if (!targetEl) {
-    tourStep++;
-    showTourStep();
-    return;
-  }
-  
-  // Highlight target
   targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  
-  // Show tooltip
   const rect = targetEl.getBoundingClientRect();
-  const isRight = step.position === 'right';
-  const tooltipX = isRight ? rect.right + 20 : rect.left - 320;
-  const tooltipY = rect.top + (rect.height / 2) - 60;
+  const padding = 8;
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const radius = Math.max(rect.width, rect.height) / 2 + padding;
   
-  // Create spotlight effect instead of full blur overlay
-  let spotlight = document.getElementById('tour-spotlight');
-  if (!spotlight) {
-    spotlight = document.createElement('div');
-    spotlight.id = 'tour-spotlight';
-    spotlight.className = 'fixed z-30 pointer-events-none transition-all duration-500 ease-in-out';
-    spotlight.style.boxShadow = '0 0 0 9999px rgba(0, 0, 0, 0.6)';
-    spotlight.style.borderRadius = '8px';
-    document.body.appendChild(spotlight);
+  let overlay = document.getElementById('tour-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'tour-overlay';
+    overlay.className = 'fixed inset-0 z-[9998] transition-opacity duration-300';
+    document.body.appendChild(overlay);
   }
+  overlay.style.background = `radial-gradient(circle ${radius}px at ${centerX}px ${centerY}px, transparent 0%, transparent ${radius}px, rgba(0,0,0,0.75) ${radius+1}px)`;
+  overlay.style.pointerEvents = 'none';
   
-  // Position and size the spotlight to match the target element
-  spotlight.style.left = `${rect.left - 4}px`;
-  spotlight.style.top = `${rect.top - 4}px`;
-  spotlight.style.width = `${rect.width + 8}px`;
-  spotlight.style.height = `${rect.height + 8}px`;
-  spotlight.classList.remove('hidden');
-  
-  // Add highlight to the target element
-  targetEl.style.zIndex = '100';
-  targetEl.style.boxShadow = '0 0 0 3px rgba(45, 149, 131, 0.3), 0 8px 24px rgba(45, 149, 131, 0.2)';
+  targetEl.style.zIndex = '10000';
+  targetEl.style.position = 'relative';
+  targetEl.style.boxShadow = '0 0 0 3px #2d9583, 0 0 20px rgba(45, 149, 131, 0.4)';
   targetEl.style.borderRadius = '8px';
   targetEl.style.transition = 'all 0.3s ease';
+  
+  const isRight = step.position === 'right';
+  const tooltipX = isRight ? rect.right + 20 : rect.left - 320;
+  const tooltipY = rect.top + (rect.height / 2) - 80;
+  const adjustedX = Math.max(20, Math.min(tooltipX, window.innerWidth - 340));
+  const adjustedY = Math.max(20, Math.min(tooltipY, window.innerHeight - 200));
   
   let tourTooltip = document.getElementById('tour-tooltip');
   if (!tourTooltip) {
     tourTooltip = document.createElement('div');
     tourTooltip.id = 'tour-tooltip';
-    tourTooltip.className = 'fixed z-50 bg-white text-textPrimary rounded-xl p-5 shadow-2xl max-w-xs border border-divider';
+    tourTooltip.className = 'fixed z-[9999] bg-white text-textPrimary rounded-xl p-5 shadow-2xl max-w-xs border border-gray-100';
     tourTooltip.style.transition = 'all 0.3s ease-out';
     document.body.appendChild(tourTooltip);
   }
@@ -4102,77 +4013,32 @@ function showTourStep() {
     </div>
   `;
   
-  tourTooltip.style.left = `${tooltipX}px`;
-  tourTooltip.style.top = `${tooltipY}px`;
+  tourTooltip.style.left = `${adjustedX}px`;
+  tourTooltip.style.top = `${adjustedY}px`;
   tourTooltip.style.opacity = '0';
   tourTooltip.style.transform = 'translateY(10px) scale(0.95)';
-  
-  setTimeout(() => {
-    tourTooltip.style.opacity = '1';
-    tourTooltip.style.transform = 'translateY(0) scale(1)';
-  }, 50);
+  setTimeout(() => { tourTooltip.style.opacity = '1'; tourTooltip.style.transform = 'translateY(0) scale(1)'; }, 50);
 }
 
 function nextTourStep() {
   const currentTarget = document.querySelector(tourSteps[tourStep].target);
-  if (currentTarget) {
-    currentTarget.style.boxShadow = '';
-    currentTarget.style.zIndex = '';
-  }
-  
+  if (currentTarget) { currentTarget.style.boxShadow = ''; currentTarget.style.zIndex = ''; currentTarget.style.borderRadius = ''; currentTarget.style.transition = ''; }
   tourStep++;
-  
-  if (tourStep >= tourSteps.length) {
-    endTour();
-    return;
-  }
-  
+  if (tourStep >= tourSteps.length) { endTour(); return; }
   showTourStep();
 }
 
+
 function endTour() {
-  // Remove spotlight
-  const spotlight = document.getElementById('tour-spotlight');
-  if (spotlight) {
-    spotlight.classList.add('hidden');
-  }
-  
-  // Remove tooltip
+  const overlay = document.getElementById('tour-overlay');
+  if (overlay) { overlay.style.opacity = '0'; setTimeout(() => overlay.remove(), 300); }
   const tooltip = document.getElementById('tour-tooltip');
-  if (tooltip) {
-    tooltip.style.opacity = '0';
-    tooltip.style.transform = 'translateY(10px) scale(0.95)';
-    setTimeout(() => tooltip.remove(), 300);
-  }
-  
-  // Reset any highlighted elements
+  if (tooltip) { tooltip.style.opacity = '0'; tooltip.style.transform = 'translateY(10px) scale(0.95)'; setTimeout(() => tooltip.remove(), 300); }
   tourSteps.forEach(step => {
     const el = document.querySelector(step.target);
-    if (el) {
-      el.style.boxShadow = '';
-      el.style.zIndex = '';
-      el.style.borderRadius = '';
-      el.style.transition = '';
-    }
+    if (el) { el.style.boxShadow = ''; el.style.zIndex = ''; el.style.borderRadius = ''; el.style.transition = ''; el.style.position = ''; }
   });
-  
   tourStep = 0;
-}
-
-// Add click handlers for tour targets to advance on click
-function setupTourClickHandlers() {
-  tourSteps.forEach((step, index) => {
-    const el = document.querySelector(step.target);
-    if (el && step.clickable) {
-      el.addEventListener('click', function handleTourClick(e) {
-        if (index === tourStep) {
-          e.preventDefault();
-          e.stopPropagation();
-          nextTourStep();
-        }
-      }, { once: false });
-    }
-  });
 }
 </script>
 </body>
