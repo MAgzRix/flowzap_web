@@ -165,6 +165,11 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16a4 4 0 118 0 4 4 0 01-8 0z"/></svg>
       Предложения
     </a>
+    <a href="#" onclick="switchTab('employees'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="employees">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      Сотрудники
+      <span class="ml-auto bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+    </a>
     <a href="#" onclick="switchTab('connectors'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-textSecondary" data-tab="connectors">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1m-1.1 1.1a4 4 0 005.656 0l4-4a4 4 0 10-5.656-5.656L9.5 5.5m0 0a4 4 0 10-5.656 0l-4 4a4 4 0 005.656 5.656l1.102-1.101"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
       Коннекторы
@@ -537,6 +542,34 @@ tailwind.config = {
         <div id="proposalList" class="space-y-3"></div>
       </div>
     </div>
+    <!-- ============ TAB: EMPLOYEES ============ -->
+    <div id="tab-employees" class="tab-content hidden">
+      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <div class="flex items-center gap-3">
+              <h3 class="text-lg font-semibold">Сотрудники</h3>
+              <span class="bg-success text-white text-xs px-2 py-0.5 rounded-full">NEW</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Управление доступом, ролями и активными сессиями сотрудников</p>
+          </div>
+          <button onclick="openEmployeeModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Добавить сотрудника
+          </button>
+        </div>
+
+        <!-- Employees List -->
+        <div id="employeesList" class="space-y-4"></div>
+
+        <!-- Active Sessions Section -->
+        <div class="mt-8 pt-6 border-t border-divider">
+          <h4 class="text-md font-semibold mb-4">Активные сессии</h4>
+          <div id="activeSessions" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- ============ TAB: CONNECTORS ============ -->
     <div id="tab-connectors" class="tab-content hidden">
@@ -2067,6 +2100,92 @@ tailwind.config = {
 </div>
 
 <!-- ============ APPOINTMENT SUCCESS MODAL ============ -->
+<!-- ============ EMPLOYEE MODAL ============ -->
+<div id="employeeModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <h3 id="employeeModalTitle" class="text-lg font-semibold">Добавить сотрудника</h3>
+      <button onclick="closeEmployeeModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">ФИО</label>
+          <input id="empName" type="text" placeholder="Иванов Иван" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Email</label>
+          <input id="empEmail" type="email" placeholder="ivan@company.com" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">Должность</label>
+        <select id="empPosition" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option value="manager">Менеджер по продажам</option>
+          <option value="admin">Администратор</option>
+          <option value="support">Поддержка</option>
+          <option value="warehouse">Склад</option>
+          <option value="accountant">Бухгалтер</option>
+        </select>
+      </div>
+      
+      <!-- Access Roles -->
+      <div>
+        <label class="block text-sm font-medium mb-3">Права доступа</label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" id="roleOrders" class="w-4 h-4 text-primary rounded focus:ring-primary" checked>
+            <span class="text-sm">Заказы</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" id="roleProducts" class="w-4 h-4 text-primary rounded focus:ring-primary" checked>
+            <span class="text-sm">Товары</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" id="roleWarehouse" class="w-4 h-4 text-primary rounded focus:ring-primary">
+            <span class="text-sm">Склад</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" id="roleLeads" class="w-4 h-4 text-primary rounded focus:ring-primary" checked>
+            <span class="text-sm">Лиды</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" id="roleAppointments" class="w-4 h-4 text-primary rounded focus:ring-primary">
+            <span class="text-sm">Встречи</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" id="roleReports" class="w-4 h-4 text-primary rounded focus:ring-primary">
+            <span class="text-sm">Отчеты</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" id="roleMessenger" class="w-4 h-4 text-primary rounded focus:ring-primary" checked>
+            <span class="text-sm">Мессенджер</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" id="roleSettings" class="w-4 h-4 text-primary rounded focus:ring-primary">
+            <span class="text-sm">Настройки</span>
+          </label>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium mb-2">Статус</label>
+        <select id="empStatus" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option value="active">Активен</option>
+          <option value="inactive">Неактивен</option>
+          <option value="blocked">Заблокирован</option>
+        </select>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
+      <button onclick="closeEmployeeModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
+      <button onclick="saveEmployee()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <div id="appointmentSuccessModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
   <div class="bg-white rounded-xl max-w-md w-full slide-in">
     <div class="p-6 text-center">
@@ -2115,6 +2234,20 @@ tailwind.config = {
 // ============ DATA ============
 // Telegram Bot Configuration
 const TELEGRAM_BOT_TOKEN = '8909271418:AAG0LnVlR1eXux_MfHHInwbTzKnAeogBdY4';
+\n// Employees Data
+let employees = [
+  { id: 1, name: "Александр П.", email: "alex@flowzap.kz", position: "admin", status: "active", roles: ["orders", "products", "warehouse", "leads", "appointments", "reports", "messenger", "settings"], lastActive: "Сейчас", device: "Chrome / macOS", ip: "192.168.1.10" },
+  { id: 2, name: "Мария Иванова", email: "maria@flowzap.kz", position: "manager", status: "active", roles: ["orders", "products", "leads", "messenger"], lastActive: "5 мин назад", device: "Safari / iOS", ip: "192.168.1.25" },
+  { id: 3, name: "Дмитрий Козлов", email: "dmitry@flowzap.kz", position: "support", status: "active", roles: ["orders", "messenger", "appointments"], lastActive: "1 час назад", device: "Chrome / Windows", ip: "192.168.1.42" },
+  { id: 4, name: "Елена Смирнова", email: "elena@flowzap.kz", position: "warehouse", status: "inactive", roles: ["warehouse", "products"], lastActive: "Вчера", device: "Firefox / Linux", ip: "192.168.1.55" }
+];
+
+let activeSessions = [
+  { id: 1, employeeId: 1, employeeName: "Александр П.", device: "Chrome / macOS", ip: "192.168.1.10", location: "Алматы, Казахстан", loginTime: "09:15", lastActivity: "Сейчас", status: "active" },
+  { id: 2, employeeId: 2, employeeName: "Мария Иванова", device: "Safari / iOS", ip: "192.168.1.25", location: "Алматы, Казахстан", loginTime: "10:30", lastActivity: "5 мин назад", status: "active" },
+  { id: 3, employeeId: 3, employeeName: "Дмитрий Козлов", device: "Chrome / Windows", ip: "192.168.1.42", location: "Астана, Казахстан", loginTime: "08:45", lastActivity: "1 час назад", status: "idle" }
+];
+
 
 let messengerChats = [
   { id: 1, name: 'Алексей Петров', phone: '+77771234567', platform: 'telegram', avatar: 'АП', lastMessage: 'Спасибо за быстрый ответ!', time: '10:30', unread: 2, messages: [
@@ -2224,6 +2357,7 @@ function switchTab(tab) {
     proposals: ['Предложения клиентов', 'Тикеты с предложениями по улучшению платформы'],
     connectors: ['Коннекторы', 'Интеграции с внешними сервисами и платформами'],
     subscription: ['Оплата и подписка', 'Управление тарифом и оплатой'],
+    employees: ['Сотрудники', 'Управление доступом, ролями и активными сессиями сотрудников'],
     appointments: ['Встречи и созвоны', 'Планирование встреч, звонков и демо-сессий с клиентами'],
     'ai-automation': ['AI Автоматизация', 'Управление искусственным интеллектом'],
   };
@@ -2241,6 +2375,7 @@ function switchTab(tab) {
   if (tab === 'leads') renderLeads();
   if (tab === 'appointments') renderAppointments();
   if (tab === 'subscription') renderSubscription();
+  if (tab === 'employees') { renderEmployees(); renderActiveSessions(); }
 }
 
 // ============ AI AUTOMATION TABS ============
@@ -3916,7 +4051,171 @@ function deleteProposal(id) {
 
 // ============ SUBSCRIPTION FUNCTIONS ============
 function renderSubscription() {
-  // Subscription page is static, no dynamic rendering needed
+}
+
+// ============ EMPLOYEE FUNCTIONS ============
+function renderEmployees() {
+  const container = document.getElementById("employeesList");
+  if (!container) return;
+  
+  container.innerHTML = employees.map(emp => {
+    const statusColors = { active: "bg-success", inactive: "bg-warning", blocked: "bg-error" };
+    const statusLabels = { active: "Активен", inactive: "Неактивен", blocked: "Заблокирован" };
+    const positionLabels = { admin: "Администратор", manager: "Менеджер", support: "Поддержка", warehouse: "Склад", accountant: "Бухгалтер" };
+    
+    return `
+      <div class="flex items-center justify-between p-4 bg-bgDefault rounded-xl border border-divider hover:border-primary/30 transition">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primaryDark flex items-center justify-center text-white font-semibold">
+            ${emp.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase()}
+          </div>
+          <div>
+            <div class="font-medium text-textPrimary">${emp.name}</div>
+            <div class="text-sm text-textSecondary">${emp.email}</div>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">${positionLabels[emp.position] || emp.position}</span>
+              <span class="text-xs px-2 py-0.5 ${statusColors[emp.status]} text-white rounded-full">${statusLabels[emp.status]}</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="editEmployee(${emp.id})" class="p-2 hover:bg-white rounded-lg transition" title="Редактировать">
+            <svg class="w-5 h-5 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button onclick="deleteEmployee(${emp.id})" class="p-2 hover:bg-red-50 rounded-lg transition" title="Удалить">
+            <svg class="w-5 h-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderActiveSessions() {
+  const container = document.getElementById("activeSessions");
+  if (!container) return;
+  
+  container.innerHTML = activeSessions.map(session => `
+    <div class="flex items-center justify-between p-4 bg-bgDefault rounded-xl border border-divider">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="flex-1">
+          <div class="font-medium text-textPrimary">${session.employeeName}</div>
+          <div class="text-sm text-textSecondary">${session.device} • ${session.ip}</div>
+          <div class="text-xs text-textSecondary mt-1">📍 ${session.location} • Вход: ${session.loginTime}</div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full ${session.status === "active" ? "bg-success pulse-dot" : "bg-warning"}"></span>
+          <span class="text-sm text-textSecondary">${session.lastActivity}</span>
+        </div>
+        <button onclick="terminateSession(${session.id})" class="text-xs text-error hover:underline mt-1">Завершить сессию</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function openEmployeeModal(id = null) {
+  const modal = document.getElementById("employeeModal");
+  const title = document.getElementById("employeeModalTitle");
+  
+  // Reset form
+  document.getElementById("empName").value = "";
+  document.getElementById("empEmail").value = "";
+  document.getElementById("empPosition").value = "manager";
+  document.getElementById("empStatus").value = "active";
+  document.getElementById("roleOrders").checked = true;
+  document.getElementById("roleProducts").checked = true;
+  document.getElementById("roleWarehouse").checked = false;
+  document.getElementById("roleLeads").checked = true;
+  document.getElementById("roleAppointments").checked = false;
+  document.getElementById("roleReports").checked = false;
+  document.getElementById("roleMessenger").checked = true;
+  document.getElementById("roleSettings").checked = false;
+  
+  if (id) {
+    const emp = employees.find(e => e.id === id);
+    if (emp) {
+      title.textContent = "Редактировать сотрудника";
+      document.getElementById("empName").value = emp.name;
+      document.getElementById("empEmail").value = emp.email;
+      document.getElementById("empPosition").value = emp.position;
+      document.getElementById("empStatus").value = emp.status;
+      // Set roles...
+    }
+  } else {
+    title.textContent = "Добавить сотрудника";
+  }
+  
+  modal.classList.remove("hidden");
+}
+
+function closeEmployeeModal() {
+  document.getElementById("employeeModal").classList.add("hidden");
+}
+
+function saveEmployee() {
+  const name = document.getElementById("empName").value.trim();
+  const email = document.getElementById("empEmail").value.trim();
+  const position = document.getElementById("empPosition").value;
+  const status = document.getElementById("empStatus").value;
+  
+  if (!name || !email) {
+    showToast("Заполните обязательные поля");
+    return;
+  }
+  
+  const roles = [];
+  if (document.getElementById("roleOrders").checked) roles.push("orders");
+  if (document.getElementById("roleProducts").checked) roles.push("products");
+  if (document.getElementById("roleWarehouse").checked) roles.push("warehouse");
+  if (document.getElementById("roleLeads").checked) roles.push("leads");
+  if (document.getElementById("roleAppointments").checked) roles.push("appointments");
+  if (document.getElementById("roleReports").checked) roles.push("reports");
+  if (document.getElementById("roleMessenger").checked) roles.push("messenger");
+  if (document.getElementById("roleSettings").checked) roles.push("settings");
+  
+  const newEmployee = {
+    id: employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1,
+    name,
+    email,
+    position,
+    status,
+    roles,
+    lastActive: "Только что",
+    device: "-",
+    ip: "-"
+  };
+  
+  employees.push(newEmployee);
+  renderEmployees();
+  closeEmployeeModal();
+  showToast("Сотрудник успешно добавлен!");
+}
+
+function editEmployee(id) {
+  openEmployeeModal(id);
+}
+
+function deleteEmployee(id) {
+  if (confirm("Вы уверены, что хотите удалить этого сотрудника?")) {
+    employees = employees.filter(e => e.id !== id);
+    renderEmployees();
+    showToast("Сотрудник удален");
+  }
+}
+
+function terminateSession(id) {
+  if (confirm("Завершить эту сессию?")) {
+    activeSessions = activeSessions.filter(s => s.id !== id);
+    renderActiveSessions();
+    showToast("Сессия завершена");
+  }
+}
+
 }
 
 function selectPaymentType(type) {
