@@ -4309,8 +4309,6 @@ function terminateSession(id) {
   }
 }
 
-}
-
 function selectPaymentType(type) {
   const paymentTypes = {
     individual: { name: 'Kaspi Pay', description: 'Для физических лиц' },
@@ -4720,8 +4718,7 @@ renderProposals();
 renderLeads();
 renderAppointments();
 renderSubscription();
-renderFlows();
-renderEventLogs();
+// Flows and Event Logs will be rendered when their tabs are opened
 </script>
 </body>
 </html>
