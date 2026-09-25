@@ -74,6 +74,24 @@ tailwind.config = {
   .tab-content { animation: fadeIn 0.25s ease-out; }
   .connector-card { transition: all 0.2s ease; }
   .connector-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(47, 43, 61, 0.12); }
+  /* ============ GLOBAL SEARCH (Ctrl+K) ============ */
+  #globalSearchModal { display: none; }
+  #globalSearchModal.open { display: flex; }
+  .gs-item { cursor: pointer; }
+  .gs-item.selected { background: rgba(45, 149, 131, 0.08); border-color: #2d9583; }
+  kbd { font-family: 'Inter', sans-serif; }
+  /* ============ MOCKUP INTERACTIONS ============ */
+  .ai-chip-btn { transition: all 0.15s ease; }
+  .ai-chip-btn:hover { transform: translateY(-1px); }
+  .ai-chip-btn.active { background: #2d9583 !important; color: #fff !important; border-color: #2d9583 !important; box-shadow: 0 4px 14px rgba(45,149,131,.35); }
+  .score-ring { transition: stroke-dashoffset 0.8s ease; }
+  .lang-opt { cursor: pointer; transition: all 0.15s; }
+  .lang-opt.selected { border-color: #2d9583 !important; background: rgba(45,149,131,0.06) !important; box-shadow: 0 0 0 1px #2d9583 inset; }
+  .tone-opt { cursor: pointer; transition: all 0.15s; }
+  .tone-opt.selected { outline: 2px solid #2d9583; outline-offset: 2px; }
+  .cat-rule { transition: all 0.15s; }
+  .cat-rule:hover { box-shadow: 0 4px 14px rgba(47,43,61,.1); }
+  .funnel-bar { transition: width 0.6s ease; }
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -111,6 +129,11 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       Лиды
     </a>
+    <a href="#" onclick="switchTab('lead-scoring'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="lead-scoring">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+      Lead Scoring
+      <span class="ml-auto badge-new">NEW</span>
+    </a>
     <a href="#" onclick="switchTab('orders'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="orders">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-6-3h6m-6 3h6M9 14h6m-6 3h6"/></svg>
       Заказы
@@ -126,6 +149,11 @@ tailwind.config = {
       Склад
       <span class="ml-auto badge-new">NEW</span>
     </a>
+    <a href="#" onclick="switchTab('wa-commerce'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="wa-commerce">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      WhatsApp Commerce
+      <span class="ml-auto badge-new">NEW</span>
+    </a>
     <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       Задачи
@@ -138,6 +166,16 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
       AI Автоматизация
       <span class="ml-auto bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">PRO</span>
+    </a>
+    <a href="#" onclick="switchTab('ai-tools'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="ai-tools">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+      AI Инструменты
+      <span class="ml-auto badge-new">NEW</span>
+    </a>
+    <a href="#" onclick="switchTab('incoming-routing'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="incoming-routing">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+      Классификация входящих
+      <span class="ml-auto badge-new">NEW</span>
     </a>
     <a href="#" onclick="switchTab('triggers'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="triggers">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -213,7 +251,7 @@ tailwind.config = {
     </div>
     <div class="flex items-center gap-3">
       <div class="relative">
-        <input type="text" placeholder="Поиск..." class="pl-10 pr-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm w-64 focus:outline-none focus:border-primary transition">
+        <input id="headerSearchInput" type="text" readonly onclick="openGlobalSearch()" placeholder="Поиск... (Ctrl+K)" class="pl-10 pr-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm w-64 focus:outline-none focus:border-primary transition cursor-pointer">
         <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       </div>
       <button class="relative p-2 hover:bg-bgDefault rounded-lg transition">
@@ -420,6 +458,700 @@ tailwind.config = {
           </thead>
           <tbody id="warehouseTable"></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- ============ TAB: WHATSAPP COMMERCE (CATALOG IN WA) ============ -->
+    <div id="tab-wa-commerce" class="tab-content hidden p-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">WhatsApp Commerce <span class="badge-new ml-2 align-middle">NEW</span></h3>
+            <p class="text-sm text-textSecondary mt-1">Каталог товаров внутри WhatsApp — принимайте заказы, не покидая чата (Commerce Manager)</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="mockAction(this,'Синхронизация каталога с Meta запущена ✅')" class="px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-white hover:bg-bgDefault transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Синхронизировать с Meta
+            </button>
+            <button onclick="openWacartPreview()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              Предпросмотр корзины
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="text-xs text-textSecondary mb-1">Товаров в каталоге</div>
+            <div class="text-2xl font-bold">24</div>
+            <div class="text-xs text-success mt-1">▲ 6 за неделю</div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="text-xs text-textSecondary mb-1">Открытий каталога</div>
+            <div class="text-2xl font-bold">1 842</div>
+            <div class="text-xs text-success mt-1">▲ 18% за месяц</div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="text-xs text-textSecondary mb-1">Заказов из WhatsApp</div>
+            <div class="text-2xl font-bold">96</div>
+            <div class="text-xs text-success mt-1">▲ 12% за месяц</div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="text-xs text-textSecondary mb-1">Выручка через каталог</div>
+            <div class="text-2xl font-bold">2.4М ₸</div>
+            <div class="text-xs text-textSecondary mt-1">за текущий месяц</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-5">
+          <!-- Catalog products -->
+          <div class="col-span-2 bg-white rounded-xl border border-divider p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-medium">Каталог для WhatsApp</h4>
+              <span class="status-badge bg-success/10 text-success">● Опубликован в Meta</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="border border-divider rounded-xl p-4 hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center text-2xl flex-shrink-0">👟</div>
+                  <div class="min-w-0 flex-1">
+                    <div class="font-medium text-sm truncate">Nike Air Max 90</div>
+                    <div class="text-xs text-textSecondary">SKU: NM-9042 · 42 шт на складе</div>
+                    <div class="text-sm font-semibold mt-1">89 990 ₸</div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+                  <span class="status-badge bg-success/10 text-success">В каталоге</span>
+                  <button onclick="mockAction(this,'Товар открыт в редакторе каталога')" class="text-xs text-primary font-medium hover:underline">Редактировать</button>
+                </div>
+              </div>
+              <div class="border border-divider rounded-xl p-4 hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-2xl flex-shrink-0">🎧</div>
+                  <div class="min-w-0 flex-1">
+                    <div class="font-medium text-sm truncate">JBL Tune 720BT</div>
+                    <div class="text-xs text-textSecondary">SKU: JBL-720 · 18 шт на складе</div>
+                    <div class="text-sm font-semibold mt-1">45 000 ₸</div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+                  <span class="status-badge bg-success/10 text-success">В каталоге</span>
+                  <button onclick="mockAction(this,'Товар открыт в редакторе каталога')" class="text-xs text-primary font-medium hover:underline">Редактировать</button>
+                </div>
+              </div>
+              <div class="border border-divider rounded-xl p-4 hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center text-2xl flex-shrink-0">⌚</div>
+                  <div class="min-w-0 flex-1">
+                    <div class="font-medium text-sm truncate">Xiaomi Smart Band 8</div>
+                    <div class="text-xs text-textSecondary">SKU: MI-B8 · 7 шт на складе</div>
+                    <div class="text-sm font-semibold mt-1">19 990 ₸</div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+                  <span class="status-badge bg-warning/10 text-warning">Мало остатков</span>
+                  <button onclick="mockAction(this,'Товар открыт в редакторе каталога')" class="text-xs text-primary font-medium hover:underline">Редактировать</button>
+                </div>
+              </div>
+              <div class="border border-dashed border-divider rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition" onclick="mockAction(this,'Добавление товара в каталог WhatsApp')">
+                <div class="w-10 h-10 rounded-lg bg-bgDefault flex items-center justify-center mb-2">
+                  <svg class="w-5 h-5 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                </div>
+                <div class="text-sm font-medium text-textSecondary">Добавить товар</div>
+                <div class="text-xs text-textSecondary mt-0.5">из раздела «Товары»</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone preview + settings -->
+          <div class="space-y-5">
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Как видит клиент</h4>
+              <div class="mx-auto w-52 rounded-[2rem] border-4 border-gray-800 bg-[#ECE5DD] overflow-hidden shadow-inner" style="height: 340px;">
+                <div class="bg-[#075E54] text-white text-xs px-3 py-2 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+                  FlowZap Store
+                </div>
+                <div class="p-2 space-y-2">
+                  <div class="bg-white rounded-lg p-2 shadow-sm">
+                    <div class="text-[10px] text-textSecondary mb-1">Магазин · Каталог</div>
+                    <div class="bg-[#DCF8C6] rounded-lg p-2">
+                      <div class="w-full h-14 rounded bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center text-xl">👟</div>
+                      <div class="text-[10px] font-semibold mt-1">Nike Air Max 90</div>
+                      <div class="text-[10px] text-textSecondary">89 990 ₸</div>
+                    </div>
+                    <button onclick="mockAction(this,'Клиент добавил товар в корзину (демо)')" class="mt-1 w-full text-[10px] bg-primary text-white rounded-md py-1 hover:bg-primaryDark transition">В корзину 🛒</button>
+                  </div>
+                  <div class="bg-white rounded-lg p-2 shadow-sm flex items-center justify-between">
+                    <div class="text-[10px]">Корзина: 1 товар</div>
+                    <button onclick="mockAction(this,'Оформлен тестовый заказ #WA-104 ✅')" class="text-[10px] bg-[#25D366] text-white rounded-md px-2 py-1 hover:opacity-90 transition">Заказать</button>
+                  </div>
+                </div>
+              </div>
+              <p class="text-xs text-textSecondary text-center mt-3">Интерактивный предпросмотр каталога</p>
+            </div>
+
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Настройки магазина</h4>
+              <div class="space-y-4 text-sm">
+                <div class="flex items-center justify-between">
+                  <span>Корзина в чате</span>
+                  <div class="toggle-switch active" onclick="this.classList.toggle('active'); showToggleMessage('Корзина', this.classList.contains('active'))"></div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span>Оплата Kaspi Pay в чате</span>
+                  <div class="toggle-switch active" onclick="this.classList.toggle('active'); showToggleMessage('Kaspi Pay', this.classList.contains('active'))"></div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span>Автоотправка чека после оплаты</span>
+                  <div class="toggle-switch" onclick="this.classList.toggle('active'); showToggleMessage('Автоотправка чека', this.classList.contains('active'))"></div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span>Каталог на казахском языке</span>
+                  <div class="toggle-switch" onclick="this.classList.toggle('active'); showToggleMessage('Казахский язык', this.classList.contains('active'))"></div>
+                </div>
+                <button onclick="mockAction(this,'Настройки магазина сохранены ✅')" class="btn-primary w-full py-2 rounded-lg text-sm font-medium">Сохранить настройки</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: LEAD SCORING ============ -->
+    <div id="tab-lead-scoring" class="tab-content hidden p-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">AI-оценка лида (Lead Scoring) <span class="badge-new ml-2 align-middle">NEW</span></h3>
+            <p class="text-sm text-textSecondary mt-1">Модель оценивает вероятность закрытия каждого лида по 100-балльной шкале</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="recalcScores()" id="recalcScoresBtn" class="px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-white hover:bg-bgDefault transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Пересчитать баллы
+            </button>
+            <button onclick="openScoringModelModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Модель оценки</button>
+          </div>
+        </div>
+
+        <!-- Score distribution -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-success"></span>
+              <span class="text-sm font-medium">Горячие (80–100)</span>
+            </div>
+            <div class="text-2xl font-bold">7 лидов</div>
+            <div class="stock-bar mt-3"><div class="stock-fill bg-success" style="width: 29%"></div></div>
+            <div class="text-xs text-textSecondary mt-1">29% от всех активных</div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-warning"></span>
+              <span class="text-sm font-medium">Тёплые (50–79)</span>
+            </div>
+            <div class="text-2xl font-bold">11 лидов</div>
+            <div class="stock-bar mt-3"><div class="stock-fill bg-warning" style="width: 46%"></div></div>
+            <div class="text-xs text-textSecondary mt-1">46% от всех активных</div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span>
+              <span class="text-sm font-medium">Холодные (0–49)</span>
+            </div>
+            <div class="text-2xl font-bold">5 лидов</div>
+            <div class="stock-bar mt-3"><div class="stock-fill bg-gray-400" style="width: 21%"></div></div>
+            <div class="text-xs text-textSecondary mt-1">21% от всех активных</div>
+          </div>
+        </div>
+
+        <!-- Leads ranked table -->
+        <div class="bg-white rounded-xl border border-divider overflow-hidden mb-6">
+          <div class="px-6 py-4 border-b border-divider flex items-center justify-between">
+            <h4 class="font-medium">Рейтинг лидов по score</h4>
+            <div class="flex gap-2">
+              <button onclick="filterScore(this,'all')" class="score-filter ai-chip-btn active px-3 py-1 rounded-full text-xs border border-divider bg-bgDefault">Все</button>
+              <button onclick="filterScore(this,'hot')" class="score-filter ai-chip-btn px-3 py-1 rounded-full text-xs border border-divider bg-bgDefault">🔥 Горячие</button>
+              <button onclick="filterScore(this,'warm')" class="score-filter ai-chip-btn px-3 py-1 rounded-full text-xs border border-divider bg-bgDefault">Тёплые</button>
+              <button onclick="filterScore(this,'cold')" class="score-filter ai-chip-btn px-3 py-1 rounded-full text-xs border border-divider bg-bgDefault">❄️ Холодные</button>
+            </div>
+          </div>
+          <table class="w-full text-sm">
+            <thead class="bg-bgDefault text-textSecondary text-xs uppercase">
+              <tr>
+                <th class="px-6 py-3 text-left">#</th>
+                <th class="px-6 py-3 text-left">Клиент</th>
+                <th class="px-6 py-3 text-left">Источник</th>
+                <th class="px-6 py-3 text-left">Последнее касание</th>
+                <th class="px-6 py-3 text-left">Score</th>
+                <th class="px-6 py-3 text-left">Факторы AI</th>
+                <th class="px-6 py-3 text-left">Статус</th>
+                <th class="px-6 py-3"></th>
+              </tr>
+            </thead>
+            <tbody id="leadScoreTable"></tbody>
+          </table>
+        </div>
+
+        <!-- One-click dialog summary (mockup of the messenger button) -->
+        <div class="bg-white rounded-xl border border-divider p-6 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h4 class="font-medium">Резюме диалога одним кликом</h4>
+              <p class="text-xs text-textSecondary mt-0.5">Кнопка доступна прямо в карточке лида и внутри чата мессенджера — AI сжимает переписку до 3 строк</p>
+            </div>
+            <button onclick="quickLeadSummary()" id="quickSummaryBtn" class="px-4 py-2 rounded-lg text-sm font-medium border-2 border-primary text-primary hover:bg-primary hover:text-white transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              ⚡ Резюме диалога
+            </button>
+          </div>
+          <div id="quickSummaryResult" class="hidden p-4 bg-indigo-50 border border-indigo-100 rounded-lg text-sm leading-relaxed fade-in">
+            <div class="text-xs font-semibold text-indigo-700 mb-2">📝 Резюме · диалог с Дмитрием Морозовым (47 сообщений)</div>
+            <ul class="space-y-1.5 text-indigo-900/80 list-disc list-inside">
+              <li>Клиент выбрал Nike Air Max 90, просил скидку за объём 2 пар — согласована цена 165 000 ₸</li>
+              <li>Ждёт доставку в Астану, спрашивал про оплату в рассрочку Kaspi</li>
+              <li><b>Следующий шаг:</b> отправить ссылку на рассрочку сегодня до 18:00 (сделка почти закрыта)</li>
+            </ul>
+            <div class="flex gap-2 mt-3">
+              <button onclick="mockAction(this,'Резюме скопировано ✅')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-indigo-200 hover:bg-indigo-100 transition">Скопировать</button>
+              <button onclick="mockAction(this,'Задача по следующему шагу создана ✅')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-indigo-200 hover:bg-indigo-100 transition">Создать задачу из резюме</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Why AI scored -->
+        <div class="bg-white rounded-xl border border-divider p-6">
+          <h4 class="font-medium mb-4">Как считается оценка</h4>
+          <div class="grid grid-cols-4 gap-4 text-sm">
+            <div class="p-4 bg-bgDefault rounded-lg">
+              <div class="font-semibold text-primary">+30 баллов</div>
+              <div class="text-textSecondary mt-1">Открыл прайс и спросил цену в течение суток</div>
+            </div>
+            <div class="p-4 bg-bgDefault rounded-lg">
+              <div class="font-semibold text-primary">+25 баллов</div>
+              <div class="text-textSecondary mt-1">Диалог с менеджером ≥ 5 сообщений</div>
+            </div>
+            <div class="p-4 bg-bgDefault rounded-lg">
+              <div class="font-semibold text-primary">+20 баллов</div>
+              <div class="text-textSecondary mt-1">Был заказ ранее (повторный клиент)</div>
+            </div>
+            <div class="p-4 bg-bgDefault rounded-lg">
+              <div class="font-semibold text-error">−15 баллов</div>
+              <div class="text-textSecondary mt-1">Не отвечает более 7 дней</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: AI TOOLS (SUMMARY / TONE / TRANSLATE) ============ -->
+    <div id="tab-ai-tools" class="tab-content hidden p-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold">AI Инструменты для диалогов <span class="badge-new ml-2 align-middle">NEW</span></h3>
+          <p class="text-sm text-textSecondary mt-1">Резюме переписки одним кликом, определение тональности и перевод ответов клиента</p>
+        </div>
+
+        <!-- Sub-tabs -->
+        <div class="flex gap-2 mb-6">
+          <button onclick="switchAiToolTab(this,'summary')" class="ai-tool-tab ai-chip-btn active px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-bgDefault">📝 Резюме диалога</button>
+          <button onclick="switchAiToolTab(this,'tone')" class="ai-tool-tab ai-chip-btn px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-bgDefault">🎯 Тональность</button>
+          <button onclick="switchAiToolTab(this,'translate')" class="ai-tool-tab ai-chip-btn px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-bgDefault">🌐 Перевод</button>
+        </div>
+
+        <!-- SUMMARY TOOL -->
+        <div id="aitool-summary" class="ai-tool-content">
+          <div class="grid grid-cols-2 gap-5">
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-medium">Исходный диалог</h4>
+                <span class="chip bg-green-100 text-green-700">WhatsApp · Асель Ж.</span>
+              </div>
+              <div class="space-y-3 max-h-96 overflow-y-auto scrollbar-thin pr-2 text-sm" id="sumDialog">
+                <div class="flex gap-2"><div class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">А</div><div class="bg-bgDefault rounded-xl px-3 py-2 max-w-[80%]">Здравствуйте! Заказывала кроссовки №1042, когда будет доставка?</div></div>
+                <div class="flex gap-2 flex-row-reverse"><div class="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs flex-shrink-0">М</div><div class="bg-primary/10 rounded-xl px-3 py-2 max-w-[80%]">Добрый день! Заказ передан в службу доставки, ориентировочно завтра до 18:00.</div></div>
+                <div class="flex gap-2"><div class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">А</div><div class="bg-bgDefault rounded-xl px-3 py-2 max-w-[80%]">Можно перенести на субботу? Завтра не буду дома</div></div>
+                <div class="flex gap-2"><div class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">А</div><div class="bg-bgDefault rounded-xl px-3 py-2 max-w-[80%]">И ещё вопрос — есть ли размер 39? Хочу заказать вторую пару подруге 🙏</div></div>
+                <div class="flex gap-2 flex-row-reverse"><div class="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs flex-shrink-0">М</div><div class="bg-primary/10 rounded-xl px-3 py-2 max-w-[80%]">Уточню у склада и напишу вам в течение часа.</div></div>
+                <div class="flex gap-2"><div class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">А</div><div class="bg-bgDefault rounded-xl px-3 py-2 max-w-[80%]">Спасибо! Жду. Если будет 39 — бронируйте сразу, оплачу Kaspi.</div></div>
+              </div>
+              <button onclick="generateSummary()" id="genSummaryBtn" class="btn-primary w-full mt-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Сгенерировать резюме
+              </button>
+            </div>
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Резюме диалога</h4>
+              <div id="summaryResult" class="text-sm text-textSecondary italic">Нажмите «Сгенерировать резюме» — AI выделит суть обращения, договорённости и следующие шаги за 2 секунды.</div>
+              <div id="summaryActions" class="hidden mt-4 space-y-3">
+                <div class="p-4 bg-bgDefault rounded-lg">
+                  <div class="text-xs font-semibold text-textPrimary mb-2">✅ Договорённости</div>
+                  <ul class="space-y-1.5 text-sm text-textSecondary list-disc list-inside">
+                    <li>Доставка заказа №1042 перенесена на субботу</li>
+                    <li>Проверить наличие размера 39 и сообщить до 15:00</li>
+                  </ul>
+                </div>
+                <div class="p-4 bg-bgDefault rounded-lg">
+                  <div class="text-xs font-semibold text-textPrimary mb-2">📌 Следующий шаг</div>
+                  <div class="text-sm text-textSecondary">Уточнить на складе размер 39 → забронировать → отправить ссылку Kaspi на оплату</div>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="mockAction(this,'Резюме отправлено в чат клиенту ✅')" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium border border-divider bg-white hover:bg-bgDefault transition">Отправить в чат</button>
+                  <button onclick="mockAction(this,'Резюме добавлено в карточку клиента ✅')" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium border border-divider bg-white hover:bg-bgDefault transition">В карточку клиента</button>
+                  <button onclick="copySummary()" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium border border-divider bg-white hover:bg-bgDefault transition">Скопировать</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TONE TOOL -->
+        <div id="aitool-tone" class="ai-tool-content hidden">
+          <div class="grid grid-cols-2 gap-5">
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Анализ тональности сообщения</h4>
+              <textarea id="toneInput" rows="5" class="w-full px-4 py-3 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary resize-none">Здравствуйте. Я уже третий раз прошу вернуть деньги! Это непонятно что такое, я больше ничего у вас покупать не буду!!!</textarea>
+              <button onclick="analyzeTone()" id="analyzeToneBtn" class="btn-primary w-full mt-3 py-2.5 rounded-lg text-sm font-medium">Проанализировать</button>
+              <div class="mt-4">
+                <div class="text-xs font-medium text-textSecondary mb-2">Примеры для проверки:</div>
+                <div class="flex flex-wrap gap-2">
+                  <button onclick="setToneExample(0)" class="ai-chip-btn px-3 py-1.5 rounded-full text-xs border border-divider bg-bgDefault hover:border-primary">😡 Претензия</button>
+                  <button onclick="setToneExample(1)" class="ai-chip-btn px-3 py-1.5 rounded-full text-xs border border-divider bg-bgDefault hover:border-primary">🙂 Обычный вопрос</button>
+                  <button onclick="setToneExample(2)" class="ai-chip-btn px-3 py-1.5 rounded-full text-xs border border-divider bg-bgDefault hover:border-primary">🤩 Готов купить</button>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Результат анализа</h4>
+              <div id="toneResult" class="text-sm text-textSecondary italic">AI определит эмоцию клиента, риск потери и предложит тон ответа.</div>
+              <div id="toneResultBox" class="hidden space-y-4">
+                <div class="flex items-center gap-4">
+                  <div id="toneEmoji" class="text-4xl">😡</div>
+                  <div>
+                    <div id="toneLabel" class="font-semibold">Негативная · высокий риск</div>
+                    <div id="toneConfidence" class="text-xs text-textSecondary">Уверенность модели: 96%</div>
+                  </div>
+                  <div class="ml-auto text-right">
+                    <div id="toneRiskLabel" class="text-xs text-textSecondary">Риск оттока</div>
+                    <div id="toneRiskValue" class="text-xl font-bold text-error">82%</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-xs font-medium text-textSecondary mb-2">Эмоциональная шкала</div>
+                  <div class="h-2 rounded-full bg-gradient-to-r from-error via-warning to-success relative">
+                    <div id="toneMarker" class="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 border-textPrimary shadow transition-all duration-500" style="left: 8%"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-textSecondary mt-1"><span>Негатив</span><span>Нейтрально</span><span>Позитив</span></div>
+                </div>
+                <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                  <div class="text-xs font-semibold text-indigo-700 mb-1">💡 Рекомендуемый тон ответа</div>
+                  <div id="toneAdvice" class="text-sm text-indigo-900/80">Эмпатичный + конкретика. Начните с извинений, назовите точный срок возврата и имя ответственного менеджера.</div>
+                </div>
+                <button onclick="mockAction(this,'Шаблон ответа с рекомендованным тоном создан ✅')" class="w-full px-3 py-2 rounded-lg text-xs font-medium border border-divider bg-white hover:bg-bgDefault transition">Сгенерировать ответ в этом тоне</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRANSLATE TOOL -->
+        <div id="aitool-translate" class="ai-tool-content hidden">
+          <div class="grid grid-cols-2 gap-5">
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Исходное сообщение клиента</h4>
+              <div class="p-4 bg-bgDefault rounded-lg text-sm leading-relaxed">Сәлеметсіз бе! Тапсырыс №1045 қашан жеткізіледі? Мен сенбіге ауыстыра аласыз ба деп ойладым.</div>
+              <div class="mt-4">
+                <div class="text-xs font-medium text-textSecondary mb-2">Перевести на:</div>
+                <div class="flex gap-2">
+                  <div class="lang-opt selected border border-divider rounded-lg px-4 py-2 text-sm flex-1 text-center" onclick="selectLang(this,'ru')">🇷🇺 Русский</div>
+                  <div class="lang-opt border border-divider rounded-lg px-4 py-2 text-sm flex-1 text-center" onclick="selectLang(this,'en')">🇬🇧 English</div>
+                  <div class="lang-opt border border-divider rounded-lg px-4 py-2 text-sm flex-1 text-center" onclick="selectLang(this,'uz')">🇺🇿 O'zbek</div>
+                </div>
+              </div>
+              <div class="mt-4 flex items-center justify-between text-sm">
+                <span>Автоопределение языка входящих</span>
+                <div class="toggle-switch active" onclick="this.classList.toggle('active'); showToggleMessage('Автоопределение языка', this.classList.contains('active'))"></div>
+              </div>
+              <button onclick="translateMessage()" id="translateBtn" class="btn-primary w-full mt-4 py-2.5 rounded-lg text-sm font-medium">Перевести</button>
+            </div>
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Перевод <span class="text-xs text-textSecondary font-normal">(для менеджера)</span></h4>
+              <div id="translateResult" class="text-sm text-textSecondary italic">AI переведёт сообщение с сохранением смысла и эмоций — менеджер сможет ответить на своём языке.</div>
+              <div id="translateResultBox" class="hidden">
+                <div class="p-4 bg-primary/5 border border-primary/20 rounded-lg text-sm leading-relaxed" id="translateOutput"></div>
+                <div class="flex items-center gap-2 mt-3 text-xs text-textSecondary">
+                  <span class="status-badge bg-success/10 text-success">kz → ru</span>
+                  <span>Точность перевода: 98% · стиль сохранён</span>
+                </div>
+                <div class="mt-4 p-4 bg-bgDefault rounded-lg">
+                  <div class="text-xs font-semibold mb-2">Ответ клиенту на его языке (предпросмотр):</div>
+                  <div class="text-sm text-textSecondary">«Сәлеметсіз бе! Тапсырысыңыз сенбі күні сағат 18:00-ге дейін жеткізіледі. Рақмет!»</div>
+                </div>
+                <div class="flex gap-2 mt-4">
+                  <button onclick="mockAction(this,'Перевод скопирован в буфер ✅')" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium border border-divider bg-white hover:bg-bgDefault transition">Скопировать</button>
+                  <button onclick="mockAction(this,'Ответ на языке клиента отправлен в WhatsApp ✅')" class="flex-1 btn-primary px-3 py-2 rounded-lg text-xs font-medium">Отправить клиенту</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: AUTO-CLASSIFICATION OF INCOMING ============ -->
+    <div id="tab-incoming-routing" class="tab-content hidden p-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">Автоклассификация входящих <span class="badge-new ml-2 align-middle">NEW</span></h3>
+            <p class="text-sm text-textSecondary mt-1">AI определяет намерение клиента по первому сообщению и маршрутизирует диалог нужному специалисту</p>
+          </div>
+          <button onclick="testClassifier()" id="testClassifierBtn" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            Протестировать классификатор
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-5">
+          <div class="col-span-2 space-y-5">
+            <!-- Categories rules -->
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Правила автоклассификации</h4>
+              <div class="space-y-3">
+                <div class="cat-rule flex items-center gap-4 p-4 border border-divider rounded-lg">
+                  <span class="text-2xl">🛒</span>
+                  <div class="flex-1">
+                    <div class="font-medium text-sm">Покупка / запрос цены</div>
+                    <div class="text-xs text-textSecondary">«сколько стоит», «куплю», «прайс», «скидка» → отдел продаж</div>
+                  </div>
+                  <span class="chip bg-green-100 text-green-700">38% входящих</span>
+                  <div class="toggle-switch active" onclick="this.classList.toggle('active'); showToggleMessage('Правило «Покупка»', this.classList.contains('active'))"></div>
+                </div>
+                <div class="cat-rule flex items-center gap-4 p-4 border border-divider rounded-lg">
+                  <span class="text-2xl">🔧</span>
+                  <div class="flex-1">
+                    <div class="font-medium text-sm">Проблема / гарантия</div>
+                    <div class="text-xs text-textSecondary">«сломался», «возврат», «брак», «гарантия» → поддержка, приоритет ↑</div>
+                  </div>
+                  <span class="chip bg-red-100 text-red-700">17% входящих</span>
+                  <div class="toggle-switch active" onclick="this.classList.toggle('active'); showToggleMessage('Правило «Проблема»', this.classList.contains('active'))"></div>
+                </div>
+                <div class="cat-rule flex items-center gap-4 p-4 border border-divider rounded-lg">
+                  <span class="text-2xl">🚚</span>
+                  <div class="flex-1">
+                    <div class="font-medium text-sm">Доставка / статус заказа</div>
+                    <div class="text-xs text-textSecondary">«где заказ», «доставка», «когда привезут» → логистика</div>
+                  </div>
+                  <span class="chip bg-blue-100 text-blue-700">29% входящих</span>
+                  <div class="toggle-switch active" onclick="this.classList.toggle('active'); showToggleMessage('Правило «Доставка»', this.classList.contains('active'))"></div>
+                </div>
+                <div class="cat-rule flex items-center gap-4 p-4 border border-divider rounded-lg">
+                  <span class="text-2xl">🤖</span>
+                  <div class="flex-1">
+                    <div class="font-medium text-sm">Не определено</div>
+                    <div class="text-xs text-textSecondary">Отдать AI-агенту, при недостижимости цели — эскалация менеджеру</div>
+                  </div>
+                  <span class="chip bg-gray-200 text-gray-700">16% входящих</span>
+                  <div class="toggle-switch active" onclick="this.classList.toggle('active'); showToggleMessage('AI-агент для неопределённых', this.classList.contains('active'))"></div>
+                </div>
+                <button onclick="mockAction(this,'Новое правило классификации — откройте конструктор правил')" class="w-full py-2.5 border border-dashed border-divider rounded-lg text-sm text-textSecondary hover:border-primary hover:text-primary transition">+ Добавить правило</button>
+              </div>
+            </div>
+
+            <!-- Live classification feed -->
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-medium">Живая лента классификации</h4>
+                <span class="status-badge bg-success/10 text-success pulse-dot">● онлайн</span>
+              </div>
+              <div class="space-y-3 text-sm" id="classFeed">
+                <div class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg fade-in">
+                  <span class="text-xs text-textSecondary w-14 flex-shrink-0">14:32</span>
+                  <div class="flex-1 truncate">«Здравствуйте, скиньте прайс на зимнюю коллекцию»</div>
+                  <span class="chip bg-green-100 text-green-700 flex-shrink-0">🛒 Покупка</span>
+                  <span class="text-xs text-textSecondary flex-shrink-0">→ Айгуль (продажи)</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg fade-in">
+                  <span class="text-xs text-textSecondary w-14 flex-shrink-0">14:28</span>
+                  <div class="flex-1 truncate">«Кроссовки разошлись через неделю, хочу возврат»</div>
+                  <span class="chip bg-red-100 text-red-700 flex-shrink-0">🔧 Проблема</span>
+                  <span class="text-xs text-textSecondary flex-shrink-0">→ поддержка · приоритет</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg fade-in">
+                  <span class="text-xs text-textSecondary w-14 flex-shrink-0">14:21</span>
+                  <div class="flex-1 truncate">«Когда приедет мой заказ №1039?»</div>
+                  <span class="chip bg-blue-100 text-blue-700 flex-shrink-0">🚚 Доставка</span>
+                  <span class="text-xs text-textSecondary flex-shrink-0">→ логистика</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-bgDefault rounded-lg fade-in">
+                  <span class="text-xs text-textSecondary w-14 flex-shrink-0">14:15</span>
+                  <div class="flex-1 truncate">«Сәлеметсіз бе, тапсырыс бойынша…»</div>
+                  <span class="chip bg-purple-100 text-purple-700 flex-shrink-0">🌐 KZ → автоперевод</span>
+                  <span class="text-xs text-textSecondary flex-shrink-0">→ AI-агент</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Side stats -->
+          <div class="space-y-5">
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Точность модели</h4>
+              <div class="flex items-center justify-center my-2">
+                <div class="relative w-32 h-32">
+                  <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke="#F0EFF3" stroke-width="10"/>
+                    <circle id="accRing" class="score-ring" cx="60" cy="60" r="52" fill="none" stroke="#2d9583" stroke-width="10" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="26"/>
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <div class="text-2xl font-bold">92%</div>
+                    <div class="text-[10px] text-textSecondary">точность</div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-xs text-textSecondary text-center">за последние 7 дней · 412 сообщений</div>
+            </div>
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-4">Распределение по типам</h4>
+              <div class="space-y-3 text-xs">
+                <div><div class="flex justify-between mb-1"><span>🛒 Покупка</span><span>38%</span></div><div class="stock-bar"><div class="stock-fill bg-success" style="width:38%"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>🚚 Доставка</span><span>29%</span></div><div class="stock-bar"><div class="stock-fill bg-info" style="width:29%"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>🔧 Проблема</span><span>17%</span></div><div class="stock-bar"><div class="stock-fill bg-error" style="width:17%"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>🤖 Не определено</span><span>16%</span></div><div class="stock-bar"><div class="stock-fill bg-gray-400" style="width:16%"></div></div></div>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl border border-divider p-6">
+              <h4 class="font-medium mb-3">Экономия времени</h4>
+              <div class="text-2xl font-bold text-primary">~3.5 ч<span class="text-sm font-normal text-textSecondary"> /день</span></div>
+              <p class="text-xs text-textSecondary mt-2">Менеджеры больше не распределяют чаты вручную — AI делает это за секунды.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: AI FORECASTING ============ -->
+    <div id="tab-forecasting" class="tab-content hidden p-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">Прогноз продаж (AI Forecasting) <span class="badge-new ml-2 align-middle">NEW</span></h3>
+            <p class="text-sm text-textSecondary mt-1">ML-модель прогнозирует выручку на основе воронки, сезонности и истории заказов</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="mockAction(this,'Отчет по прогнозу выгружен в XLSX 📊')" class="px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-white hover:bg-bgDefault transition">Выгрузить отчет</button>
+            <button onclick="retrainForecast()" id="retrainBtn" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Обновить прогноз</button>
+          </div>
+        </div>
+
+        <!-- Horizon chips -->
+        <div class="flex gap-2 mb-6">
+          <button onclick="setForecastHorizon(this,'week')" class="fx-chip ai-chip-btn active px-4 py-1.5 rounded-full text-xs font-medium border border-divider bg-bgDefault">Неделя</button>
+          <button onclick="setForecastHorizon(this,'month')" class="fx-chip ai-chip-btn px-4 py-1.5 rounded-full text-xs font-medium border border-divider bg-bgDefault">Месяц</button>
+          <button onclick="setForecastHorizon(this,'quarter')" class="fx-chip ai-chip-btn px-4 py-1.5 rounded-full text-xs font-medium border border-divider bg-bgDefault">Квартал</button>
+        </div>
+
+        <!-- KPI cards -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="text-xs text-textSecondary mb-1">Прогноз выручки</div>
+            <div class="text-2xl font-bold" id="fxRevenue">8.2М ₸</div>
+            <div class="text-xs text-success mt-1">▲ +14% к прошлому периоду</div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="text-xs text-textSecondary mb-1">Вероятность выполнения плана</div>
+            <div class="text-2xl font-bold" id="fxProb">78%</div>
+            <div class="stock-bar mt-2"><div class="stock-fill bg-primary" id="fxProbBar" style="width:78%"></div></div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="text-xs text-textSecondary mb-1">Ожидается заказов</div>
+            <div class="text-2xl font-bold" id="fxOrders">142</div>
+            <div class="text-xs text-textSecondary mt-1">из них 61 по активным лидам</div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5">
+            <div class="text-xs text-textSecondary mb-1">Точность модели</div>
+            <div class="text-2xl font-bold">±9%</div>
+            <div class="text-xs text-textSecondary mt-1">MAPE за прошлый месяц</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-5 mb-6">
+          <!-- Chart -->
+          <div class="col-span-2 bg-white rounded-xl border border-divider p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-medium">Факт vs Прогноз</h4>
+              <div class="flex items-center gap-4 text-xs text-textSecondary">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-1.5 rounded bg-primary inline-block"></span>Факт</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-1.5 rounded bg-indigo-400 inline-block" style="border-top:2px dashed"></span>Прогноз AI</span>
+              </div>
+            </div>
+            <svg viewBox="0 0 600 240" class="w-full">
+              <defs>
+                <linearGradient id="fxGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2d9583" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#2d9583" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g stroke="#EFEDF2" stroke-width="1"><line x1="40" y1="40" x2="580" y2="40"/><line x1="40" y1="90" x2="580" y2="90"/><line x1="40" y1="140" x2="580" y2="140"/><line x1="40" y1="190" x2="580" y2="190"/></g>
+              <path d="M40,170 L130,150 L220,158 L310,120 L340,110" fill="none" stroke="#2d9583" stroke-width="3" stroke-linecap="round"/>
+              <path d="M40,170 L130,150 L220,158 L310,120 L340,110 L340,190 L40,190 Z" fill="url(#fxGrad)"/>
+              <path d="M340,110 L430,88 L520,70 L580,55" fill="none" stroke="#818CF8" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/>
+              <path d="M340,110 L430,75 L520,50 L580,32 L580,80 L520,92 L430,102 L340,110 Z" fill="#818CF8" opacity="0.12"/>
+              <circle cx="340" cy="110" r="5" fill="#fff" stroke="#2d9583" stroke-width="3"/>
+              <text x="340" y="132" font-size="10" fill="rgba(47,43,61,0.7)" text-anchor="middle">сегодня</text>
+              <text x="580" y="24" font-size="11" fill="#6366F1" text-anchor="end">8.2М ₸</text>
+              <g font-size="10" fill="rgba(47,43,61,0.5)">
+                <text x="60" y="215">Нед 1</text><text x="150" y="215">Нед 2</text><text x="240" y="215">Нед 3</text><text x="320" y="215">Нед 4</text><text x="420" y="215">Нед 5</text><text x="510" y="215">Нед 6</text>
+              </g>
+            </svg>
+            <div class="text-xs text-textSecondary mt-2 text-center">Пунктир — прогноз AI с доверительным интервалом (±9%)</div>
+          </div>
+
+          <!-- Insights -->
+          <div class="bg-white rounded-xl border border-divider p-6">
+            <h4 class="font-medium mb-4">Инсайты AI</h4>
+            <div class="space-y-3 text-sm">
+              <div class="p-3 bg-green-50 border border-green-100 rounded-lg">
+                <div class="text-xs font-semibold text-green-700 mb-1">📈 Рост</div>
+                <div class="text-textSecondary text-xs">Спрос на кроссовки вырастет на ~22% к выходным — рекомендуем пополнить размеры 39–42.</div>
+              </div>
+              <div class="p-3 bg-amber-50 border border-amber-100 rounded-lg">
+                <div class="text-xs font-semibold text-amber-700 mb-1">⚠️ Риск</div>
+                <div class="text-textSecondary text-xs">3 крупных лида (потенциал 1.1М ₸) молчат более 5 дней — нужен контрольный звонок.</div>
+              </div>
+              <div class="p-3 bg-blue-50 border border-blue-100 rounded-lg">
+                <div class="text-xs font-semibold text-blue-700 mb-1">💡 Возможность</div>
+                <div class="text-textSecondary text-xs">Клиенты, купившие наушники, в 34% случаев докупают чехол в течение 2 недель.</div>
+              </div>
+              <button onclick="mockAction(this,'Все инсайты отправлены руководителю отдела продаж ✉️')" class="w-full py-2 rounded-lg text-xs font-medium border border-divider bg-white hover:bg-bgDefault transition">Отправить инсайты руководителю</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Funnel forecast -->
+        <div class="bg-white rounded-xl border border-divider p-6">
+          <h4 class="font-medium mb-4">Вклад этапов воронки в прогноз</h4>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span>Новые лиды (скоринг &lt; 50)</span><span class="text-textSecondary">конверсия 4% → <b class="text-textPrimary">0.3М ₸</b></span></div>
+              <div class="stock-bar h-3"><div class="stock-fill bg-gray-300 funnel-bar" style="width: 12%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span>В работе</span><span class="text-textSecondary">конверсия 12% → <b class="text-textPrimary">1.4М ₸</b></span></div>
+              <div class="stock-bar h-3"><div class="stock-fill bg-info funnel-bar" style="width: 30%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span>Предложение отправлено</span><span class="text-textSecondary">конверсия 28% → <b class="text-textPrimary">2.9М ₸</b></span></div>
+              <div class="stock-bar h-3"><div class="stock-fill bg-warning funnel-bar" style="width: 55%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span>Переговоры (score 80+)</span><span class="text-textSecondary">конверсия 61% → <b class="text-textPrimary">3.6М ₸</b></span></div>
+              <div class="stock-bar h-3"><div class="stock-fill bg-success funnel-bar" style="width: 78%"></div></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1774,6 +2506,104 @@ tailwind.config = {
   </div>
 </main>
 
+<!-- ============ GLOBAL SEARCH MODAL (Ctrl+K / Cmd+K) ============ -->
+<div id="globalSearchModal" class="fixed inset-0 z-[9997] modal-backdrop items-start justify-center pt-[12vh] px-4" onclick="if(event.target===this) closeGlobalSearch()">
+  <div class="bg-white rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden slide-in">
+    <!-- Input -->
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-divider">
+      <svg class="w-5 h-5 text-textSecondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input id="globalSearchInput" type="text" autocomplete="off" placeholder="Поиск: лиды, заказы, товары, клиенты, страницы..." class="flex-1 text-sm focus:outline-none bg-transparent" oninput="runGlobalSearch()">
+      <kbd class="px-2 py-1 text-[10px] font-semibold text-textSecondary bg-bgDefault border border-divider rounded-md">ESC</kbd>
+    </div>
+    <!-- Quick pages -->
+    <div id="gsQuickPages" class="px-5 py-3 border-b border-divider">
+      <div class="text-[10px] uppercase tracking-wider text-textSecondary font-semibold mb-2">Быстрый переход</div>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="switchTab('leads'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">📋 Лиды</button>
+        <button onclick="switchTab('orders'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">🧾 Заказы</button>
+        <button onclick="switchTab('warehouse'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">📦 Склад</button>
+        <button onclick="switchTab('wa-commerce'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">🛍️ WhatsApp Commerce</button>
+        <button onclick="switchTab('lead-scoring'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">🎯 Lead Scoring</button>
+        <button onclick="switchTab('forecasting'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">📈 Прогноз продаж</button>
+      </div>
+    </div>
+    <!-- Results -->
+    <div id="gsResults" class="max-h-[50vh] overflow-y-auto scrollbar-thin p-2"></div>
+    <!-- Footer hints -->
+    <div class="px-5 py-3 bg-bgDefault border-t border-divider flex items-center gap-4 text-[11px] text-textSecondary">
+      <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 bg-white border border-divider rounded text-[10px]">↑↓</kbd> навигация</span>
+      <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 bg-white border border-divider rounded text-[10px]">Enter</kbd> открыть</span>
+      <span class="ml-auto">FlowZap Global Search · mockup</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LEAD DETAIL / SCORING MODAL ============ -->
+<div id="leadScoreModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl slide-in overflow-hidden">
+    <div class="p-6 border-b border-divider flex items-start justify-between">
+      <div class="flex items-center gap-4">
+        <div id="lsModalAvatar" class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primaryDark text-white flex items-center justify-center font-bold">ДМ</div>
+        <div>
+          <h3 id="lsModalName" class="font-semibold text-lg">Дмитрий Морозов</h3>
+          <p id="lsModalMeta" class="text-xs text-textSecondary">WhatsApp · входящий с рекламы · менеджер: Айгуль</p>
+        </div>
+      </div>
+      <button onclick="closeLeadScoreModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center gap-6 mb-6">
+        <div class="relative w-28 h-28 flex-shrink-0">
+          <svg class="w-28 h-28 -rotate-90" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#F0EFF3" stroke-width="10"/>
+            <circle id="lsModalRing" class="score-ring" cx="60" cy="60" r="52" fill="none" stroke="#28C76F" stroke-width="10" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="65"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div id="lsModalScore" class="text-2xl font-bold">80</div>
+            <div class="text-[10px] text-textSecondary">из 100</div>
+          </div>
+        </div>
+        <div class="flex-1 space-y-2 text-sm" id="lsModalFactors">
+          <!-- filled by JS -->
+        </div>
+      </div>
+      <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-lg mb-5">
+        <div class="text-xs font-semibold text-indigo-700 mb-1">🤖 Рекомендация AI</div>
+        <div id="lsModalAdvice" class="text-sm text-indigo-900/80">Свяжитесь сегодня до 18:00 — клиент готов к сделке.</div>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="mockAction(this,'Задача «Позвонить лиду» создана ✅')" class="btn-primary py-2 rounded-lg text-xs font-medium">Позвонить</button>
+        <button onclick="mockAction(this,'Черновка письма открыта в мессенджере ✉️')" class="py-2 rounded-lg text-xs font-medium border border-divider bg-white hover:bg-bgDefault transition">Написать</button>
+        <button onclick="mockAction(this,'Лид переведён на этап «Переговоры» ✅')" class="py-2 rounded-lg text-xs font-medium border border-divider bg-white hover:bg-bgDefault transition">В переговоры</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCORING MODEL MODAL ============ -->
+<div id="scoringModelModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between">
+      <h3 class="font-semibold text-lg">Модель оценки лидов</h3>
+      <button onclick="document.getElementById('scoringModelModal').classList.add('hidden')" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-4 text-sm">
+      <div class="flex items-center justify-between"><span>Источник: реклама / Instagram</span><span class="chip bg-success/10 text-success">+15</span></div>
+      <div class="flex items-center justify-between"><span>Спросил цену в первый день</span><span class="chip bg-success/10 text-success">+30</span></div>
+      <div class="flex items-center justify-between"><span>Диалог ≥ 5 сообщений</span><span class="chip bg-success/10 text-success">+25</span></div>
+      <div class="flex items-center justify-between"><span>Повторный клиент</span><span class="chip bg-success/10 text-success">+20</span></div>
+      <div class="flex items-center justify-between"><span>Молчит более 7 дней</span><span class="chip bg-error/10 text-error">−15</span></div>
+      <div class="flex items-center justify-between"><span>Отказ от звонка</span><span class="chip bg-error/10 text-error">−25</span></div>
+      <div class="pt-2 border-t border-divider text-xs text-textSecondary">Порог «горячего» лида: <b class="text-textPrimary">80 баллов</b>. Модель переобучается каждую ночь.</div>
+      <button onclick="document.getElementById('scoringModelModal').classList.add('hidden'); showToast('Параметры модели сохранены ✅')" class="btn-primary w-full py-2.5 rounded-lg text-sm font-medium">Сохранить параметры</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ ORDER MODAL ============ -->
 <div id="orderModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
   <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
@@ -2466,8 +3296,10 @@ const LOCATION_MAP = {
   transit: 'Транзит',
 };
 
-// ============ TAB SWITCHING ============
+// ---------- TAB SWITCHING ----------
 function switchTab(tab) {
+  const target = document.getElementById('tab-' + tab);
+  if (!target) { showToast('Раздел «' + tab + '» доступен только на живом стенде (mockup)'); return; }
   document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
   document.getElementById('tab-' + tab).classList.remove('hidden');
   
@@ -2489,6 +3321,11 @@ function switchTab(tab) {
     subscription: ['Оплата и подписка', 'Управление тарифом и оплатой'],
     connectors: ['Коннекторы', 'Интеграции со сторонними сервисами'],
     suggestions: ['Предложения', 'Поделитесь идеями по улучшению платформы'],
+    'wa-commerce': ['WhatsApp Commerce', 'Каталог товаров и продажи внутри WhatsApp'],
+    'lead-scoring': ['Lead Scoring', 'AI-оценка перспективности лидов'],
+    'ai-tools': ['AI Инструменты', 'Резюме диалогов, тональность и перевод'],
+    'incoming-routing': ['Автоклассификация входящих', 'AI маршрутизирует диалоги нужным специалистам'],
+    forecasting: ['Прогноз продаж', 'AI Forecasting — ML-прогноз выручки и спроса'],
   };
   
   document.getElementById('pageTitle').textContent = titles[tab] ? titles[tab][0] : 'FlowZap';
@@ -2501,6 +3338,7 @@ function switchTab(tab) {
   if (tab === 'triggers') renderTriggers();
   if (tab === 'leads') renderLeads();
   if (tab === 'appointments') renderAppointments();
+  if (tab === 'lead-scoring') renderLeadScores();
 }
 
 // ============ AI AUTOMATION TABS ============
@@ -4039,6 +4877,386 @@ function endTour() {
     if (el) { el.style.boxShadow = ''; el.style.zIndex = ''; el.style.borderRadius = ''; el.style.transition = ''; el.style.position = ''; }
   });
   tourStep = 0;
+}
+
+// ============================================================
+// ============ NEW FEATURE MOCKUPS (v2) ======================
+// ============================================================
+
+// ---------- Utils for mockups ----------
+function mockAction(el, message) { showToast(message); }
+function showToggleMessage(name, on) { showToast(`${name}: ${on ? 'включено' : 'выключено'} (демо)`); }
+function withLoading(btnId, label, done, ms) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  btn.innerHTML = `<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="display:inline"></circle></svg> ${label}`;
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.style.opacity = '';
+    btn.innerHTML = orig;
+    done();
+  }, ms || 1400);
+}
+
+// ---------- 1. GLOBAL SEARCH (Ctrl+K / Cmd+K) ----------
+const gsPages = [
+  { icon: '📋', title: 'Лиды', hint: 'Раздел · Воронка продаж', action: () => switchTab('leads') },
+  { icon: '🧾', title: 'Заказы', hint: 'Раздел · CRM', action: () => switchTab('orders') },
+  { icon: '🛒', title: 'Товары', hint: 'Раздел · Каталог с финмоделью', action: () => switchTab('products') },
+  { icon: '📦', title: 'Склад и запасы', hint: 'Раздел · Остатки и резервы', action: () => switchTab('warehouse') },
+  { icon: '🛍️', title: 'WhatsApp Commerce — каталог в WhatsApp', hint: 'Новый раздел · Mockup', action: () => switchTab('wa-commerce') },
+  { icon: '🎯', title: 'Lead Scoring — AI-оценка лидов', hint: 'Новый раздел · Mockup', action: () => switchTab('lead-scoring') },
+  { icon: '✨', title: 'AI Инструменты — резюме, тональность, перевод', hint: 'Новый раздел · Mockup', action: () => switchTab('ai-tools') },
+  { icon: '🤖', title: 'Автоклассификация входящих', hint: 'Новый раздел · Mockup', action: () => switchTab('incoming-routing') },
+  { icon: '📈', title: 'Прогноз продаж (AI Forecasting)', hint: 'Новый раздел · Mockup', action: () => switchTab('forecasting') },
+  { icon: '⚙️', title: 'Настройки платформы', hint: 'Раздел · Settings', action: () => switchTab('settings') },
+];
+let gsResults = [];
+let gsSelected = 0;
+
+function openGlobalSearch() {
+  const m = document.getElementById('globalSearchModal');
+  m.classList.add('open');
+  const input = document.getElementById('globalSearchInput');
+  input.value = '';
+  runGlobalSearch();
+  setTimeout(() => input.focus(), 50);
+}
+function closeGlobalSearch() {
+  document.getElementById('globalSearchModal').classList.remove('open');
+}
+function gsType(t) {
+  const map = { page: ['📄', 'bg-blue-100 text-blue-700', 'Страница'], order: ['🧾', 'bg-green-100 text-green-700', 'Заказ'], product: ['📦', 'bg-purple-100 text-purple-700', 'Товар'], lead: ['👤', 'bg-amber-100 text-amber-700', 'Лид'] };
+  return map[t] || map.page;
+}
+function runGlobalSearch() {
+  const q = document.getElementById('globalSearchInput').value.trim().toLowerCase();
+  const box = document.getElementById('gsResults');
+  const quick = document.getElementById('gsQuickPages');
+  let items = [];
+  if (!q) {
+    quick.classList.remove('hidden');
+    items = gsPages.slice(0, 6).map(p => ({ type: 'page', title: p.title, sub: p.hint, icon: p.icon, action: p.action }));
+  } else {
+    quick.classList.add('hidden');
+    // pages
+    gsPages.filter(p => p.title.toLowerCase().includes(q)).forEach(p => items.push({ type: 'page', title: p.title, sub: p.hint, icon: p.icon, action: p.action }));
+    // orders from data
+    if (typeof orders !== 'undefined') {
+      orders.filter(o => (o.customer + ' ' + o.orderNo).toLowerCase().includes(q)).slice(0, 4).forEach(o =>
+        items.push({ type: 'order', title: `${o.orderNo} · ${o.customer}`, sub: `${o.sum.toLocaleString('ru-RU')} ₸ · ${o.status}`, icon: '🧾', action: () => { switchTab('orders'); showToast(`Открыт заказ ${o.orderNo}`); } }));
+    }
+    // products
+    if (typeof products !== 'undefined') {
+      products.filter(p => p.name.toLowerCase().includes(q)).slice(0, 4).forEach(p =>
+        items.push({ type: 'product', title: p.name, sub: `Арт. ${p.article} · ${p.price.toLocaleString('ru-RU')} ₸`, icon: '📦', action: () => { switchTab('products'); showToast(`Открыт товар «${p.name}»`); } }));
+    }
+    // leads
+    if (typeof leads !== 'undefined') {
+      leads.filter(l => l.name.toLowerCase().includes(q)).slice(0, 4).forEach(l =>
+        items.push({ type: 'lead', title: l.name, sub: `${l.source} · ${l.amount.toLocaleString('ru-RU')} ₸`, icon: '👤', action: () => { switchTab('leads'); showToast(`Лид «${l.name}» открыт в воронке`); } }));
+    }
+  }
+  gsResults = items;
+  gsSelected = 0;
+  if (!items.length) {
+    box.innerHTML = `<div class="p-8 text-center text-sm text-textSecondary">Ничего не найдено по запросу «${document.getElementById('globalSearchInput').value}».<br><span class="text-xs">Попробуйте номер заказа, имя клиента или название товара.</span></div>`;
+    return;
+  }
+  box.innerHTML = items.map((it, i) => {
+    const [icon, chipCls, chipTxt] = gsType(it.type);
+    return `<div class="gs-item flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent hover:bg-bgDefault transition ${i === gsSelected ? 'selected' : ''}" data-idx="${i}" onclick="gsGo(${i})" onmouseenter="gsHover(${i})">
+      <div class="w-9 h-9 rounded-lg bg-bgDefault flex items-center justify-center text-lg flex-shrink-0">${it.icon || icon}</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-medium truncate">${it.title}</div>
+        <div class="text-xs text-textSecondary truncate">${it.sub}</div>
+      </div>
+      <span class="chip ${chipCls} flex-shrink-0">${chipTxt}</span>
+    </div>`;
+  }).join('');
+}
+function gsHover(i) { gsSelected = i; document.querySelectorAll('#gsResults .gs-item').forEach((el, idx) => el.classList.toggle('selected', idx === gsSelected)); }
+function gsGo(i) {
+  const it = gsResults[i];
+  if (!it) return;
+  closeGlobalSearch();
+  it.action();
+}
+document.addEventListener('keydown', (e) => {
+  const modalOpen = document.getElementById('globalSearchModal').classList.contains('open');
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')) {
+    e.preventDefault();
+    modalOpen ? closeGlobalSearch() : openGlobalSearch();
+    return;
+  }
+  if (!modalOpen) return;
+  if (e.key === 'Escape') { closeGlobalSearch(); return; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); gsSelected = Math.min(gsSelected + 1, gsResults.length - 1); gsHover(gsSelected); document.querySelectorAll('#gsResults .gs-item')[gsSelected]?.scrollIntoView({ block: 'nearest' }); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); gsSelected = Math.max(gsSelected - 1, 0); gsHover(gsSelected); document.querySelectorAll('#gsResults .gs-item')[gsSelected]?.scrollIntoView({ block: 'nearest' }); }
+  if (e.key === 'Enter') { e.preventDefault(); gsGo(gsSelected); }
+});
+
+// ---------- 2. LEAD SCORING ----------
+const scoredLeads = [
+  { name: 'Дмитрий Морозов', initials: 'ДМ', source: 'Реклама Instagram', touch: '10 мин назад', score: 80, factors: ['Спросил цену +30', 'Диалог 12 сообщ. +25', 'Повторный клиент +20'], status: 'Переговоры' },
+  { name: 'Асель Жаксылык', initials: 'АЖ', source: 'WhatsApp Business', touch: '35 мин назад', score: 74, factors: ['Уточнила доставку +15', 'Активна 3 дня +25', 'Объём 2 пары +20'], status: 'Предложение' },
+  { name: 'Игорь Соколов', initials: 'ИС', source: 'Сайт (форма)', touch: '2 ч назад', score: 68, factors: ['Открыл прайс +30', 'Первый контакт +15', 'Без телефона −10'], status: 'В работе' },
+  { name: 'Гульмира Оспанова', initials: 'ГО', source: 'Рекомендация', touch: 'вчера', score: 55, factors: ['Источник доверия +25', 'Запросила скидку +20', 'Пауза 3 дня −15'], status: 'Новый' },
+  { name: 'Тимур Абдуллаев', initials: 'ТА', source: 'TikTok Ads', touch: '3 дня назад', score: 41, factors: ['Один вопрос о цене +15', 'Молчит 3 дня −15', 'Нет истории −0'], status: 'Новый' },
+  { name: 'Елена Ким', initials: 'ЕК', source: 'Instagram Direct', touch: 'неделю назад', score: 22, factors: ['Молчит 8 дней −15', 'Отклонила звонок −25', 'Быстрая покупка? нет'], status: 'В работе' },
+];
+function scoreColor(s) { return s >= 80 ? '#28C76F' : s >= 50 ? '#FF9F43' : '#9CA3AF'; }
+function scoreChip(s) { return s >= 80 ? ['hot', 'bg-success/10 text-success', '🔥 Горячий'] : s >= 50 ? ['warm', 'bg-warning/10 text-warning', '☀️ Тёплый'] : ['cold', 'bg-gray-200 text-gray-600', '❄️ Холодный']; }
+let scoreFilterCur = 'all';
+function renderLeadScores() {
+  const tbody = document.getElementById('leadScoreTable');
+  if (!tbody) return;
+  const rows = scoredLeads
+    .filter(l => scoreFilterCur === 'all' || scoreChip(l.score)[0] === scoreFilterCur)
+    .sort((a, b) => b.score - a.score);
+  tbody.innerHTML = rows.map((l, i) => {
+    const [, chipCls, chipTxt] = scoreChip(l.score);
+    const off = 327 - (327 * l.score / 100);
+    return `<tr class="border-b border-divider last:border-0 hover:bg-bgDefault transition">
+      <td class="px-6 py-3 text-textSecondary font-semibold">#${i + 1}</td>
+      <td class="px-6 py-3"><div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">${l.initials}</div>
+        <span class="font-medium">${l.name}</span></div></td>
+      <td class="px-6 py-3 text-textSecondary text-xs">${l.source}</td>
+      <td class="px-6 py-3 text-textSecondary text-xs">${l.touch}</td>
+      <td class="px-6 py-3">
+        <div class="flex items-center gap-2">
+          <div class="relative w-9 h-9">
+            <svg class="w-9 h-9 -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#F0EFF3" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" stroke="${scoreColor(l.score)}" stroke-width="12" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="${off}"/></svg>
+            <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">${l.score}</div>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-3"><div class="flex flex-wrap gap-1 max-w-[220px]">${l.factors.map(f => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-bgDefault border border-divider text-textSecondary">${f}</span>`).join('')}</div></td>
+      <td class="px-6 py-3"><span class="chip ${chipCls}">${chipTxt}</span></td>
+      <td class="px-6 py-3 text-right"><button onclick="openLeadScoreModal(${scoredLeads.indexOf(l)})" class="text-xs text-primary font-medium hover:underline">Детали →</button></td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="8" class="px-6 py-8 text-center text-textSecondary text-sm">Нет лидов в этой категории</td></tr>`;
+}
+function filterScore(btn, type) {
+  scoreFilterCur = type;
+  document.querySelectorAll('.score-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLeadScores();
+}
+function recalcScores() {
+  withLoading('recalcScoresBtn', 'Пересчёт...', () => {
+    scoredLeads.forEach(l => { l.score = Math.max(5, Math.min(99, l.score + Math.round((Math.random() - 0.45) * 14))); });
+    renderLeadScores();
+    showToast('AI пересчитал баллы по свежим данным ✅');
+  }, 1600);
+}
+function openScoringModelModal() {
+  const m = document.getElementById('scoringModelModal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+function openLeadScoreModal(idx) {
+  const l = scoredLeads[idx];
+  const m = document.getElementById('leadScoreModal');
+  document.getElementById('lsModalAvatar').textContent = l.initials;
+  document.getElementById('lsModalName').textContent = l.name;
+  document.getElementById('lsModalMeta').textContent = `${l.source} · последнее касание: ${l.touch} · статус: ${l.status}`;
+  document.getElementById('lsModalScore').textContent = l.score;
+  const ring = document.getElementById('lsModalRing');
+  ring.setAttribute('stroke', scoreColor(l.score));
+  ring.style.strokeDashoffset = 327;
+  requestAnimationFrame(() => setTimeout(() => { ring.style.strokeDashoffset = 327 - (327 * l.score / 100); }, 30));
+  document.getElementById('lsModalFactors').innerHTML = l.factors.map(f => {
+    const plus = !f.startsWith('-') && !f.includes('−') && !f.includes('нет');
+    return `<div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full ${plus ? 'bg-success' : 'bg-error'}"></span><span class="text-textSecondary">${f}</span></div>`;
+  }).join('') + `<div class="pt-2 text-xs text-textSecondary">Вероятность закрытия в течение 7 дней: <b class="text-textPrimary">${Math.min(96, l.score + 8)}%</b></div>`;
+  document.getElementById('lsModalAdvice').textContent = l.score >= 80
+    ? 'Свяжитесь сегодня до 18:00 — клиент готов к сделке. Предложите рассрочку Kaspi.'
+    : l.score >= 50 ? 'Отправьте персональное предложение со скидкой 5% и напоминанием о остатках.'
+    : 'Не тратьте время менеджера — переведите в автопрогрев: серия из 3 сообщений с кейсами и отзывами.';
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeLeadScoreModal() {
+  const m = document.getElementById('leadScoreModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+
+// ---------- 3. QUICK DIALOG SUMMARY (one click) ----------
+function quickLeadSummary() {
+  const box = document.getElementById('quickSummaryResult');
+  const btn = document.getElementById('quickSummaryBtn');
+  box.classList.add('hidden');
+  const orig = btn.innerHTML;
+  btn.disabled = true; btn.style.opacity = '.7';
+  btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="display:inline"></circle></svg> AI читает 47 сообщений...';
+  setTimeout(() => {
+    btn.disabled = false; btn.style.opacity = ''; btn.innerHTML = orig;
+    box.classList.remove('hidden');
+    showToast('Резюме готово за 1 клик ⚡');
+  }, 1500);
+}
+
+// ---------- 4. AI TOOLS SUB-TABS ----------
+function switchAiToolTab(btn, key) {
+  document.querySelectorAll('.ai-tool-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ai-tool-content').forEach(c => c.classList.add('hidden'));
+  document.getElementById('aitool-' + key).classList.remove('hidden');
+}
+
+// ---------- 4a. Generate summary in AI tools ----------
+function generateSummary() {
+  const res = document.getElementById('summaryResult');
+  const acts = document.getElementById('summaryActions');
+  acts.classList.add('hidden');
+  res.classList.remove('italic', 'text-textSecondary');
+  res.innerHTML = '<span class="inline-flex items-center gap-2 text-primary"><svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="display:inline"></circle></svg> AI анализирует переписку…</span>';
+  setTimeout(() => {
+    res.innerHTML = `<div class="space-y-2">
+      <div class="font-medium">Клиент хочет перенести доставку на субботу и купить вторую пару (р. 39) для подруги.</div>
+      <div class="text-textSecondary">Настроение: позитивное · Готовность к покупке: высокая · Тема: доставка + наличие размера</div>
+    </div>`;
+    acts.classList.remove('hidden');
+    showToast('Резюме сгенерировано ✨');
+  }, 1600);
+}
+function copySummary() {
+  const txt = 'Клиент: перенос доставки №1042 на субботу. Проверить р.39, забронировать, отправить Kaspi-ссылку.';
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => {});
+  showToast('Резюме скопировано в буфер 📋');
+}
+
+// ---------- 4b. Tone analysis ----------
+const toneExamples = [
+  'Здравствуйте. Я уже третий раз прошу вернуть деньги! Это непонятно что такое, я больше ничего у вас покупать не буду!!!',
+  'Подскажите, а есть ли эта модель в синем цвете и 41 размера?',
+  'О, супер, цена подходит! Могу оформить прямо сейчас, если доставите завтра до обеда 😍'
+];
+const toneProfiles = [
+  { emoji: '😡', label: 'Негативная · высокий риск', conf: 96, risk: 82, pos: 8, riskCls: 'text-error', advice: 'Эмпатичный + конкретика. Начните с извинений, назовите точный срок возврата и имя ответственного менеджера.' },
+  { emoji: '🙂', label: 'Нейтральная · обычный вопрос', conf: 91, risk: 12, pos: 50, riskCls: 'text-warning', advice: 'Дружелюбный деловой. Ответьте быстро и предложите альтернативы — клиент на этапе выбора.' },
+  { emoji: '🤩', label: 'Позитивная · готов купить', conf: 94, risk: 3, pos: 90, riskCls: 'text-success', advice: 'Энергичный, без воды. Подтвердите наличие и сразу отправьте ссылку на оплату — не упустите импульс.' }
+];
+function setToneExample(i) {
+  document.getElementById('toneInput').value = toneExamples[i];
+  analyzeTone(i);
+}
+function analyzeTone(preIdx) {
+  const text = (document.getElementById('toneInput').value || '').toLowerCase();
+  let idx = typeof preIdx === 'number' ? preIdx : 0;
+  if (typeof preIdx !== 'number') {
+    const angry = /(возврат|деньги|жалоба|не буду|!!!|\?\?\?)/.test(text);
+    const happy = /(супер|отлично|спасибо|беру|куплю|оформ|😍|👍)/.test(text);
+    idx = angry ? 0 : happy ? 2 : 1;
+  }
+  const p = toneProfiles[idx];
+  const btn = document.getElementById('analyzeToneBtn');
+  btn.disabled = true; btn.style.opacity = '.7'; btn.textContent = 'Анализ...';
+  setTimeout(() => {
+    btn.disabled = false; btn.style.opacity = ''; btn.textContent = 'Проанализировать';
+    document.getElementById('toneResult').classList.add('hidden');
+    const box = document.getElementById('toneResultBox');
+    box.classList.remove('hidden');
+    document.getElementById('toneEmoji').textContent = p.emoji;
+    document.getElementById('toneLabel').textContent = p.label;
+    document.getElementById('toneConfidence').textContent = 'Уверенность модели: ' + p.conf + '%';
+    const rv = document.getElementById('toneRiskValue');
+    rv.textContent = p.risk + '%';
+    rv.className = 'text-xl font-bold ' + p.riskCls;
+    document.getElementById('toneMarker').style.left = 'calc(' + p.pos + '% - 8px)';
+    document.getElementById('toneAdvice').textContent = p.advice;
+    showToast('Тональность определена: ' + p.label.split('·')[0].trim());
+  }, 1200);
+}
+
+// ---------- 4c. Translation ----------
+let selectedLang = 'ru';
+const translations = {
+  ru: { out: 'Здравствуйте! Когда будет доставлен заказ №1045? Думала, можно ли перенести доставку на субботу.', badge: 'kz → ru' },
+  en: { out: 'Hello! When will order #1045 be delivered? I was wondering if delivery could be moved to Saturday.', badge: 'kz → en' },
+  uz: { out: 'Assalomu alaykum! 1045-son buyurtma qachon yetkazib beriladi? Yetkazib berishni shanba kuniga ko\u2018chirsa bo\u2018ladimi deb o\u2018ylagandim.', badge: 'kz → uz' }
+};
+function selectLang(el, lang) {
+  selectedLang = lang;
+  document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function translateMessage() {
+  const t = translations[selectedLang];
+  const btn = document.getElementById('translateBtn');
+  btn.disabled = true; btn.style.opacity = '.7'; btn.textContent = 'Переводим...';
+  setTimeout(() => {
+    btn.disabled = false; btn.style.opacity = ''; btn.textContent = 'Перевести';
+    document.getElementById('translateResult').classList.add('hidden');
+    const box = document.getElementById('translateResultBox');
+    box.classList.remove('hidden');
+    document.getElementById('translateOutput').textContent = t.out;
+    box.querySelector('.status-badge').textContent = t.badge;
+    showToast('Сообщение переведено 🌐');
+  }, 1300);
+}
+
+// ---------- 5. AUTO-CLASSIFICATION demo ----------
+const classifierDemo = [
+  { msg: '«А можна скинути ціну на зимові кросівки?»', chip: 'bg-purple-100 text-purple-700', cat: '🌐 UZ → автоперевод', route: '→ AI-агент' },
+  { msg: '«Хочу вернуть товар, не подошёл размер»', chip: 'bg-red-100 text-red-700', cat: '🔧 Проблема', route: '→ поддержка · приоритет' },
+  { msg: '«Где мой заказ? Обещали вчера»', chip: 'bg-blue-100 text-blue-700', cat: '🚚 Доставка', route: '→ логистика' },
+  { msg: '«Какая оптовая цена от 20 пар?»', chip: 'bg-green-100 text-green-700', cat: '🛒 Покупка', route: '→ отдел продаж · B2B' },
+];
+function testClassifier() {
+  const feed = document.getElementById('classFeed');
+  const btn = document.getElementById('testClassifierBtn');
+  btn.disabled = true; btn.style.opacity = '.7';
+  let i = 0;
+  const put = () => {
+    if (i >= classifierDemo.length) {
+      btn.disabled = false; btn.style.opacity = '';
+      showToast('Все тестовые сообщения классифицированы верно ✅');
+      return;
+    }
+    const d = classifierDemo[i++];
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0'), mm = String(now.getMinutes()).padStart(2, '0');
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-3 p-3 bg-indigo-50 border border-indigo-100 rounded-lg fade-in';
+    row.innerHTML = `<span class="text-xs text-textSecondary w-14 flex-shrink-0">${hh}:${mm}</span>
+      <div class="flex-1 truncate">${d.msg}</div>
+      <span class="chip ${d.chip} flex-shrink-0">${d.cat}</span>
+      <span class="text-xs text-textSecondary flex-shrink-0">${d.route}</span>`;
+    feed.prepend(row);
+    setTimeout(put, 900);
+  };
+  put();
+}
+
+// ---------- 6. AI FORECASTING ----------
+const forecastData = {
+  week: { rev: '8.2М ₸', prob: 78, orders: 142 },
+  month: { rev: '31.5М ₸', prob: 71, orders: 512 },
+  quarter: { rev: '94.8М ₸', prob: 64, orders: 1530 },
+};
+function setForecastHorizon(btn, key) {
+  document.querySelectorAll('.fx-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const d = forecastData[key];
+  document.getElementById('fxRevenue').textContent = d.rev;
+  document.getElementById('fxProb').textContent = d.prob + '%';
+  document.getElementById('fxProbBar').style.width = d.prob + '%';
+  document.getElementById('fxOrders').textContent = d.orders;
+  showToast(`Прогноз пересчитан на горизонте: ${btn.textContent.trim().toLowerCase()}`);
+}
+function retrainForecast() {
+  withLoading('retrainBtn', 'Дообучение модели...', () => {
+    const el = document.getElementById('fxProb');
+    const cur = parseInt(el.textContent);
+    const next = Math.max(55, Math.min(92, cur + Math.round((Math.random() - 0.4) * 8)));
+    el.textContent = next + '%';
+    document.getElementById('fxProbBar').style.width = next + '%';
+    showToast('Модель обновлена на данных за сегодня 📈');
+  }, 1800);
 }
 </script>
 </body>
