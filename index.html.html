@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowZap — WhatsApp-операционная система продаж</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: '#111A14', mut: '#5F6B63', faint: '#8A938C', line: '#E7EAE7',
+        page: '#F6F8F6', card: '#FFFFFF', wa: '#1FA855', waDark: '#128C42',
+        waSoft: '#EAF7EE', ai: '#6D5BD0', aiSoft: '#F0EDFC', hot: '#E5484D',
+        hotSoft: '#FDEBEC', warn: '#D97706', warnSoft: '#FEF3E2', ok: '#188554',
+        okSoft: '#E3F5EB', info: '#2563EB', infoSoft: '#E8EFFD',
+      },
+      boxShadow: {
+        soft: '0 1px 2px rgba(16,24,40,.05)',
+        pop: '0 12px 32px -8px rgba(16,24,40,.18)',
+      }
+    }
+  }
+}
+</script>
+<style>
+  :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif; }
+  body { background:#F6F8F6; color:#111A14; font-size:14px; }
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb { background:#D8DDD8; border-radius:8px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  
+  .nav-item { display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:8px; color:#5F6B63; cursor:pointer; font-weight:500; transition:background .12s,color .12s; white-space:nowrap; }
+  .nav-item:hover, .nav-item:focus-visible { background:#EFF2EF; color:#111A14; outline:none; }
+  .nav-item.active { background:#E9F5ED; color:#128C42; font-weight:600; }
+  .nav-badge { margin-left:auto; font-size:11px; font-weight:700; padding:1px 7px; border-radius:99px; }
+  
+  .card { background:#fff; border:1px solid #E7EAE7; border-radius:12px; }
+  .chip { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:99px; white-space:nowrap; }
+  
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; font-weight:600; font-size:13px; border-radius:8px; padding:7px 14px; cursor:pointer; transition:all .12s; white-space:nowrap; border:1px solid transparent; outline:none; }
+  .btn:focus-visible { box-shadow: 0 0 0 3px rgba(31,168,85,.3); }
+  .btn-sm { padding: 5px 12px; font-size: 12.5px; }
+  
+  .btn-p { background:#1FA855; color:#fff; } .btn-p:hover { background:#128C42; }
+  .btn-s { background:#fff; color:#111A14; border-color:#DDE2DD; } .btn-s:hover { background:#F3F6F3; }
+  .btn-a { background:#6D5BD0; color:#fff; } .btn-a:hover { background:#5a49bd; }
+  .btn-d { background:#E5484D; color:#fff; } .btn-d:hover { background:#cc3b40; }
+  
+  .tab { padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:600; color:#5F6B63; cursor:pointer; white-space:nowrap; }
+  .tab:hover, .tab:focus-visible { background:#EFF2EF; }
+  .tab.active { background:#111A14; color:#fff; }
+  
+  .conv-row { padding:10px 12px; cursor:pointer; border-left:3px solid transparent; transition: background .1s; }
+  .conv-row:hover, .conv-row:focus-visible { background:#F4F7F4; outline: none; }
+  .conv-row.sel { background:#EAF5EE; border-left-color:#1FA855; }
+  
+  .msg-in { background:#fff; }
+  .msg-out { background:#DCF7E4; }
+  
+  .tbl th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#8A938C; font-weight:600; padding:10px 14px; border-bottom:1px solid #E7EAE7; background:#FAFBFA; white-space:nowrap; }
+  .tbl td { padding:11px 14px; border-bottom:1px solid #EEF1EE; vertical-align:middle; }
+  .tbl tr.row-hover:hover td { background:#F6F9F6; }
+  
+  .kpi-num { font-size:22px; font-weight:700; letter-spacing:-.02em; }
+  .sec { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#8A938C; }
+  
+  .overlay { position:fixed; inset:0; background:rgba(17,26,20,.45); z-index:60; display:none; align-items:flex-start; justify-content:center; padding-top:8vh; overflow-y:auto; backdrop-filter: blur(2px); }
+  .overlay.open { display:flex; }
+  
+  .fadein { animation:fi .18s ease-out; }
+  @keyframes fi { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+  
+  .avatar { display:inline-flex; align-items:center; justify-content:center; border-radius:99px; font-weight:700; color:#fff; flex-shrink:0; }
+  .kanban-col { min-width:250px; width:250px; flex-shrink:0; }
+  .lead-card { cursor:pointer; transition:box-shadow .12s, transform .12s; }
+  .lead-card:hover, .lead-card:focus-visible { box-shadow:0 6px 18px rgba(16,24,40,.1); transform:translateY(-1px); outline:none; }
+  
+  .toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(100px); background:#111A14; color:#fff; font-size:13px; font-weight:500; padding:10px 18px; border-radius:10px; z-index:100; box-shadow:0 10px 30px rgba(0,0,0,.25); opacity:0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none;}
+  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+  
+  select.inp, input.inp, textarea.inp { border:1px solid #DDE2DD; border-radius:8px; padding:7px 10px; font-size:13px; background:#fff; outline:none; width:100%; transition: border-color .15s, box-shadow .15s; }
+  select.inp:focus, input.inp:focus, textarea.inp:focus { border-color:#1FA855; box-shadow:0 0 0 3px rgba(31,168,85,.12); }
+  
+  .node { border:1.5px solid; border-radius:10px; padding:10px 12px; background:#fff; font-size:12.5px; width:230px; }
+  .flow-arrow { color:#8A938C; font-size:18px; line-height:1; }
+  
+  details.kb > summary { list-style:none; cursor:pointer; outline:none; }
+  details.kb > summary::-webkit-details-marker { display:none; }
+  details.kb > summary:focus-visible { box-shadow:0 0 0 2px rgba(31,168,85,.3); border-radius:4px; }
+  .dot { width:8px; height:8px; border-radius:99px; display:inline-block; }
+  
+  @media (max-width:1280px){ #custPanel { display:none; } #custPanel.mobOpen { display:flex; position:fixed; right:0; top:0; bottom:0; width:340px; z-index:55; box-shadow:-12px 0 32px rgba(0,0,0,.18); } }
+  @media (max-width:1023px){ #sidebar { display:none !important; } #sidebar.mobOpen { display:flex !important; position:fixed; left:0; top:0; bottom:0; z-index:58; box-shadow:12px 0 32px rgba(0,0,0,.18); } }
+</style>
+</head>
+<body class="antialiased">
+<div class="flex h-screen overflow-hidden">
+
+<!-- ============ SIDEBAR ============ -->
+<!-- Добавлены flex h-full для корректного скролла -->
+<aside id="sidebar" class="w-[236px] shrink-0 bg-white border-r border-line flex flex-col h-full z-40">
+  <div class="h-14 flex items-center gap-2 px-4 border-b border-line shrink-0">
+    <div class="w-8 h-8 rounded-lg bg-wa text-white flex items-center justify-center font-black text-base">F</div>
+    <div class="font-extrabold tracking-wide text-[16px]" id="logoText">FLOWZAP</div>
+    <button aria-label="Свернуть панель" onclick="toggleSidebar()" class="ml-auto text-faint hover:text-ink p-1 focus:outline-none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+  </div>
+  <!-- flex-1 и overflow-y-auto теперь работают благодаря flex col на родителе -->
+  <nav id="sideNav" class="flex-1 overflow-y-auto scrollbar-thin px-2.5 py-3 space-y-4 text-[13px]"></nav>
+  <div class="border-t border-line p-3 space-y-2.5 shrink-0">
+    <div tabindex="0" role="button" class="flex items-center gap-2 text-[12.5px] text-mut bg-page border border-line rounded-lg px-2.5 py-2 cursor-pointer hover:bg-[#EFF2EF] focus:outline-none focus-visible:ring-2 focus-visible:ring-wa" onclick="toast('Смена рабочего пространства: демо — доступно одно пространство')">
+      <div class="w-6 h-6 rounded-md bg-ink text-white flex items-center justify-center text-[10px] font-bold shrink-0">AS</div>
+      <span class="sb-only font-medium text-ink">Alma Store</span>
+      <svg class="sb-only ml-auto" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="flex items-center gap-2 px-1">
+      <div class="w-7 h-7 rounded-full bg-ai text-white flex items-center justify-center text-[11px] font-bold shrink-0">AM</div>
+      <div class="sb-only leading-tight">
+        <div class="text-[12.5px] font-semibold">Алекс Морган</div>
+        <div class="text-[11px] text-faint">Менеджер по продажам</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<div class="flex-1 flex flex-col min-w-0">
+
+  <!-- TOPBAR -->
+  <header class="h-14 shrink-0 bg-white border-b border-line flex items-center gap-3 px-4">
+    <button aria-label="Открыть меню" onclick="mobNav()" class="lg:hidden text-mut p-1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <div class="hidden lg:flex items-center gap-1.5 chip" style="background:#EAF7EE;color:#128C42;border:1px solid #CBEEDA">
+      <span class="dot" style="background:#1FA855"></span> WhatsApp Business API · подключён
+    </div>
+    <button onclick="openModal('cmdModal')" class="ml-auto md:ml-0 flex items-center gap-2 text-[13px] text-faint bg-page border border-line rounded-lg px-3 py-1.5 w-[260px] hover:border-[#CBD3CB] focus:outline-none focus-visible:ring-2 focus-visible:ring-wa">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      Поиск и действия…
+      <span class="ml-auto text-[11px] border border-line rounded px-1.5 py-0.5 bg-white font-semibold">⌘K</span>
+    </button>
+    <div class="flex-1"></div>
+    <button onclick="openModal('aiModal')" class="btn btn-a btn-sm">✦ AI-действия</button>
+    <div class="relative">
+      <button aria-label="Уведомления" onclick="toggleNotif(event)" class="p-2 rounded-lg hover:bg-page text-mut relative focus:outline-none focus-visible:ring-2 focus-visible:ring-wa">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        <span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-hot text-white text-[9px] font-bold flex items-center justify-center">4</span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-[360px] bg-white border border-line rounded-xl shadow-pop z-50 fadein">
+        <div class="px-4 py-3 border-b border-line flex items-center justify-between"><div class="font-bold text-[13.5px]">Уведомления</div><span class="chip" style="background:#FDEBEC;color:#E5484D">4 новых</span></div>
+        <div class="max-h-[380px] overflow-y-auto">
+          <div class="px-4 py-3 border-b border-line hover:bg-page cursor-pointer" onclick="closeNotif();go('inbox');setTab('overdue')">
+            <div class="flex items-start gap-2.5"><span class="chip mt-0.5" style="background:#FDEBEC;color:#E5484D">Срочно</span><div><div class="text-[13px] font-semibold leading-snug">7 лидов превысили SLA ответа</div><div class="text-[11.5px] text-faint mt-0.5">Требуется немедленная реакция · 2 мин назад</div></div></div>
+          </div>
+          <div class="px-4 py-3 border-b border-line hover:bg-page cursor-pointer" onclick="closeNotif();go('inbox');selectConv('anna')">
+            <div class="flex items-start gap-2.5"><span class="chip mt-0.5" style="background:#FEF3E2;color:#D97706">Горячий лид</span><div><div class="text-[13px] font-semibold leading-snug">Анна Петрова готова купить iPhone 17 Pro</div><div class="text-[11.5px] text-faint mt-0.5">AI подтвердил намерение покупки · 5 мин назад</div></div></div>
+          </div>
+          <div class="px-4 py-3 border-b border-line hover:bg-page cursor-pointer" onclick="closeNotif();go('followups')">
+            <div class="flex items-start gap-2.5"><span class="chip mt-0.5" style="background:#E8EFFD;color:#2563EB">Касания</span><div><div class="text-[13px] font-semibold leading-snug">12 клиентам нужны повторные касания сегодня</div><div class="text-[11.5px] text-faint mt-0.5">Потенциальная выручка ₸4.1M · 20 мин назад</div></div></div>
+          </div>
+          <div class="px-4 py-3 hover:bg-page cursor-pointer" onclick="closeNotif();go('inventory')">
+            <div class="flex items-start gap-2.5"><span class="chip mt-0.5" style="background:#F0EDFC;color:#6D5BD0">Склад</span><div><div class="text-[13px] font-semibold leading-snug">iPhone 17 Pro — остаток 4 шт (низкий уровень)</div><div class="text-[11.5px] text-faint mt-0.5">Пополнение ожидается завтра · 1 ч назад</div></div></div>
+          </div>
+        </div>
+        <div class="px-4 py-2.5 text-center border-t border-line"><span class="text-[12.5px] font-semibold text-waDark cursor-pointer" onclick="closeNotif();go('lost')">Открыть аналитику упущенной выручки →</span></div>
+      </div>
+    </div>
+    <button aria-label="Профиль клиента" onclick="mobCust()" class="xl:hidden p-2 rounded-lg hover:bg-page text-mut">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+    </button>
+  </header>
+
+  <!-- PAGES ROOT -->
+  <main id="pages" class="flex-1 min-h-0"></main>
+
+  <!-- ================= PAGE: INBOX ================= -->
+  <section id="page-inbox" class="page h-full hidden">
+    <div class="h-full flex flex-col min-w-0">
+      <div class="px-5 pt-4 pb-3 bg-white border-b border-line shrink-0">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 class="text-[19px] font-bold tracking-tight">Добрый день, Алекс</h1>
+            <p class="text-[13px] text-mut mt-0.5">Сегодня есть <b class="text-hot">17 горячих лидов</b> и <b class="text-hot">7 диалогов с нарушенным SLA</b>.</p>
+          </div>
+          <div class="flex gap-2.5 flex-wrap">
+            <div class="card px-4 py-2 min-w-[110px]"><div class="kpi-num text-hot">17</div><div class="text-[11.5px] text-mut">Горячих лидов</div></div>
+            <div class="card px-4 py-2 min-w-[110px]"><div class="kpi-num">12</div><div class="text-[11.5px] text-mut">Ожидают ответа</div></div>
+            <div class="card px-4 py-2 min-w-[110px]"><div class="kpi-num text-warn">7</div><div class="text-[11.5px] text-mut">Просрочено</div></div>
+            <div class="card px-4 py-2 min-w-[130px]"><div class="kpi-num">₸8.4M</div><div class="text-[11.5px] text-mut">Потенциальная выручка</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1 min-h-0 flex">
+        <!-- LEFT: conversations -->
+        <div class="w-[330px] shrink-0 bg-white border-r border-line flex flex-col min-h-0 max-lg:w-[290px] max-md:w-full" id="convCol">
+          <div class="px-3.5 pt-3 pb-2 border-b border-line shrink-0">
+            <div class="flex items-center justify-between">
+              <div class="font-bold text-[14.5px]">Входящие продажи</div>
+              <button aria-label="Фильтры" onclick="toast('Фильтры: статус · менеджер · город · сумма (демо)')" class="text-faint hover:text-ink p-1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.5V19l4 2v-8.5L22 3z"/></svg></button>
+            </div>
+            <div class="relative mt-2">
+              <svg class="absolute left-2.5 top-2 text-faint" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input id="convSearch" oninput="renderConvList()" placeholder="Поиск по диалогам…" class="inp !pl-8 !py-1.5 text-[13px]" aria-label="Поиск по диалогам">
+            </div>
+            <div class="flex gap-1 mt-2 overflow-x-auto scrollbar-thin pb-1" id="convTabs"></div>
+          </div>
+          <div id="convList" class="flex-1 overflow-y-auto divide-y divide-[#F0F2F0]" role="listbox"></div>
+        </div>
+        <!-- CENTER: conversation -->
+        <div class="flex-1 min-w-0 flex flex-col bg-page min-h-0" id="chatCol">
+          <div id="chatHead" class="shrink-0 bg-white border-b border-line px-4 py-2.5 flex items-center gap-3"></div>
+          <div id="chatBody" class="flex-1 overflow-y-auto px-4 py-4 space-y-2.5" role="log" aria-live="polite"></div>
+          <div class="shrink-0 bg-white border-t border-line px-3.5 py-2.5 relative">
+            <div id="aiPanel" class="hidden absolute bottom-full left-3.5 right-3.5 mb-2 card shadow-pop p-4 z-30 fadein" style="border-color:#D9D2F7"></div>
+            <textarea id="composer" rows="2" placeholder="Написать сообщение…" class="inp resize-none !pr-24" aria-label="Написать сообщение"></textarea>
+            <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+              <button onclick="toggleAiPanel()" class="btn btn-a btn-sm">✦ Ответить с AI</button>
+              <button onclick="attachDemo()" class="btn btn-s btn-sm">📎 Файл</button>
+              <button onclick="useTemplate()" class="btn btn-s btn-sm">🧾 Шаблон</button>
+              <button onclick="openModal('productModal')" class="btn btn-s btn-sm">📦 Товар</button>
+              <button onclick="createOrderFromConv()" class="btn btn-p btn-sm ml-auto">Создать заказ</button>
+            </div>
+          </div>
+        </div>
+        <!-- RIGHT: customer 360 -->
+        <aside id="custPanel" class="w-[340px] shrink-0 bg-white border-l border-line flex-col min-h-0 xl:flex">
+          <div class="flex-1 overflow-y-auto" id="custBody"></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GENERIC PAGE WRAPPER ================= -->
+  <section id="page-generic" class="page h-full hidden overflow-y-auto">
+    <div class="max-w-[1240px] mx-auto px-6 py-6" id="genericInner"></div>
+  </section>
+</div>
+</div>
+
+<!-- ================= MODALS ================= -->
+<div id="orderModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="orderTitle" onclick="if(event.target===this)closeModal('orderModal')">
+  <div class="card w-[560px] max-w-[94vw] shadow-pop fadein">
+    <div class="px-5 py-4 border-b border-line flex items-center justify-between">
+      <div><div id="orderTitle" class="font-bold text-[15px]">Новый заказ</div><div class="text-[12px] text-mut mt-0.5">Данные предзаполнены из WhatsApp-диалога и карточки товара</div></div>
+      <button aria-label="Закрыть" onclick="closeModal('orderModal')" class="text-faint hover:text-ink p-1">✕</button>
+    </div>
+    <div class="p-5 grid grid-cols-2 gap-3.5 text-[13px]" id="orderForm">
+      <div><label class="sec block mb-1">Клиент</label><select id="ordCust" class="inp" onchange="orderCustChanged()"></select></div>
+      <div><label class="sec block mb-1">Телефон</label><input id="ordPhone" class="inp" readonly></div>
+      <div><label class="sec block mb-1">Товар</label><select id="ordProd" class="inp" onchange="orderProdChanged()"></select></div>
+      <div class="grid grid-cols-2 gap-3"><div><label class="sec block mb-1">Кол-во</label><input id="ordQty" type="number" value="1" min="1" class="inp" oninput="orderRecalc()"></div><div><label class="sec block mb-1">Цена, ₸</label><input id="ordPrice" type="number" class="inp" oninput="orderRecalc()"></div></div>
+      <div><label class="sec block mb-1">Город доставки</label><select id="ordCity" class="inp"><option>Алматы</option><option>Астана</option><option>Шымкент</option><option>Караганда</option><option>Самовывоз</option></select></div>
+      <div><label class="sec block mb-1">Менеджер</label><select id="ordMgr" class="inp"><option>Алекс Морган</option><option>Мария Иванова</option><option>Данияр Ахметов</option></select></div>
+      <div class="col-span-2 flex items-center justify-between bg-waSoft border border-[#CBEEDA] rounded-lg px-4 py-2.5"><span class="font-semibold text-[13px] text-waDark">Итого</span><span id="ordTotal" class="font-extrabold text-[17px] text-waDark">₸0</span></div>
+      <div class="col-span-2 text-[11.5px] text-faint">Источник: WhatsApp · Лид автоматически получит стадию «Заказ создан». Оплата: Kaspi / карта при получении.</div>
+    </div>
+    <div class="px-5 py-4 border-t border-line flex justify-end gap-2">
+      <button onclick="closeModal('orderModal')" class="btn btn-s">Отмена</button>
+      <button onclick="saveOrder()" class="btn btn-p">Сохранить заказ</button>
+    </div>
+  </div>
+</div>
+
+<div id="assignModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="assignTitle" onclick="if(event.target===this)closeModal('assignModal')">
+  <div class="card w-[380px] max-w-[94vw] shadow-pop fadein">
+    <div class="px-5 py-4 border-b border-line flex items-center justify-between"><div id="assignTitle" class="font-bold text-[15px]">Назначить менеджера</div><button aria-label="Закрыть" onclick="closeModal('assignModal')" class="text-faint hover:text-ink">✕</button></div>
+    <div class="p-3 space-y-1" id="assignList"></div>
+    <div class="px-5 py-3 border-t border-line text-[11.5px] text-faint">AI рекомендует лучшего свободного менеджера под регион и товар клиента.</div>
+  </div>
+</div>
+
+<div id="aiModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="aiTitle" onclick="if(event.target===this)closeModal('aiModal')">
+  <div class="card w-[520px] max-w-[94vw] shadow-pop fadein" style="border-color:#D9D2F7">
+    <div class="px-5 py-4 border-b border-line flex items-center justify-between" style="border-color:#E4E0F7">
+      <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-ai text-white flex items-center justify-center text-[13px]">✦</span><div id="aiTitle" class="font-bold text-[15px]">AI-действия</div></div>
+      <button aria-label="Закрыть" onclick="closeModal('aiModal')" class="text-faint hover:text-ink">✕</button>
+    </div>
+    <div class="p-4 grid grid-cols-2 gap-2 text-[13px]" id="aiActionList"></div>
+    <div class="px-5 py-3 border-t border-line text-[11.5px] text-faint" style="border-color:#E4E0F7">AI встроен в рабочий процесс: действует внутри диалога, лида и заказа — это не отдельный чат-бот.</div>
+  </div>
+</div>
+
+<div id="cmdModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="cmdInput" onclick="if(event.target===this)closeModal('cmdModal')">
+  <div class="card w-[560px] max-w-[94vw] shadow-pop fadein">
+    <div class="p-3 border-b border-line">
+      <input id="cmdInput" oninput="renderCmd()" placeholder="Поиск: клиенты, диалоги, заказы, товары, действия…" class="inp !border-0 !text-[15px] !py-2 focus:!shadow-none" autocomplete="off">
+    </div>
+    <div id="cmdResults" class="max-h-[380px] overflow-y-auto p-2"></div>
+    <div class="px-4 py-2.5 border-t border-line flex gap-4 text-[11px] text-faint"><span>⌘K — открыть</span><span>Esc — закрыть</span><span>Enter — перейти</span></div>
+  </div>
+</div>
+
+<div id="productModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="prodTitle" onclick="if(event.target===this)closeModal('productModal')">
+  <div class="card w-[460px] max-w-[94vw] shadow-pop fadein">
+    <div class="px-5 py-4 border-b border-line flex items-center justify-between"><div id="prodTitle" class="font-bold text-[15px]">Вставить товар в сообщение</div><button aria-label="Закрыть" onclick="closeModal('productModal')" class="text-faint hover:text-ink">✕</button></div>
+    <div id="prodPickList" class="p-3 space-y-1 max-h-[360px] overflow-y-auto"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+
+<script>
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') return unsafe;
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
+/* ============================================================
+   ДАННЫЕ
+   ============================================================ */
+var ORDERS = [
+  {id:'FZ-1042', cust:'Анна Петрова', prods:'iPhone 16 Pro', amount:599000, mgr:'Алекс Морган', status:'Доставлен', created:'18 дн. назад', pay:'Kaspi · оплачен'},
+  {id:'FZ-1038', cust:'Анна Петрова', prods:'AirPods Pro', amount:119000, mgr:'Алекс Морган', status:'Доставлен', created:'35 дн. назад', pay:'Наличные при получении'},
+  {id:'FZ-1031', cust:'Анна Петрова', prods:'Apple Watch S10', amount:249000, mgr:'Мария Иванова', status:'Доставлен', created:'62 дн. назад', pay:'Kaspi · оплачен'},
+  {id:'FZ-1041', cust:'Тимур Садыков', prods:'MacBook Air M4 ×2', amount:1198000, mgr:'Алекс Морган', status:'В обработке', created:'Вчера', pay:'Счёт · ожидает'},
+  {id:'FZ-1043', cust:'Дана Каримова', prods:'Чехол + стекло', amount:120000, mgr:'Мария Иванова', status:'Подтверждён', created:'Сегодня', pay:'Kaspi · оплачен'},
+  {id:'FZ-1040', cust:'Арман Беков', prods:'Samsung Galaxy S26', amount:429000, mgr:'Данияр Ахметов', status:'Новый', created:'3 дн. назад', pay:'Не оплачен'},
+  {id:'FZ-1036', cust:'Айгерим Нургали', prods:'Redmi Note 15', amount:149000, mgr:'Данияр Ахметов', status:'Отменён', created:'9 дн. назад', pay:'Возврат'},
+  {id:'FZ-1044', cust:'Данияр Ахметов (клиент)', prods:'iPhone 17 Pro Max', amount:899000, mgr:'Мария Иванова', status:'Оплачен', created:'Сегодня', pay:'Kaspi · оплачен'}
+];
+
+var PRODUCTS = [
+  {sku:'IP17P256', name:'iPhone 17 Pro 256GB', price:699000, stock:4, sales:86, cat:'Смартфоны', color:'Черный титан', alt:['IP17PM256','IP17P512']},
+  {sku:'IP17PM256', name:'iPhone 17 Pro Max 256GB', price:899000, stock:6, sales:41, cat:'Смартфоны', color:'Песчаный титан', alt:['IP17P256','SM-S26U']},
+  {sku:'IP17P512', name:'iPhone 17 Pro 512GB', price:829000, stock:3, sales:22, cat:'Смартфоны', color:'Синий', alt:['IP17P256','IP17PM256']},
+  {sku:'APP-PRO3', name:'AirPods Pro (3 пок.)', price:119000, stock:12, sales:154, cat:'Аксессуары', color:'Белый', alt:['AW-S10']},
+  {sku:'MBA-M4', name:'MacBook Air M4 13"', price:599000, stock:7, sales:33, cat:'Ноутбуки', color:'Полуночный', alt:['IP17P256']},
+  {sku:'SM-S26U', name:'Samsung Galaxy S26 Ultra', price:529000, stock:5, sales:47, cat:'Смартфоны', color:'Графит', alt:['IP17P256','IP17PM256']},
+  {sku:'AW-S10', name:'Apple Watch Series 10 46mm', price:249000, stock:9, sales:64, cat:'Часы', color:'Полночь', alt:['APP-PRO3']},
+  {sku:'SM-F766', name:'Samsung Galaxy Z Fold7', price:999000, stock:0, sales:8, cat:'Смартфоны', color:'Крем', alt:['SM-S26U','IP17PM256']},
+  {sku:'ENC-F9', name:'Samsung Galaxy S26 FE', price:329000, stock:2, sales:19, cat:'Смартфоны', color:'Мятный', alt:['SM-S26U']},
+  {sku:'RED-N15', name:'Redmi Note 15 Pro', price:149000, stock:0, sales:73, cat:'Смартфоны', color:'Чёрный', alt:['SM-F766']}
+];
+function prod(sku){ for(var i=0;i<PRODUCTS.length;i++) if(PRODUCTS[i].sku===sku) return PRODUCTS[i]; return null; }
+
+var CHAT_ANNA = [
+  {t:'in', time:'12:40', text:'Привет! Есть ли в наличии iPhone 17 Pro 256GB в черном цвете?'},
+  {t:'sys', text:'✦ Намерение распознано: наличие товара → вопрос о доставке → готовность к покупке'},
+  {t:'ai', text:'Клиент спрашивает про iPhone 17 Pro 256GB, чёрный.<br>Текущий остаток: <b>4 шт</b>. Ориентировочная сумма сделки: <b>₸699 000</b>.<br>Из истории: 4 заказа, VIP-клиент, платёжеспособность высокая.'},
+  {t:'out', time:'12:41', text:'Анна, здравствуйте! Да, чёрный iPhone 17 Pro 256GB есть — 4 штуки в наличии. Могу зарезервировать один за вами до конца дня 🙂'},
+  {t:'in', time:'12:42', text:'Отлично. А сможете доставить завтра?'},
+  {t:'ai', text:'Намерение обновлено: <b>вопрос о доставке</b>. Доставка по Алматы — в день заказа при подтверждении до 15:00 (база знаний).'},
+  {t:'out', time:'12:43', text:'Да, доставка по Алматы завтра, курьером до двери. Если подтвердите сегодня до 15:00 — доставим уже сегодня.'},
+  {t:'in', time:'12:44', text:'Супер, беру! Оформляйте.'},
+  {t:'sys', hot:true, text:'✦ AI обнаружил намерение покупки · потенциал ₸699 000 · вероятность закрытия 87%'}
+];
+var CHAT_TIMUR = [
+  {t:'in', time:'12:30', text:'Здравствуйте! Хочу заказать 3 штуки iPhone 17 Pro и нужна доставка в Алматы.'},
+  {t:'ai', text:'Оптовый запрос: <b>3 × iPhone 17 Pro 256GB = ₸2 097 000</b>. В наличии 4 шт. AI рекомендует согласовать скидку до 4% для опта.'},
+  {t:'out', time:'12:35', text:'Тимур, добрый день! 3 штуки в наличии. По оптовой партии сделаю спецусловия — уточню у руководителя и вернусь с ценой через 10 минут.'},
+  {t:'in', time:'12:36', text:'Хорошо, жду. Оплата на расчётный счёт возможна?'}
+];
+var CHAT_DANA = [
+  {t:'in', time:'11:58', text:'Подскажите, а сколько идёт доставка в Шымкент?'},
+  {t:'ai', text:'Региональный вопрос: доставка в Шымкент — 2–3 рабочих дня. Клиент интересуется аксессуаром к заказу мужа (₸120 000).'},
+  {t:'out', time:'12:05', text:'Дана, здравствуйте! В Шымкент — 2–3 рабочих дня, трек-номер пришлём сюда.'},
+  {t:'in', time:'12:06', text:'Спасибо! Подумаю 🙏'}
+];
+var CHAT_ARMAN = [
+  {t:'in', time:'10:43', text:'Спасибо, я подумаю.'},
+  {t:'ai', text:'Клиент не отказался — пауза перед решением. Рекомендованное касание: напоминание о резерве через 2 дня. Потенциал: <b>₸450 000</b>.'}
+];
+var CHAT_AIGERIM = [
+  {t:'in', time:'09:52', text:'А есть что-нибудь подешевле? Дороговато.'},
+  {t:'sys', warn:true, text:'⚠ Менеджер не отвечал 2 ч 41 мин · SLA нарушен'},
+  {t:'ai', text:'AI подобрал альтернативы: Samsung Galaxy S26 FE — ₸329 000, Redmi Note 15 Pro — ₸149 000 (нет в наличии, придёт послезавтра).'}
+];
+var CHAT_DANIYAR = [
+  {t:'in', time:'08:15', text:'Доброе утро! Интересуют AirPods Pro и часы Apple Watch — какая цена за комплект?'},
+  {t:'ai', text:'Комплексный запрос: ₸368 000 за пару. AI видит апсейл: MagSafe-зарядка (+₸25 990). Остаток достаточный.'},
+  {t:'out', time:'09:02', text:'Данияр, доброе утро! Комплект — ₸355 000, положу чехол в подарок.'},
+  {t:'in', time:'09:40', text:'Ок, давайте часы посмотрю вживую, можно бронь на вечер?'}
+];
+
+var CONVS = [
+  {id:'anna', name:'Анна Петрова', phone:'+7 777 123 45 67', city:'Алматы', last:'Отлично, беру! Оформляйте.', time:'12:44', status:'hot', mgr:'Алекс Морган', unread:2, intent:'Покупка', value:699000, chat:CHAT_ANNA, aiSummary:'Клиент хочет iPhone 17 Pro 256GB в чёрном цвете. Спросил о доставке. Готов купить. Незакрытых вопросов нет.', next:'Создать заказ', nextReason:'Клиент подтвердил намерение покупки, товар в наличии (4 шт).', prob:'Высокая', sla:'Ответили за 2 мин', tags:['VIP','Повторный','iPhone','Высокий чек'], prev:[{n:'iPhone 16 Pro',p:599000,s:'Доставлен'},{n:'AirPods Pro',p:119000,s:'Доставлен'},{n:'Apple Watch S10',p:249000,s:'Доставлен'}], orders:4, spent:2450000, lastBuy:'18 дней назад', returning:true},
+  {id:'timur', name:'Тимур Садыков', phone:'+7 701 555 88 21', city:'Алматы', last:'Оплата на расчётный счёт возможна?', time:'12:36', status:'qualified', mgr:'Алекс Морган', unread:1, intent:'Опт ×3', value:1890000, chat:CHAT_TIMUR, aiSummary:'Запрашивает 3 iPhone 17 Pro с доставкой в Алматы и оплатой по счёту. Нужен КП и договор для юрлица.', next:'Отправить КП на 3 шт', nextReason:'Оптовая сделка ₸2.1M — ждёт коммерческое предложение, риск ухода к конкуренту средний.', prob:'Высокая', sla:'Ответили за 5 мин', tags:['Опт','B2B','iPhone'], prev:[{n:'MacBook Air M4 ×2',p:1198000,s:'В обработке'}], orders:1, spent:1198000, lastBuy:'вчера', returning:true},
+  {id:'dana', name:'Дана Каримова', phone:'+7 705 234 11 09', city:'Шымкент', last:'Спасибо! Подумаю 🙏', time:'12:06', status:'waiting', mgr:'Мария Иванова', unread:0, intent:'Доставка', value:120000, chat:CHAT_DANA, aiSummary:'Уточнила сроки доставки в Шымкент, взяла паузу. Вероятный ответ — завтра.', next:'Фоллоу-уп завтра утром', nextReason:'Клиент «тёплый», но без касания 24 ч шанс покупки падает на 35%.', prob:'Средняя', sla:'Ответили за 7 мин', tags:['Аксессуары','Регион'], prev:[], orders:0, spent:0, lastBuy:'—', returning:false},
+  {id:'arman', name:'Арман Беков', phone:'+7 747 908 33 12', city:'Астана', last:'Спасибо, я подумаю.', time:'10:43', status:'followup', mgr:'Данияр Ахметов', unread:0, intent:'Пауза', value:450000, chat:CHAT_ARMAN, aiSummary:'Получил цену Samsung S26, взял паузу 2 дня назад. Не отказался.', next:'Напомнить о резерве', nextReason:'Резерв истечёт завтра. AI-сообщение с напоминанием повышает конверсию на 18%.', prob:'Средняя', sla:'Ответили за 12 мин', tags:['Android','Ожидает решения'], prev:[{n:'Samsung A56',p:159000,s:'Доставлен'}], orders:1, spent:159000, lastBuy:'4 мес. назад', returning:true},
+  {id:'aigerim', name:'Айгерим Нургали', phone:'+7 708 445 76 30', city:'Караганда', last:'А есть что-нибудь подешевле?', time:'09:52', status:'overdue', mgr:'Не назначен', unread:3, intent:'Бюджет', value:149000, chat:CHAT_AIGERIM, aiSummary:'Ищет смартфон до ₸350 000. Ждёт ответа 2+ часа — SLA нарушен, высокий риск потери.', next:'Ответить сейчас + альтернативы', nextReason:'Каждая минута ожидания снижает шанс ответа. AI уже подобрал 2 модели в бюджете.', prob:'Ниже средней', sla:'SLA нарушен · 2 ч 41 мин', tags:['Бюджетный поиск','Без менеджера'], prev:[], orders:0, spent:0, lastBuy:'—', returning:false},
+  {id:'daniyar', name:'Данияр Ахметов', phone:'+7 775 612 90 45', city:'Алматы', last:'Можно бронь на вечер?', time:'09:40', status:'hot', mgr:'Алекс Морган', unread:1, intent:'Комплект', value:368000, chat:CHAT_DANIYAR, aiSummary:'Хочет AirPods Pro + Apple Watch комплектом, просит бронь до вечера. Апсейл: MagSafe +₸25 990.', next:'Подтвердить бронь', nextReason:'Клиент готов забрать сам сегодня — зафиксируйте бронь и предложите апсейл.', prob:'Высокая', sla:'Ответили за 47 мин', tags:['Самовывоз','Комплексная покупка'], prev:[{n:'iPad Air',p:379000,s:'Доставлен'}], orders:2, spent:614000, lastBuy:'21 день назад', returning:true}
+];
+function conv(id){ for(var i=0;i<CONVS.length;i++) if(CONVS[i].id===id) return CONVS[i]; return null; }
+
+var STATUS = {
+  hot:{label:'Горячий лид', bg:'#FDEBEC', fg:'#E5484D'},
+  qualified:{label:'Квалифицирован', bg:'#E8EFFD', fg:'#2563EB'},
+  waiting:{label:'Ожидает клиента', bg:'#FEF3E2', fg:'#D97706'},
+  followup:{label:'Нужно касание', bg:'#F0EDFC', fg:'#6D5BD0'},
+  overdue:{label:'Просрочено', bg:'#FDEBEC', fg:'#E5484D'},
+  new:{label:'Новый', bg:'#EFF2EF', fg:'#5F6B63'},
+  won:{label:'Выигран', bg:'#E3F5EB', fg:'#188554'}
+};
+var AV_COLORS = ['#1FA855','#6D5BD0','#D97706','#2563EB','#E5484D','#0E9384'];
+function initials(n){ var p=n.split(' '); return (p[0][0]||'')+(p[1]?p[1][0]:''); }
+function fmt(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' ₸'; }
+function av(name,size){ var c=AV_COLORS[name.length % AV_COLORS.length]; return '<span class="avatar" style="width:'+size+'px;height:'+size+'px;background:'+c+';font-size:'+Math.round(size*0.38)+'px">'+escapeHtml(initials(name))+'</span>'; }
+
+var KANBAN = [
+  {stage:'Новые', key:'new', leads:[
+    {c:'Айгерим Нургали',p:'Redmi Note 15 Pro',v:149000,mgr:'Не назначен',act:'2 ч 41 мин назад',sla:'bad',intent:'Бюджет'},
+    {c:'Ерлан Турсунов',p:'Apple Watch S10',v:249000,mgr:'Мария Иванова',act:'35 мин назад',sla:'ok',intent:'Наличие'},
+    {c:'Гульнара Ким',p:'MacBook Air M4',v:599000,mgr:'Не назначен',act:'1 ч назад',sla:'warn',intent:'Консультация'}]},
+  {stage:'Квалифицированы', key:'qual', leads:[
+    {c:'Тимур Садыков',p:'iPhone 17 Pro ×3',v:1890000,mgr:'Алекс Морган',act:'8 мин назад',sla:'ok',intent:'Опт'},
+    {c:'Сергей Дворецкий',p:'Samsung Z Fold7',v:999000,mgr:'Данияр Ахметов',act:'3 ч назад',sla:'warn',intent:'Предзаказ'}]},
+  {stage:'Горячие', key:'hot', leads:[
+    {c:'Анна Петрова',p:'iPhone 17 Pro',v:699000,mgr:'Алекс Морган',act:'2 мин назад',sla:'ok',intent:'Покупка',hot:true},
+    {c:'Данияр Ахметов',p:'AirPods + Watch',v:368000,mgr:'Алекс Морган',act:'24 мин назад',sla:'ok',intent:'Комплект',hot:true},
+    {c:'Асель Жаксылык',p:'iPhone 17 Pro Max',v:899000,mgr:'Мария Иванова',act:'12 мин назад',sla:'ok',intent:'Покупка',hot:true}]},
+  {stage:'Переговоры', key:'neg', leads:[
+    {c:'Арман Беков',p:'Samsung S26',v:429000,mgr:'Данияр Ахметов',act:'2 дн. назад',sla:'warn',intent:'Пауза'},
+    {c:'ТОО «Алтын Дән»',p:'iPad Air ×5',v:1895000,mgr:'Алекс Морган',act:'Вчера',sla:'ok',intent:'Тендер'}]},
+  {stage:'Выиграны', key:'won', leads:[
+    {c:'Дана Каримова',p:'Чехол + стекло',v:120000,mgr:'Мария Иванова',act:'Сегодня',sla:'ok',intent:'Заказ'},
+    {c:'Мадина Есен',p:'AirPods Pro',v:119000,mgr:'Алекс Морган',act:'Вчера',sla:'ok',intent:'Заказ'}]},
+  {stage:'Проиграны', key:'lost', leads:[
+    {c:'Виктор Ким',p:'iPhone 17 Pro',v:699000,mgr:'Данияр Ахметов',act:'3 дн. назад',sla:'bad',intent:'Ушёл к конкуренту'},
+    {c:'Жанна Смирнова',p:'MacBook Air M4',v:599000,mgr:'Мария Иванова',act:'5 дн. назад',sla:'bad',intent:'Дорого'}]}
+];
+
+var CUSTOMERS = [
+  {name:'Анна Петрова', phone:'+7 777 123 45 67', city:'Алматы', lastConv:'12:44 сегодня', lastOrder:'18 дн. назад', revenue:2450000, mgr:'Алекс Морган', status:'VIP · повторная', conv:14, orders:4, intent:'Покупка iPhone 17 Pro', note:'Постоянный клиент, любит быстрые ответы. Всегда доставка курьером.', tasks:'Позвонить после доставки · касание через 7 дней', fu:'Отправить благодарность + аксессуар к новому заказу', viewed:'iPhone 17 Pro 256GB · чехлы MagSafe', hist:'Горячий лид — сегодня · Квалифицирован — 18 дн. · Выигран — 18 дн.'},
+  {name:'Тимур Садыков', phone:'+7 701 555 88 21', city:'Алматы', lastConv:'12:36 сегодня', lastOrder:'вчера', revenue:1198000, mgr:'Алекс Морган', status:'B2B · опт', conv:6, orders:1, intent:'Опт 3 шт', note:'Юридическое лицо, ТОО. Нужны счета и закрывающие документы.', tasks:'Выставить КП на 3 iPhone 17 Pro', fu:'КП + условия по оптовой скидке', viewed:'iPhone 17 Pro 256GB ×3', hist:'Оптовый запрос — сегодня · Выигран — вчера'},
+  {name:'Дана Каримова', phone:'+7 705 234 11 09', city:'Шымкент', lastConv:'12:06 сегодня', lastOrder:'—', revenue:0, mgr:'Мария Иванова', status:'Новая', conv:2, orders:0, intent:'Доставка', note:'Спрашивала про доставку, взяла паузу.', tasks:'Касание завтра 10:00', fu:'Напомнить о доставке в Шымкент', viewed:'Чехол + защитное стекло', hist:'Новый лид — сегодня'},
+  {name:'Арман Беков', phone:'+7 747 908 33 12', city:'Астана', lastConv:'10:43 сегодня', lastOrder:'4 мес. назад', revenue:159000, mgr:'Данияр Ахметов', status:'Пауза', conv:5, orders:1, intent:'Раздумывает', note:'Сравнивает цены с Kaspi-магазином.', tasks:'Напомнить о резерве завтра', fu:'Напоминание об истечении резерва', viewed:'Samsung Galaxy S26', hist:'Переговоры — 2 дн. назад'},
+  {name:'Айгерим Нургали', phone:'+7 708 445 76 30', city:'Караганда', lastConv:'09:52 сегодня', lastOrder:'—', revenue:0, mgr:'Не назначен', status:'SLA нарушен', conv:1, orders:0, intent:'Бюджет', note:'Ждёт ответ 2+ часа — риск потери.', tasks:'Назначить менеджера немедленно', fu:'Ответ + 2 альтернативы в бюджете', viewed:'Redmi Note 15 Pro · S26 FE', hist:'Новый лид — 3 ч назад'},
+  {name:'Данияр Ахметов', phone:'+7 775 612 90 45', city:'Алматы', lastConv:'09:40 сегодня', lastOrder:'21 дн. назад', revenue:614000, mgr:'Алекс Морган', status:'Повторная', conv:8, orders:2, intent:'Комплект', note:'Забирает сам из магазина в центре.', tasks:'Подтвердить бронь до 18:00', fu:'Бронь AirPods + Watch на вечер', viewed:'AirPods Pro · Apple Watch S10', hist:'Горячий лид — сегодня'}
+];
+
+var FOLLOWUPS = [
+  {name:'Анна Петрова', why:'Интерес к iPhone 17 Pro', last:'2 дня назад', v:699000, rec:'Отправить напоминание о наличии', act:'send', hot:true},
+  {name:'Тимур Садыков', why:'Спрашивал оптовые цены', last:'4 дня назад', v:1890000, rec:'Предложить оптовую скидку', act:'review', hot:true},
+  {name:'Арман Беков', why:'Подбор Android-флагмана', last:'2 дня назад', v:450000, rec:'Напомнить: резерв истекает завтра', act:'send'},
+  {name:'Дана Каримова', why:'Вопрос о доставке в Шымкент', last:'Вчера', v:120000, rec:'Уточнить, актуальна ли покупка', act:'send'},
+  {name:'Ерлан Турсунов', why:'Смотрел Apple Watch', last:'5 дней назад', v:249000, rec:'Отправить фото новых ремешков', act:'send'},
+  {name:'Гульнара Ким', why:'Консультация по MacBook', last:'3 дня назад', v:599000, rec:'Пригласить на примерку в магазин', act:'review'},
+  {name:'Сергей Дворецкий', why:'Z Fold7 — ожидание поставки', last:'Неделю назад', v:999000, rec:'Сообщить о поступлении первым', act:'review', hot:true},
+  {name:'Асель Жаксылык', why:'Бросила диалог после цены', last:'6 дней назад', v:899000, rec:'Скидка 3% за решение сегодня', act:'send', hot:true}
+];
+
+var KNOWLEDGE = [
+  {cat:'Доставка', q:'Сколько идёт доставка в Алматы?', a:'Доставка в день заказа при подтверждении до 15:00. Иначе — на следующий день. Курьер до двери.', st:'Активна'},
+  {cat:'Доставка', q:'Сроки доставки в регионы (Шымкент, Караганда)?', a:'2–3 рабочих дня транспортными компаниями, трек-номер приходит в WhatsApp.', st:'Активна'},
+  {cat:'Цены', q:'Есть ли скидки на оптовые партии?', a:'От 3 единиц одного товара — скидка до 4%, для юрлиц — оплата по счёту с НДС.', st:'Активна'},
+  {cat:'Товары', q:'Что заменить, если iPhone 17 Pro нет в наличии?', a:'iPhone 17 Pro Max (чёрный титан) или Samsung Galaxy S26 Ultra. Завтра ожидается поставка 10 шт.', st:'Активна'},
+  {cat:'Оплата', q:'Какие способы оплаты доступны?', a:'Kaspi Red в рассрочку, карта онлайн, наличные при получении, счёт для юрлиц.', st:'Активна'},
+  {cat:'Возврат', q:'Как оформить возврат телефона?', a:'В течение 14 дней при сохранении упаковки и чека. Возврат средств — 3–5 рабочих дней.', st:'Активна'},
+  {cat:'Гарантия', q:'Какая гарантия на технику Apple?', a:'1 год официальной гарантии + сервисный партнёр в Алматы и Астане.', st:'Активна'},
+  {cat:'FAQ', q:'Можно ли проверить товар при получении?', a:'Да, курьер ждёт 15 минут после осмотра товара.', st:'Активна'},
+  {cat:'Скрипты', q:'Скрипт: клиент «подумает»', a:'«Конечно! Я зарезервирую товар на 24 часа — так вы точно получите его по этой цене. Ок?»', st:'Активна'},
+  {cat:'Скрипты', q:'Скрипт: возражение «дорого»', a:'«Понимаю. Есть варианты в вашем бюджете: … Также доступна рассрочка 0-0-12 от Kaspi.»', st:'Активна'}
+];
+
+var AIS = ['Понять диалог','Извлечь данные клиента','Определить намерение покупки','Подобрать товар','Проверить остатки','Предложить ответ','Создать лид','Назначить менеджера','Создать задачу','Создать заказ','Запланировать касание','Найти аналог товара','Рекомендовать апсейл'];
+
+/* ============================================================
+   НАВИГАЦИЯ / УТИЛИТЫ
+   ============================================================ */
+var NAV = [
+  {g:'Основное', items:[
+    {k:'inbox', n:'Входящие', ic:'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z', badge:'6'},
+    {k:'leads', n:'Лиды', ic:'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75'},
+    {k:'customers', n:'Клиенты', ic:'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z'},
+    {k:'orders', n:'Заказы', ic:'M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0'}
+  ]},
+  {g:'Продажи', items:[
+    {k:'followups', n:'Повторные касания', ic:'M1 4v6h6M3.51 15a9 9 0 102.13-9.36L1 10', badge:'24'},
+    {k:'automations', n:'Автоматизации', ic:'M13 2L3 14h9l-1 8 10-12h-9l1-8z'},
+    {k:'aiassistant', n:'AI-помощник', ic:'M12 2l2.1 6.3L20 10l-5.9 1.7L12 18l-2.1-6.3L4 10l5.9-1.7z', ai:true}
+  ]},
+  {g:'Каталог', items:[
+    {k:'products', n:'Товары', ic:'M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16zM3.3 7L12 12l8.7-5M12 22V12'},
+    {k:'inventory', n:'Склад', ic:'M20 7h-9M14 17H5M5 7h.01M9 17h.01M3 5h18v14H3z'}
+  ]},
+  {g:'Аналитика', items:[
+    {k:'revenue', n:'Выручка', ic:'M18 20V10M12 20V4M6 20v-6'},
+    {k:'performance', n:'Эффективность продаж', ic:'M22 12h-4l-3 9L9 3l-3 9H2'},
+    {k:'lost', n:'Упущенная выручка', ic:'M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01', badge:'₸1.2M'}
+  ]},
+  {g:'Система', items:[
+    {k:'integrations', n:'Интеграции', ic:'M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71'},
+    {k:'settings', n:'Настройки', ic:'M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 008.6 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 8.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z'}
+  ]}
+];
+var curPage='inbox';
+
+function renderNav(){
+  var h='';
+  for(var g=0; g<NAV.length; g++){
+    var grp=NAV[g];
+    h+='<div><div class="sec px-2.5 mb-1.5 sb-only">'+grp.g+'</div>';
+    if(sidebarCollapsed) h+='<div class="sb-only-none border-t border-line my-2"></div>';
+    for(var i=0;i<grp.items.length;i++){
+      var it=grp.items[i];
+      var act = (it.k===curPage || (it.k==='inbox'&&curPage==='inbox')) ? ' active':'';
+      var badge = it.badge ? '<span class="nav-badge sb-only" style="background:'+(it.ai?'#F0EDFC':(it.k==='lost'||it.k==='inbox'?'#FDEBEC':'#FEF3E2'))+';color:'+(it.ai?'#6D5BD0':(it.k==='lost'||it.k==='inbox'?'#E5484D':'#D97706'))+'">'+it.badge+'</span>' : '';
+      h+='<button class="nav-item w-full text-left'+act+'" title="'+it.n+'" onclick="go(\''+it.k+'\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="'+it.ic+'"/></svg><span class="sb-only">'+it.n+'</span>'+badge+'</button>';
+    }
+    h+='</div>';
+  }
+  document.getElementById('sideNav').innerHTML=h;
+}
+
+function go(p){
+  curPage=p;
+  closeNotif();
+  if(window.innerWidth<1024) document.getElementById('sidebar').classList.remove('mobOpen');
+  document.querySelectorAll('.page').forEach(function(el){el.classList.add('hidden');});
+  if(p==='inbox'){
+    document.getElementById('page-inbox').classList.remove('hidden');
+    document.getElementById('page-generic').classList.add('hidden');
+  } else {
+    document.getElementById('page-inbox').classList.add('hidden');
+    var g=document.getElementById('page-generic'); g.classList.remove('hidden');
+    renderGeneric(p);
+  }
+  renderNav();
+}
+
+var sidebarCollapsed=false;
+function toggleSidebar(){
+  sidebarCollapsed=!sidebarCollapsed;
+  var sb=document.getElementById('sidebar');
+  sb.style.width = sidebarCollapsed ? '64px' : '236px';
+  document.querySelectorAll('.sb-only').forEach(function(el){ el.style.display = sidebarCollapsed?'none':''; });
+  document.getElementById('logoText').style.display = sidebarCollapsed?'none':'';
+  document.querySelectorAll('#sideNav .sec, #sideNav .border-t').forEach(function(el){ el.style.display = sidebarCollapsed?'none':''; });
+}
+function mobNav(){ document.getElementById('sidebar').classList.toggle('mobOpen'); }
+function mobCust(){ document.getElementById('custPanel').classList.toggle('mobOpen'); }
+
+var toastTimer=null;
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; 
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('show');},2600);
+}
+
+function openModal(id){ document.getElementById(id).classList.add('open'); if(id==='cmdModal'){ setTimeout(function(){var c=document.getElementById('cmdInput'); c.value=''; renderCmd(); c.focus();},50);} }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function toggleNotif(e){ e.stopPropagation(); document.getElementById('notifPanel').classList.toggle('hidden'); }
+function closeNotif(){ document.getElementById('notifPanel').classList.add('hidden'); }
+document.addEventListener('click', function(e){
+  var p=document.getElementById('notifPanel');
+  if(p && !p.classList.contains('hidden') && !p.contains(e.target)) p.classList.add('hidden');
+});
+document.addEventListener('keydown', function(e){
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openModal('cmdModal'); }
+  if(e.key==='Escape'){ ['orderModal','assignModal','aiModal','cmdModal','productModal'].forEach(closeModal); document.getElementById('aiPanel').classList.add('hidden'); }
+});
+
+function statusChip(s){ var st=STATUS[s]||STATUS.new; return '<span class="chip" style="background:'+st.bg+';color:'+st.fg+'">'+st.label+'</span>'; }
+function intentChip(t){ return '<span class="chip" style="background:#F0EDFC;color:#6D5BD0">✦ '+escapeHtml(t)+'</span>'; }
+
+/* ============================================================
+   INBOX
+   ============================================================ */
+var curConv='anna', curTab='all';
+var TABS=[{k:'all',n:'Все'},{k:'unassigned',n:'Без менеджера'},{k:'mine',n:'Мои лиды'},{k:'hot',n:'Горячие'},{k:'waiting',n:'Ожидают'},{k:'overdue',n:'Просрочено'}];
+
+function setTab(t){ curTab=t; renderTabs(); renderConvList(); }
+function renderTabs(){
+  var h='';
+  for(var i=0;i<TABS.length;i++){
+    var t=TABS[i];
+    h+='<button class="tab'+(t.k===curTab?' active':'')+'" onclick="setTab(\''+t.k+'\')">'+t.n+'</button>';
+  }
+  document.getElementById('convTabs').innerHTML=h;
+}
+function tabMatch(c){
+  if(curTab==='all') return true;
+  if(curTab==='unassigned') return c.mgr==='Не назначен';
+  if(curTab==='mine') return c.mgr==='Алекс Морган';
+  if(curTab==='hot') return c.status==='hot';
+  if(curTab==='waiting') return c.status==='waiting'||c.status==='followup';
+  if(curTab==='overdue') return c.status==='overdue';
+  return true;
+}
+function renderConvList(){
+  var q=(document.getElementById('convSearch').value||'').toLowerCase();
+  var h='';
+  for(var i=0;i<CONVS.length;i++){
+    var c=CONVS[i];
+    if(!tabMatch(c)) continue;
+    if(q && (c.name.toLowerCase().indexOf(q)<0 && c.last.toLowerCase().indexOf(q)<0)) continue;
+    var dot = c.status==='overdue' ? '<span class="dot" style="background:#E5484D"></span>' :
+              c.status==='hot' ? '<span class="dot" style="background:#D97706"></span>' :
+              (c.status==='waiting'||c.status==='followup') ? '<span class="dot" style="background:#8A938C"></span>' : '';
+    
+    var safeName = escapeHtml(c.name);
+    var safeLast = escapeHtml(c.last);
+    
+    h+='<div tabindex="0" role="option" aria-selected="'+(c.id===curConv)+'" class="conv-row'+(c.id===curConv?' sel':'')+'" onclick="selectConv(\''+c.id+'\')">'
+      +'<div class="flex gap-2.5">'
+      +'<div class="relative shrink-0">'+av(c.name,38)+(c.unread?'<span class="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-wa text-white text-[9px] font-bold flex items-center justify-center border-2 border-white">'+c.unread+'</span>':'')+'</div>'
+      +'<div class="min-w-0 flex-1">'
+      +'<div class="flex items-center gap-1.5"><span class="font-semibold text-[13.5px] truncate">'+safeName+'</span><span class="ml-auto text-[11px] text-faint shrink-0">'+c.time+'</span></div>'
+      +'<div class="text-[12.5px] text-mut truncate mt-0.5">'+safeLast+'</div>'
+      +'<div class="flex items-center gap-1.5 mt-1.5 flex-wrap">'+statusChip(c.status)+intentChip(c.intent)
+      +(c.value?'<span class="chip" style="background:#EFF2EF;color:#111A14;font-weight:700">'+fmt(c.value)+'</span>':'')
+      +'<span class="ml-auto flex items-center gap-1 text-[11px] text-faint shrink-0">'+dot+(c.mgr==='Не назначен'?'<b class="text-hot">не назначен</b>':escapeHtml(c.mgr.split(' ')[0]))+'</span>'
+      +'</div></div></div></div>';
+  }
+  if(!h) h='<div class="p-6 text-center text-[13px] text-faint">Нет диалогов в этой вкладке</div>';
+  document.getElementById('convList').innerHTML=h;
+}
+function selectConv(id){
+  curConv=id;
+  go('inbox');
+  renderConvList(); renderChat(); renderCustomer();
+  document.getElementById('aiPanel').classList.add('hidden');
+  if(window.innerWidth<768) document.getElementById('convCol').style.display='none';
+}
+
+function renderChat(){
+  var c=conv(curConv);
+  if(!c) return;
+  var safeName = escapeHtml(c.name);
+  var safePhone = escapeHtml(c.phone);
+  
+  document.getElementById('chatHead').innerHTML =
+    '<button aria-label="Назад" onclick="backToConvList()" class="md:hidden text-mut p-1">←</button>'
+    +av(c.name,36)
+    +'<div class="min-w-0"><div class="font-bold text-[14px] leading-tight truncate">'+safeName+' <span class="text-[11px] font-normal text-faint">· '+safePhone+'</span></div>'
+    +'<div class="flex items-center gap-1.5 mt-0.5">'+statusChip(c.status)+'<span class="text-[11.5px] text-faint">В работе: <b class="text-mut">'+escapeHtml(c.mgr)+'</b></span></div></div>'
+    +'<div class="ml-auto flex items-center gap-1.5">'
+    +'<button onclick="toast(\'Звоним через WhatsApp Business API: '+safePhone+'…\')" class="btn btn-s btn-sm">📞 Звонок</button>'
+    +'<button onclick="openAssign()" class="btn btn-s btn-sm">Назначить</button>'
+    +'<button onclick="toast(\'Ещё: закрыть диалог · эскалация · жалоба · экспорт (демо)\')" class="btn btn-s btn-sm !px-2">⋯</button>'
+    +'</div>';
+  var h='';
+  for(var i=0;i<c.chat.length;i++){
+    var m=c.chat[i];
+    var safeText = m.t === 'ai' ? m.text : escapeHtml(m.text);
+    
+    if(m.t==='in') h+='<div class="flex"><div class="msg-in max-w-[75%] rounded-xl rounded-bl-sm border border-line px-3.5 py-2.5 shadow-soft"><div class="text-[13.5px] leading-relaxed">'+safeText+'</div><div class="text-[10.5px] text-faint text-right mt-1">'+(m.time||'')+'</div></div></div>';
+    else if(m.t==='out') h+='<div class="flex justify-end"><div class="msg-out max-w-[75%] rounded-xl rounded-br-sm border border-[#C9EBD2] px-3.5 py-2.5 shadow-soft"><div class="text-[13.5px] leading-relaxed">'+safeText+'</div><div class="text-[10.5px] text-waDark text-right mt-1">'+(m.time||'')+' ✓✓</div></div></div>';
+    else if(m.t==='ai') h+='<div class="mx-auto max-w-[85%]" style="border-left:3px solid #6D5BD0;background:#F6F4FE;border-radius:10px;padding:10px 14px"><div class="text-[11px] font-bold text-ai mb-0.5">✦ AI-ассистент · анализ диалога</div><div class="text-[12.5px] leading-relaxed text-[#3d3670]">'+safeText+'</div></div>';
+    else h+='<div class="mx-auto text-center"><span class="chip '+(m.hot?'':'')+'" style="'+(m.hot?'background:#FDEBEC;color:#E5484D;':'background:#FFF7E8;color:#B45309;')+'padding:5px 12px;font-size:12px">'+safeText+'</span></div>';
+  }
+  if(c.id==='anna'){
+    h+='<div class="mx-auto mt-2 card p-4 flex items-center gap-4 fadein" style="border-color:#CBEEDA;background:#F2FBF5"><div class="w-9 h-9 rounded-lg bg-wa text-white flex items-center justify-center text-[15px]">✓</div><div class="min-w-0"><div class="font-bold text-[13.5px] text-waDark">AI обнаружил намерение покупки · iPhone 17 Pro 256GB</div><div class="text-[12px] text-mut">Клиент подтвердил готовность. Товар в наличии — можно оформить заказ в один клик.</div></div><button onclick="createOrderFromConv()" class="btn btn-p shrink-0 ml-auto">Создать заказ</button></div>';
+  }
+  var b=document.getElementById('chatBody'); b.innerHTML=h; b.scrollTop=b.scrollHeight;
+}
+function backToConvList(){ document.getElementById('convCol').style.display=''; }
+
+function renderCustomer(){
+  var c=conv(curConv);
+  if(!c) return;
+  var prev='';
+  for(var i=0;i<c.prev.length;i++){ var o=c.prev[i];
+    prev+='<div class="flex items-center gap-2.5 border border-line rounded-lg px-3 py-2"><div class="w-8 h-8 rounded-md bg-page border border-line flex items-center justify-center text-[13px]">📱</div><div class="min-w-0"><div class="text-[12.5px] font-semibold truncate">'+escapeHtml(o.n)+'</div><div class="text-[11px] text-faint">'+fmt(o.p)+' · '+o.s+'</div></div><span class="ml-auto chip" style="background:#E3F5EB;color:#188554">'+o.s+'</span></div>';
+  }
+  if(!prev) prev='<div class="text-[12px] text-faint">Заказов пока не было</div>';
+  var tags=''; for(var t=0;t<c.tags.length;t++) tags+='<span class="chip" style="background:#EFF2EF;color:#5F6B63">#'+escapeHtml(c.tags[t])+'</span>';
+  var nextBtn = c.next==='Создать заказ' ? 'onclick="createOrderFromConv()"' : 'onclick="nextAction()"';
+  document.getElementById('custBody').innerHTML =
+    '<div class="p-4 border-b border-line text-center">'+av(c.name,54)+'<div class="font-bold text-[15px] mt-2">'+escapeHtml(c.name)+'</div><div class="text-[12px] text-mut">'+escapeHtml(c.phone)+'</div><div class="mt-1.5"><span class="chip" style="background:'+(c.returning?'#E3F5EB':'#EFF2EF')+';color:'+(c.returning?'#188554':'#5F6B63')+'">'+(c.returning?'Повторный клиент':'Новый клиент')+'</span></div></div>'
+    +'<div class="p-4 border-b border-line"><div class="sec mb-2">Лид</div>'
+    +row('Стадия',statusChip(c.status))+row('Потенциал','<b>'+fmt(c.value)+'</b>')+row('Вероятность',c.prob)+row('Источник','WhatsApp')+row('Ответственный',escapeHtml(c.mgr))+row('SLA','<span class="'+(c.status==='overdue'?'text-hot font-semibold':'text-ok')+'">'+c.sla+'</span>')
+    +'</div>'
+    +'<div class="p-4 border-b border-line" style="background:#FAF9FF"><div class="sec mb-1.5" style="color:#6D5BD0">✦ AI-резюме</div><div class="text-[12.5px] leading-relaxed text-[#3d3670]">'+c.aiSummary+'</div></div>'
+    +'<div class="p-4 border-b border-line"><div class="sec mb-2">Следующее лучшее действие</div>'
+    +'<div class="rounded-xl p-3.5" style="background:linear-gradient(135deg,#F2FBF5,#EAF7EE);border:1.5px solid #BFE8CC"><div class="text-[11px] font-bold text-waDark uppercase tracking-wide">Рекомендация AI</div><div class="font-extrabold text-[15px] mt-0.5">'+c.next+'</div><div class="text-[12px] text-mut mt-1 leading-snug">'+c.nextReason+'</div><button class="btn btn-p w-full mt-2.5" '+nextBtn+'>Выполнить</button></div></div>'
+    +'<div class="p-4 border-b border-line"><div class="sec mb-2">Информация о клиенте</div>'+row('Город',escapeHtml(c.city))+row('Заказов ранее',String(c.orders))+row('Потрачено',c.spent?fmt(c.spent):'—')+row('Последняя покупка',c.lastBuy)+'</div>'
+    +'<div class="p-4 border-b border-line"><div class="sec mb-2">Предыдущие заказы</div><div class="space-y-2">'+prev+'</div></div>'
+    +'<div class="p-4"><div class="sec mb-2">Теги</div><div class="flex flex-wrap gap-1.5">'+tags+'</div>'
+    +'<div class="mt-4 space-y-2"><button onclick="createTaskDemo()" class="btn btn-s w-full text-[12.5px]">+ Создать задачу</button>'
+    +'<button onclick="go(\'knowledge\')" class="btn btn-s w-full text-[12.5px]">База знаний AI</button></div></div>';
+  function row(k,v){ return '<div class="flex items-center justify-between py-1.5 text-[12.5px]"><span class="text-mut">'+k+'</span><span class="font-medium text-right">'+v+'</span></div>'; }
+}
+function nextAction(){
+  var c=conv(curConv);
+  if(c.next==='Создать заказ'){ createOrderFromConv(); return; }
+  toast('Действие «'+c.next+'» запланировано для клиента '+escapeHtml(c.name)+' (демо)');
+}
+
+var aiVariants=[
+  'Да, iPhone 17 Pro 256GB в чёрном цвете есть в наличии — 4 штуки. Доставим завтра курьером до двери в Алматы, оплата при получении или Kaspi.',
+  'Анна, добрый день! Чёрный iPhone 17 Pro 256GB в наличии. Завтрашая доставка по Алматы бесплатна, резерв держим до 18:00 сегодня.',
+  'Конечно! Модель доступна (4 шт). Предлагаю доставить завтра до 18:00 — подтвердите адрес, и я оформлю заказ.'
+];
+var aiIdx=0;
+function toggleAiPanel(){
+  var p=document.getElementById('aiPanel');
+  if(p.classList.contains('hidden')){ renderAiPanel(); p.classList.remove('hidden'); }
+  else p.classList.add('hidden');
+}
+function renderAiPanel(){
+  var txt=aiVariants[aiIdx % aiVariants.length];
+  var quick=['Короче','Профессиональнее','Дружелюбнее','+ детали товара','+ данные о доставке'];
+  var qh=''; for(var i=0;i<quick.length;i++) qh+='<button class="chip cursor-pointer hover:bg-[#E4E0F7]" style="background:#F0EDFC;color:#6D5BD0; border:none" onclick="regenQuick()">'+quick[i]+'</button>';
+  document.getElementById('aiPanel').innerHTML =
+    '<div class="flex items-center justify-between mb-2"><div class="font-bold text-[13.5px] text-ai">✦ AI-вариант ответа</div><span class="text-[11px] text-faint">на основе диалога + базы знаний</span></div>'
+    +'<div class="text-[13px] leading-relaxed bg-aiSoft rounded-lg p-3 border border-[#E4E0F7]">'+txt+'</div>'
+    +'<div class="flex gap-2 mt-3"><button onclick="insertAi()" class="btn btn-a flex-1">Вставить</button><button onclick="regenerate()" class="btn btn-s flex-1">↻ Сгенерировать ещё</button></div>'
+    +'<div class="mt-3"><div class="sec mb-1.5">Быстрые действия AI</div><div class="flex flex-wrap gap-1.5">'+qh+'</div></div>';
+}
+function regenerate(){ aiIdx++; renderAiPanel(); toast('AI перегенерировал ответ'); }
+function regenQuick(){ aiIdx++; renderAiPanel(); toast('AI переписал ответ в выбранном стиле'); }
+function insertAi(){
+  document.getElementById('composer').value = document.getElementById('aiPanel').querySelector('.bg-aiSoft').textContent.replace(/<[^>]+>/g,'');
+  document.getElementById('aiPanel').classList.add('hidden');
+  document.getElementById('composer').focus();
+  toast('Текст AI вставлен в поле сообщения');
+}
+function attachDemo(){ toast('📎 Отправка файла: фото товара / КП (демо)'); }
+function useTemplate(){
+  var tpl='Здравствуйте! Благодарю за обращение в Alma Store. Подскажите, пожалуйста, какой бюджет рассматриваете — подберу лучший вариант 🙂';
+  document.getElementById('composer').value=tpl;
+  toast('Шаблон «Первый ответ клиенту» вставлен');
+}
+function sendComposer(){
+  var ta=document.getElementById('composer');
+  var v=(ta.value||'').trim();
+  if(!v){ toast('Введите текст сообщения'); return; }
+  conv(curConv).chat.push({t:'out', time:'сейчас', text:v});
+  ta.value='';
+  renderChat();
+  toast('Сообщение отправлено через WhatsApp Business API');
+}
+function createOrderFromConv(){
+  var c=conv(curConv);
+  closeModal('productModal');
+  fillOrderForm(c.name, guessProduct(c), c.city, c.mgr);
+  openModal('orderModal');
+}
+function guessProduct(c){
+  if(c.id==='anna') return 'IP17P256';
+  if(c.id==='timur') return 'IP17P256';
+  if(c.id==='dana') return 'APP-PRO3';
+  if(c.id==='arman') return 'SM-S26U';
+  if(c.id==='aigerim') return 'ENC-F9';
+  if(c.id==='daniyar') return 'AW-S10';
+  return 'IP17P256';
+}
+
+document.addEventListener('keydown', function(e){
+  if(e.key==='Enter' && !e.shiftKey && e.target && e.target.id==='composer'){ e.preventDefault(); sendComposer(); }
+});
+
+function createTaskDemo(){
+  var c=conv(curConv);
+  toast('Задача «'+c.next+'» создана по диалогу с '+escapeHtml(c.name));
+}
+
+/* ============================================================
+   СТРАНИЦЫ
+   ============================================================ */
+function kpiCard(num,label,sub,color){
+  return '<div class="card p-4"><div class="kpi-num" style="color:'+(color||'#111A14')+'">'+num+'</div><div class="text-[12px] text-mut mt-0.5">'+label+'</div>'+(sub?'<div class="text-[11px] text-faint mt-1">'+sub+'</div>':'')+'</div>';
+}
+function pageHead(title,sub,btnLabel,btnFn){
+  return '<div class="flex flex-wrap items-end justify-between gap-3 mb-5"><div><h1 class="text-[21px] font-bold tracking-tight">'+title+'</h1><p class="text-[13px] text-mut mt-0.5">'+sub+'</p></div>'
+    +(btnLabel?'<button onclick="'+btnFn+'" class="btn btn-p">'+btnLabel+'</button>':'')+'</div>';
+}
+
+function renderLeads(){
+  var h = pageHead('Лиды','Все входящие из WhatsApp на доске продаж. Карточка лида = диалог + деньги + ответственный.','+ Новый лид',"toast('Новый лид создаётся вручную (демо). Обычно лиды создаёт AI из диалога.')");
+  h += '<div class="grid grid-cols-5 gap-3 mb-5 max-lg:grid-cols-3 max-md:grid-cols-2">'
+     + kpiCard('48','Новые лиды','за сегодня')
+     + kpiCard('17','Горячие лиды','AI-оценка ≥ 70%','#E5484D')
+     + kpiCard('12','Ожидают ответа','ждут менеджера','#D97706')
+     + kpiCard('7','Просрочено','SLA 5 мин нарушен','#E5484D')
+     + kpiCard('₸8.4M','Потенциальная выручка','в воронке','#188554')+'</div>';
+  h += '<div class="flex gap-3 overflow-x-auto pb-4">';
+  for(var i=0;i<KANBAN.length;i++){
+    var col=KANBAN[i]; var sum=0;
+    for(var j=0;j<col.leads.length;j++) sum+=col.leads[j].v;
+    h+='<div class="kanban-col"><div class="card !rounded-xl overflow-hidden">'
+      +'<div class="px-3.5 py-2.5 border-b border-line flex items-center justify-between"><span class="font-bold text-[13px]">'+col.stage+'</span><span class="chip" style="background:#EFF2EF;color:#5F6B63">'+col.leads.length+' · '+(Math.round(sum/1e5)/10)+'M ₸</span></div>'
+      +'<div class="p-2.5 space-y-2.5 bg-page min-h-[120px]">';
+    for(var k=0;k<col.leads.length;k++){
+      var l=col.leads[k];
+      var sla = l.sla==='bad' ? '<span class="chip" style="background:#FDEBEC;color:#E5484D">⚠ SLA нарушен</span>' : l.sla==='warn' ? '<span class="chip" style="background:#FEF3E2;color:#D97706">SLA близко</span>' : '<span class="chip" style="background:#E3F5EB;color:#188554">SLA ок</span>';
+      h+='<div tabindex="0" role="button" class="lead-card card p-3" onclick="openLead(\''+escapeHtml(l.c)+'\')">'
+        +'<div class="flex items-center gap-2">'+av(l.c,26)+'<span class="font-semibold text-[12.5px] truncate">'+escapeHtml(l.c)+'</span>'+(l.hot?'<span class="ml-auto chip shrink-0" style="background:#FDEBEC;color:#E5484D">🔥 HOT</span>':'')+'</div>'
+        +'<div class="text-[12px] text-mut mt-1.5">'+escapeHtml(l.p)+'</div>'
+        +'<div class="flex items-center justify-between mt-1.5 gap-1"><b class="text-[13px] whitespace-nowrap">'+fmt(l.v)+'</b>'+intentChip(l.intent)+'</div>'
+        +'<div class="flex items-center justify-between mt-2 pt-2 border-t border-line text-[11px] text-faint gap-2"><span class="truncate">'+escapeHtml(l.mgr)+'</span><span class="shrink-0">'+l.act+'</span></div>'
+        +'<div class="mt-1.5">'+sla+'</div></div>';
+    }
+    h+='</div><button class="w-full px-3 py-2 border-t border-line text-[11.5px] text-center hover:bg-waSoft text-mut outline-none focus-visible:bg-waSoft" onclick="toast(\'Смените стадию, перетащив карточку или открыв её (демо)\')">+ добавить лид</button></div></div>';
+  }
+  h+='</div>';
+  h+='<p class="text-[11.5px] text-faint mt-2">Данные демонстрационные. Клик по карточке открывает связанный диалог во «Входящих».</p>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+function openLead(name){
+  var c=null;
+  for(var i=0;i<CONVS.length;i++) if(CONVS[i].name===name) c=CONVS[i];
+  if(c){ selectConv(c.id); toast('Открыт диалог с '+escapeHtml(name)); }
+  else toast('Диалог с этим лидом открыт (в демо подключены не все лиды)');
+}
+
+function renderCustomers(){
+  var h = pageHead('Клиенты','База клиентов с фокусом на продажи: последний диалог, выручка, ответственный.','+ Клиент',"toast('Форма нового клиента (демо). Обычно клиент создаётся автоматически из WhatsApp-диалога.')");
+  h+='<div class="card overflow-hidden overflow-x-auto"><table class="tbl w-full min-w-[900px]"><thead><tr><th>Клиент</th><th>Телефон</th><th>Последний диалог</th><th>Последний заказ</th><th>Выручка</th><th>Менеджер</th><th>Статус</th></tr></thead><tbody>';
+  for(var i=0;i<CUSTOMERS.length;i++){
+    var c=CUSTOMERS[i];
+    h+='<tr tabindex="0" role="button" class="row-hover cursor-pointer" onclick="showCustomer360('+i+')"><td><div class="flex items-center gap-2.5">'+av(c.name,30)+'<div><div class="font-semibold text-[13px]">'+escapeHtml(c.name)+'</div><div class="text-[11px] text-faint">'+escapeHtml(c.city)+'</div></div></div></td>'
+      +'<td class="text-[12.5px] text-mut whitespace-nowrap">'+escapeHtml(c.phone)+'</td><td class="text-[12.5px]">'+c.lastConv+'</td><td class="text-[12.5px]">'+c.lastOrder+'</td>'
+      +'<td class="text-[13px] font-bold whitespace-nowrap">'+(c.revenue?fmt(c.revenue):'—')+'</td><td class="text-[12.5px]">'+escapeHtml(c.mgr)+'</td>'
+      +'<td><span class="chip" style="background:'+(c.status.indexOf('SLA')>=0?'#FDEBEC':'#EFF2EF')+';color:'+(c.status.indexOf('SLA')>=0?'#E5484D':'#5F6B63')+'">'+c.status+'</span></td></tr>';
+  }
+  h+='</tbody></table></div>';
+  h+='<div id="cust360" class="mt-4"></div>';
+  h+='<p class="text-[11.5px] text-faint mt-3">Клик по строке — открывает карточку «Клиент 360» ниже таблицы.</p>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+function showCustomer360(i){
+  var c=CUSTOMERS[i];
+  var convId=null;
+  for(var k=0;k<CONVS.length;k++) if(CONVS[k].name===c.name) convId=CONVS[k].id;
+  var ordersHtml='';
+  for(var o=0;o<ORDERS.length;o++){
+    var parts=c.name.split(' ');
+    if(ORDERS[o].cust.indexOf(parts[0])===0 && ORDERS[o].cust.indexOf(parts[1])>0){
+      ordersHtml+='<div class="flex items-center justify-between gap-2 border border-line rounded-lg px-3 py-2 text-[12.5px]"><span class="font-medium">'+escapeHtml(ORDERS[o].prods)+'</span><span class="text-faint">'+ORDERS[o].created+'</span><b class="whitespace-nowrap">'+fmt(ORDERS[o].amount)+'</b>'+orderStatusChip(ORDERS[o].status)+'</div>';
+    }
+  }
+  if(!ordersHtml) ordersHtml='<div class="text-[12px] text-faint">Заказов пока нет</div>';
+  function blk(t,v){ return '<div><div class="sec mb-1">'+t+'</div><div class="text-[12.5px] leading-relaxed">'+v+'</div></div>'; }
+  var dlgBtn = convId ? '<button onclick="selectConv(\''+convId+'\')" class="btn btn-p btn-sm">💬 Открыть диалог</button>'
+                      : '<button onclick="toast(\'Новый WhatsApp-диалог с клиентом (демо)\')" class="btn btn-p btn-sm">💬 Начать диалог</button>';
+  document.getElementById('cust360').innerHTML =
+    '<div class="card fadein overflow-hidden"><div class="px-5 py-4 border-b border-line flex flex-wrap items-center gap-3 bg-page">'
+    +av(c.name,44)+'<div><div class="font-bold text-[16px]">'+escapeHtml(c.name)+'</div><div class="text-[12px] text-mut">'+escapeHtml(c.phone)+' · '+escapeHtml(c.city)+' · заказов: '+c.orders+' · диалогов: '+c.conv+'</div></div>'
+    +'<div class="ml-auto flex gap-2 flex-wrap">'+dlgBtn
+    +'<button onclick="quickOrderFor(\''+escapeHtml(c.name).replace(/'/g,'')+'\',\''+escapeHtml(c.city)+'\',\''+escapeHtml(c.mgr)+'\')" class="btn btn-s btn-sm">Создать заказ</button>'
+    +'<button onclick="go(\'followups\')" class="btn btn-s btn-sm">Планировать касание</button></div></div>'
+    +'<div class="p-5 grid grid-cols-2 gap-5 max-md:grid-cols-1">'
+    +blk('✦ AI-резюме','<span style="background:#F6F4FE;display:block;padding:10px 12px;border-radius:8px;border-left:3px solid #6D5BD0;color:#3d3670">Намерение сейчас: <b>'+escapeHtml(c.intent)+'</b>. '+escapeHtml(c.note)+'</span>')
+    +blk('История лидов',c.hist)
+    +blk('Задачи',c.tasks)
+    +blk('Плановые повторные касания',c.fu)
+    +blk('Просматриваемые товары',c.viewed)
+    +blk('Заметки команды',escapeHtml(c.note))
+    +'<div class="col-span-2 max-md:col-span-1"><div class="sec mb-2">Заказы клиента</div><div class="space-y-2">'+ordersHtml+'</div></div>'
+    +'</div></div>';
+  document.getElementById('cust360').scrollIntoView({behavior:'smooth'});
+}
+function quickOrderFor(name,city,mgr){
+  fillOrderForm(name,'IP17P256',city,mgr);
+  openModal('orderModal');
+}
+
+function orderStatusChip(s){
+  var map={'Новый':'#EFF2EF|#5F6B63','Подтверждён':'#E8EFFD|#2563EB','Оплачен':'#F0EDFC|#6D5BD0','В обработке':'#FEF3E2|#D97706','Доставлен':'#E3F5EB|#188554','Отменён':'#FDEBEC|#E5484D'};
+  var m=(map[s]||'#EFF2EF|#5F6B63').split('|');
+  return '<span class="chip" style="background:'+m[0]+';color:'+m[1]+'">'+s+'</span>';
+}
+function renderOrders(){
+  var h = pageHead('Заказы','Заказы — не центр продукта, а естественное завершение диалога. Большинство создаётся из WhatsApp в один клик.','+ Создать заказ',"fillOrderForm('','','','');openModal('orderModal')");
+  var total=0; for(var t=0;t<ORDERS.length;t++) total+=ORDERS[t].amount;
+  h+='<div class="grid grid-cols-4 gap-3 mb-5 max-md:grid-cols-2">'+kpiCard(String(ORDERS.length),'Всего заказов')+kpiCard(fmt(total),'Сумма','за период')+kpiCard('3','Требуют внимания','новые / в обработке','#D97706')+kpiCard('94%','Доставок вовремя',null,'#188554')+'</div>';
+  h+='<div class="card overflow-hidden overflow-x-auto"><table class="tbl w-full min-w-[960px]"><thead><tr><th>Заказ</th><th>Клиент</th><th>Товары</th><th>Сумма</th><th>Менеджер</th><th>Статус</th><th>Создан</th><th>Оплата</th></tr></thead><tbody>';
+  for(var i=0;i<ORDERS.length;i++){
+    var o=ORDERS[i];
+    h+='<tr class="row-hover"><td class="font-bold text-[12.5px]">'+o.id+'</td><td class="text-[13px] font-medium">'+escapeHtml(o.cust)+'</td><td class="text-[12.5px] text-mut">'+escapeHtml(o.prods)+'</td><td class="text-[13px] font-bold whitespace-nowrap">'+fmt(o.amount)+'</td><td class="text-[12.5px]">'+escapeHtml(o.mgr)+'</td><td>'+orderStatusChip(o.status)+'</td><td class="text-[12px] text-faint">'+o.created+'</td><td class="text-[12px] text-mut">'+o.pay+'</td></tr>';
+  }
+  h+='</tbody></table></div>';
+  h+='<p class="text-[11.5px] text-faint mt-3">При создании заказа из WhatsApp-диалога автоматически подставляются: клиент, товар, количество, цена, город доставки и менеджер.</p>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function availChip(p){ return p.stock===0 ? '<span class="chip" style="background:#FDEBEC;color:#E5484D">Нет в наличии</span>' : p.stock<=4 ? '<span class="chip" style="background:#FEF3E2;color:#D97706">Низкий остаток</span>' : '<span class="chip" style="background:#E3F5EB;color:#188554">В наличии</span>'; }
+function renderProducts(){
+  var h = pageHead('Товары','Каталог, который AI использует для ответов клиентам: цены, остатки, аналоги.','+ Товар',"toast('Новый товар: форма каталога (демо). Остатки синхронизируются с МойСклад/1С.')");
+  h+='<div class="card overflow-hidden overflow-x-auto"><table class="tbl w-full min-w-[860px]"><thead><tr><th>Товар</th><th>SKU</th><th>Цена</th><th>Остаток</th><th>Продажи (30 дн.)</th><th>Наличие</th></tr></thead><tbody>';
+  for(var i=0;i<PRODUCTS.length;i++){
+    var p=PRODUCTS[i];
+    h+='<tr tabindex="0" role="button" class="row-hover cursor-pointer" onclick="showProduct('+i+')"><td><div class="flex items-center gap-2.5"><div class="w-9 h-9 rounded-lg bg-page border border-line flex items-center justify-center text-[15px]">📱</div><div><div class="font-semibold text-[13px]">'+escapeHtml(p.name)+'</div><div class="text-[11px] text-faint">'+escapeHtml(p.cat)+' · '+escapeHtml(p.color)+'</div></div></div></td>'
+      +'<td class="text-[12px] font-mono text-mut">'+escapeHtml(p.sku)+'</td><td class="text-[13px] font-bold whitespace-nowrap">'+fmt(p.price)+'</td>'
+      +'<td class="text-[13px] font-semibold">'+p.stock+'</td><td class="text-[12.5px] text-mut">'+p.sales+' шт</td><td>'+availChip(p)+'</td></tr>';
+  }
+  h+='</tbody></table></div><div id="prod360" class="mt-4"></div>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+function showProduct(i){
+  var p=PRODUCTS[i];
+  var linkedConvs=[];
+  for(var k=0;k<CONVS.length;k++){ if(guessProduct(CONVS[k])===p.sku || CONVS[k].aiSummary.indexOf(p.name.split(' ')[0])>=0 ) linkedConvs.push(CONVS[k]); }
+  var linkedOrders=[];
+  for(var o=0;o<ORDERS.length;o++){ var key=p.name.split(' '); if(ORDERS[o].prods.indexOf(key[0])>=0 || (key[1]&&ORDERS[o].prods.indexOf(key[1])>=0)) linkedOrders.push(ORDERS[o]); }
+  var bars=[42,55,38,70,64,88,95]; var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс']; var bh='';
+  for(var b=0;b<bars.length;b++) bh+='<div class="flex flex-col items-center gap-1 flex-1"><div class="bar-h w-full" style="height:'+bars[b]+'px;background:'+(b===6?'#1FA855':'#BBE7C9')+'"></div><span class="text-[10px] text-faint">'+days[b]+'</span></div>';
+  var alts=''; for(var a=0;a<p.alt.length;a++){ var ap=prod(p.alt[a]); if(ap) alts+='<div class="border border-line rounded-lg px-3 py-2 flex items-center justify-between gap-2 text-[12.5px]"><span class="font-medium">'+escapeHtml(ap.name)+'</span><span class="text-faint whitespace-nowrap">'+fmt(ap.price)+'</span>'+availChip(ap)+'</div>'; }
+  var lc=''; for(var v=0;v<linkedConvs.length;v++) lc+='<button class="w-full flex items-center justify-between border border-line rounded-lg px-3 py-2 cursor-pointer hover:bg-page" onclick="selectConv(\''+linkedConvs[v].id+'\')"><div class="flex items-center gap-2">'+av(linkedConvs[v].name,24)+'<span class="text-[12.5px] font-medium">'+escapeHtml(linkedConvs[v].name)+'</span></div>'+intentChip(linkedConvs[v].intent)+'</button>';
+  if(!lc) lc='<div class="text-[12px] text-faint">Активных диалогов по товару нет</div>';
+  var lo=''; for(var q=0;q<linkedOrders.length;q++) lo+='<div class="flex items-center justify-between gap-2 border border-line rounded-lg px-3 py-2 text-[12.5px]"><b>'+linkedOrders[q].id+'</b><span class="text-mut">'+escapeHtml(linkedOrders[q].cust)+'</span><span class="font-bold whitespace-nowrap">'+fmt(linkedOrders[q].amount)+'</span>'+orderStatusChip(linkedOrders[q].status)+'</div>';
+  if(!lo) lo='<div class="text-[12px] text-faint">Заказов за период нет</div>';
+  document.getElementById('prod360').innerHTML=
+    '<div class="card fadein p-5"><div class="flex flex-wrap items-center gap-3 mb-4"><div class="w-12 h-12 rounded-xl bg-page border border-line flex items-center justify-center text-[20px]">📱</div><div><div class="font-bold text-[16px]">'+escapeHtml(p.name)+'</div><div class="text-[12px] text-faint">SKU '+escapeHtml(p.sku)+' · '+escapeHtml(p.cat)+' · '+escapeHtml(p.color)+'</div></div>'
+    +'<div class="ml-auto flex items-center gap-2 flex-wrap">'+availChip(p)
+    +'<button onclick="quickOrderForProd(\''+p.sku+'\')" class="btn btn-p btn-sm">Создать заказ</button>'
+    +'<button onclick="insertProductMsg(\''+p.sku+'\')" class="btn btn-a btn-sm">✦ Отправить клиенту</button></div></div>'
+    +'<div class="grid grid-cols-4 gap-3 mb-4 max-md:grid-cols-2">'+kpiCard(fmt(p.price),'Цена')+kpiCard(String(p.stock),'Остаток на складе',null,p.stock<=4?'#D97706':null)+kpiCard(String(p.sales),'Продаж за 30 дн.')+kpiCard((Math.round(p.sales*p.price/1e5)/10)+'M ₸','Выручка за 30 дн.','#188554')+'</div>'
+    +'<div class="grid grid-cols-2 gap-5 max-md:grid-cols-1">'
+    +'<div><div class="sec mb-2">Продажи за неделю</div><div class="flex items-end gap-2 h-[110px] border-b border-line pb-1">'+bh+'</div></div>'
+    +'<div><div class="sec mb-2">Аналоги / альтернативы (для AI)</div><div class="space-y-2">'+alts+'</div></div>'
+    +'<div><div class="sec mb-2">Связанные диалоги</div><div class="space-y-2">'+lc+'</div></div>'
+    +'<div><div class="sec mb-2">Связанные заказы</div><div class="space-y-2">'+lo+'</div></div>'
+    +'</div></div>';
+  document.getElementById('prod360').scrollIntoView({behavior:'smooth'});
+}
+function quickOrderForProd(sku){
+  fillOrderForm('',sku,'','');
+  openModal('orderModal');
+}
+function insertProductMsg(sku){
+  var p=prod(sku);
+  go('inbox');
+  document.getElementById('composer').value = p.name+' — '+fmt(p.price)+'. В наличии: '+p.stock+' шт. Могу зарезервировать прямо сейчас.';
+  toast('Карточка товара вставлена в поле сообщения');
+}
+
+function renderInventory(){
+  var h = pageHead('Склад','Лёгкий экран: склад обслуживает продажи, а не наоборот.','Заказать поставку',"toast('Заявка на поставку отправлена в МойСклад (демо)')");
+  h+='<div class="grid grid-cols-4 gap-3 mb-5 max-md:grid-cols-2">'+kpiCard('₸24.8M','Стоимость склада')+kpiCard('7','Мало на складе','порог ≤ 4 шт','#D97706')+kpiCard('10 шт','Ожидается поставка','iPhone 17 Pro — завтра','#2563EB')+kpiCard('2','Нет в наличии','Z Fold7 · Redmi Note 15 Pro','#E5484D')+'</div>';
+  h+='<div class="card overflow-hidden overflow-x-auto"><table class="tbl w-full min-w-[820px]"><thead><tr><th>Товар</th><th>SKU</th><th>Остаток</th><th>Стоимость позиции</th><th>Статус</th><th>Действие</th></tr></thead><tbody>';
+  for(var i=0;i<PRODUCTS.length;i++){
+    var p=PRODUCTS[i];
+    var act = p.stock===0 ? '<button onclick="stockAction(\'pre\')" class="btn btn-s btn-sm whitespace-nowrap">Собрать предзаказ</button>'
+            : p.stock<=4 ? '<button onclick="stockAction(\'re\')" class="btn btn-s btn-sm whitespace-nowrap">Пополнить</button>'
+            : '<span class="text-[11.5px] text-faint">OK</span>';
+    h+='<tr class="row-hover"><td class="text-[13px] font-medium">'+escapeHtml(p.name)+'</td><td class="text-[12px] font-mono text-mut">'+escapeHtml(p.sku)+'</td><td class="font-semibold">'+p.stock+'</td><td class="text-[12.5px] whitespace-nowrap">'+fmt(p.stock*p.price)+'</td><td>'+availChip(p)+'</td><td>'+act+'</td></tr>';
+  }
+  h+='</tbody></table></div>';
+  h+='<p class="text-[11.5px] text-faint mt-3">Синхронизация: МойСклад / 1С (см. «Интеграции»). AI учитывает остатки при ответах и подбирает аналоги при out-of-stock.</p>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+function stockAction(k){
+  if(k==='pre') toast('Предзаказ собран: как только товар придёт, клиенты из листа ожидания получат сообщение автоматически');
+  else toast('Пополнение запрошено у поставщика (демо)');
+}
+
+var fuFilter='all';
+function mini(k,v){ return '<div class="bg-page rounded-lg px-2 py-1.5 border border-line"><div class="text-[10px] text-faint uppercase tracking-wide">'+k+'</div><div class="text-[11.5px] font-semibold mt-0.5 leading-tight">'+v+'</div></div>'; }
+function setFuFilter(f){ fuFilter=f; renderFollowups(); }
+function aiSend(name){ toast('✦ AI составил и отправил сообщение клиенту '+escapeHtml(name)+' через WhatsApp'); }
+function startAllAi(){ toast('AI-цепочка запущена: 24 персонализированных сообщения уйдут в течение часа'); }
+function idOf(name){
+  for(var i=0;i<CONVS.length;i++) if(CONVS[i].name===name) return CONVS[i].id;
+  return null;
+}
+function reviewConv(name){
+  var id=idOf(name);
+  if(id){ selectConv(id); toast('Открыт диалог с '+escapeHtml(name)); }
+  else toast('Диалог с этим клиентом открыт (демо-версия)');
+}
+function scheduleFu(name){ toast('Касание отложено на завтра, 10:00 · '+escapeHtml(name)); }
+
+function renderFollowups(){
+  var h = pageHead('Повторные касания','Клиенты, которые проявили интерес, но не завершили покупку. AI знает, кому и что написать.','+ Настроить автокасания',"openModal('aiModal')");
+  h+='<div class="card p-4 mb-4 flex flex-wrap items-center gap-3" style="background:#FFF7F6;border-color:#F6D5D7"><div class="w-10 h-10 rounded-xl bg-hot text-white flex items-center justify-center font-extrabold text-[16px] shrink-0">24</div><div><div class="font-bold text-[14.5px]">24 клиента нуждаются в повторном касании</div><div class="text-[12.5px] text-mut">Суммарный потенциал — <b>₸6.9M</b>. 9 клиентов «остынут» без ответа в течение суток.</div></div><button onclick="startAllAi()" class="btn btn-d ml-auto">Отправить всем с AI</button></div>';
+  var filters=[{k:'all',n:'Все'},{k:'due',n:'На сегодня'},{k:'over',n:'Просрочено'},{k:'hv',n:'Дорогие'},{k:'hot',n:'Горячие'},{k:'nr',n:'Без ответа'}];
+  h+='<div class="flex gap-1.5 mb-4 flex-wrap">';
+  for(var f=0;f<filters.length;f++) h+='<button class="tab'+(filters[f].k===fuFilter?' active':'')+'" onclick="setFuFilter(\''+filters[f].k+'\')">'+filters[f].n+'</button>';
+  h+='</div>';
+  h+='<div class="grid grid-cols-2 gap-3.5 max-md:grid-cols-1">';
+  var shown=0;
+  for(var i=0;i<FOLLOWUPS.length;i++){
+    var c=FOLLOWUPS[i];
+    if(fuFilter==='hot' && !c.hot) continue;
+    if(fuFilter==='hv' && c.v<500000) continue;
+    if(fuFilter==='over' && c.last==='Вчера') continue;
+    if(fuFilter==='due' && c.last!=='Вчера') continue;
+    if(fuFilter==='nr' && !(c.last.indexOf('Неделю')>=0 || c.rec.indexOf('Уточнить')>=0)) continue;
+    shown++;
+    h+='<div class="card p-4 fadein"><div class="flex items-center gap-2.5">'+av(c.name,34)+'<div class="min-w-0"><div class="font-bold text-[13.5px] truncate">'+escapeHtml(c.name)+'</div><div class="text-[12px] text-mut truncate">'+escapeHtml(c.why)+'</div></div>'+(c.hot?'<span class="ml-auto chip shrink-0" style="background:#FDEBEC;color:#E5484D">🔥 Горячий</span>':'')+'</div>'
+      +'<div class="grid grid-cols-3 gap-2 mt-3">'
+      +mini('Последний контакт',c.last)+mini('Потенциал',fmt(c.v))+mini('AI-рекомендация',escapeHtml(c.rec))
+      +'</div>'
+      +'<div class="flex gap-2 mt-3">'
+      +(c.act==='send' ? '<button onclick="aiSend(\''+escapeHtml(c.name)+'\')" class="btn btn-a flex-1 btn-sm">✦ Отправить с AI</button>' : '<button onclick="reviewConv(\''+escapeHtml(c.name)+'\')" class="btn btn-s flex-1 btn-sm">Посмотреть диалог</button>')
+      +'<button onclick="scheduleFu(\''+escapeHtml(c.name)+'\')" class="btn btn-s btn-sm !px-3" title="Отложить">⏰</button></div></div>';
+  }
+  if(!shown) h+='<div class="col-span-2 card p-8 text-center text-[13px] text-faint">Нет карточек под этот фильтр</div>';
+  h+='</div>';
+  h+='<p class="text-[11.5px] text-faint mt-3">«Отправить с AI» генерирует персональное сообщение на основе диалога, товара и базы знаний, затем отправляет его в WhatsApp клиенту.</p>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function node(kind,label,lines){
+  var col = kind==='when'?{b:'#CBEEDA',t:'#128C42',h:'WHEN · Когда'} : kind==='if'?{b:'#FDEBB8',t:'#B45309',h:'IF · Если'} : {b:'#D9D2F7',t:'#5a49bd',h:'THEN · Тогда'};
+  if(kind==='notify'){col={b:'#FBCFD1',t:'#cc3b40',h:'THEN · Уведомление'};}
+  var s='<div class="node" style="border-color:'+col.b+'"><div class="text-[10px] font-extrabold uppercase tracking-wide" style="color:'+col.t+'">'+col.h+'</div><div class="font-bold text-[12.5px] mt-0.5">'+escapeHtml(label)+'</div>';
+  for(var i=0;i<lines.length;i++) s+='<div class="text-[11.5px] text-mut mt-1 flex items-start gap-1"><span style="color:'+col.t+'">•</span>'+escapeHtml(lines[i])+'</div>';
+  return s+'</div>';
+}
+function flowRow(nodes){
+  var s='<div class="flex items-center gap-2 overflow-x-auto py-1">';
+  for(var i=0;i<nodes.length;i++){ s+=nodes[i]; if(i<nodes.length-1) s+='<span class="flow-arrow shrink-0">→</span>'; }
+  return s+'</div>';
+}
+function autoStatus(title){ toast('Статус сценария «'+escapeHtml(title)+'» изменён (демо)'); }
+function renderAutomations(){
+  var h = pageHead('Автоматизации','Правила, которые работают без менеджеров: ни один лид не теряется, SLA соблюдается автоматически.','+ Создать автоматизацию',"toast('Конструктор автоматизаций: новый сценарий (демо)')");
+  h+='<div class="grid grid-cols-3 gap-3 mb-5 max-md:grid-cols-1">'+kpiCard('4','Активных сценария')+kpiCard('1 248','Срабатываний за неделю')+kpiCard('7','Предотвращённых нарушений SLA','за прошлую неделю','#188554')+'</div>';
+  function autoCard(title,desc,nodes,on,runs){
+    return '<div class="card p-4 mb-4"><div class="flex flex-wrap items-center gap-2 mb-3"><div class="w-8 h-8 rounded-lg bg-waSoft border border-[#CBEEDA] flex items-center justify-center shrink-0">⚡</div><div><div class="font-bold text-[14px]">'+escapeHtml(title)+'</div><div class="text-[11.5px] text-faint">'+escapeHtml(desc)+'</div></div><div class="ml-auto flex items-center gap-2"><span class="chip" style="background:#EFF2EF;color:#5F6B63">'+runs+' срабат. / нед.</span><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" '+(on?'checked':'')+' onchange="autoStatus(\''+escapeHtml(title)+'\')" class="sr-only peer"><div class="w-9 h-5 bg-[#DDE2DD] rounded-full peer-checked:bg-wa after:content-[\'\'] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:bg-white after:rounded-full after:transition-all peer-checked:after:translate-x-4"></div></label></div></div>'
+      +flowRow(nodes)+'</div>';
+  }
+  h+=autoCard('Новый WhatsApp-лид','Каждое входящее обращение становится лидом за секунды',[
+    node('when','Новый диалог в WhatsApp',['любой входящий номер']),
+    node('if','Намерение = Покупка',['AI-классификация диалога']),
+    node('then','Создать лид',['Назначить менеджера','SLA = 5 минут'])
+  ],true,'312');
+  h+=autoCard('Неотвеченный лид','Подстраховка: менеджер не успевает — система реагирует',[
+    node('when','Нет ответа 5 минут',['от первого сообщения клиента']),
+    node('notify','Уведомить менеджера',['Эскалация руководителю','Пометить «Просрочено»'])
+  ],true,'41');
+  h+=autoCard('Горячий лид по AI-оценке','Максимальная скорость там, где больше денег',[
+    node('when','AI определил высокий intent',['вероятность покупки ≥ 70%']),
+    node('then','Приоритет = Горячий',['Назначить лучшего свободного','Уведомить отдел продаж'])
+  ],true,'86');
+  h+=autoCard('Брошенный диалог с намерением','Возврат сделок, «зависших» после интереса',[
+    node('when','Намерение есть + молчание 24 ч',['клиент не ответил']),
+    node('then','Создать касание',['AI генерирует сообщение','Отправка в рабочее время'])
+  ],true,'127');
+  h+='<div class="card p-4" style="border-style:dashed"><div class="text-[13px] font-semibold text-mut">+ Популярные шаблоны: «Документы для юрлиц», «Поставка ожидается — лист ожидания», «Оценка после доставки»</div></div>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function kbFilter(el){ toast('Фильтр по разделу: '+escapeHtml(el.textContent)+' (демо)'); }
+function renderKnowledge(){
+  var h = pageHead('База знаний AI','Источник правды для ответов AI: товары, цены, доставка, оплата, гарантия, скрипты продаж.','+ Добавить знание',"toast('Новая статья базы знаний (демо). После сохранения AI начнёт использовать её в ответах.')");
+  var cats=['Товары','Цены','Доставка','Оплата','Возврат','Гарантия','FAQ','Скрипты'];
+  h+='<div class="flex gap-1.5 mb-4 flex-wrap">';
+  for(var i=0;i<cats.length;i++) h+='<button class="chip cursor-pointer" style="background:#EFF2EF;color:#5F6B63; border:none;" onclick="kbFilter(this)">'+cats[i]+'</button>';
+  h+='</div>';
+  h+='<div class="space-y-2.5">';
+  for(var k=0;k<KNOWLEDGE.length;k++){
+    var it=KNOWLEDGE[k];
+    h+='<details class="kb card p-4 group"><summary class="flex items-center gap-3">'
+      +'<span class="chip shrink-0" style="background:#F0EDFC;color:#6D5BD0">'+escapeHtml(it.cat)+'</span>'
+      +'<span class="font-semibold text-[13.5px]">'+escapeHtml(it.q)+'</span>'
+      +'<span class="ml-auto chip shrink-0" style="background:#E3F5EB;color:#188554">● '+it.st+'</span>'
+      +'<span class="text-faint text-[12px] group-open:rotate-90 transition-transform shrink-0">▸</span></summary>'
+      +'<div class="mt-3 border-l-2 pl-3" style="border-color:#D9D2F7"><div class="text-[13px] leading-relaxed">'+escapeHtml(it.a)+'</div><div class="text-[11px] text-faint mt-2">Источник: база знаний компании · обновлено 3 дня назад · используется AI в 96% ответов по теме</div></div></details>';
+  }
+  h+='</div>';
+  h+='<p class="text-[11.5px] text-faint mt-3">Эти данные напрямую питают «Ответить с AI» во Входящих: AI отвечает только на основе подтверждённой информации и остатков склада.</p>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function copRow(t,d,bg,fg,fn,btn){
+  return '<div class="flex items-start gap-3 bg-white border border-line rounded-xl p-3.5"><span class="dot mt-1.5 shrink-0" style="background:'+fg+'"></span><div class="min-w-0"><div class="font-bold text-[13.5px]">'+t+'</div><div class="text-[12px] text-mut mt-0.5">'+d+'</div><button onclick="'+fn+'" class="btn btn-s btn-sm !px-2.5 mt-2">'+btn+' →</button></div></div>';
+}
+function renderAIAssistant(){
+  var h = pageHead('AI Sales Copilot','Не чат-бот, а операционный помощник отдела продаж: каждый день говорит, где деньги и где риск.','✦ Все AI-действия',"openModal('aiModal')");
+  h+='<div class="card p-5 mb-4" style="border-color:#D9D2F7;background:linear-gradient(180deg,#FAF9FF,#fff)"><div class="flex items-center gap-2 mb-4"><span class="w-8 h-8 rounded-lg bg-ai text-white flex items-center justify-center shrink-0">✦</span><div class="font-bold text-[15px]">Рекомендации на сегодня</div><span class="chip ml-auto" style="background:#F0EDFC;color:#6D5BD0">обновлено 12:45</span></div>'
+    +'<div class="grid grid-cols-2 gap-3 max-md:grid-cols-1">'
+    +copRow('12 лидов ждут ответа','среднее ожидание 6 мин — растёт риск потери','#FEF3E2','#D97706',"go('inbox');setTab('waiting')",'Показать ожидающих')
+    +copRow('7 дорогих лидов без касания','потенциал ₸4.1M «остынет» в ближайшие сутки','#FDEBEC','#E5484D',"go('followups')",'Начать касания')
+    +copRow('3 клиента спрашивали о товарах в наличии','можно закрыть сегодня — AI подготовил ответы','#EAF7EE','#128C42',"selectConv('anna')",'Перейти к диалогу: Анна')
+    +copRow('Упущенная выручка сегодня: ₸1.24M','главные причины: нет касания и медленный ответ','#F0EDFC','#6D5BD0',"go('lost')",'Разобрать потери')
+    +'</div></div>';
+  h+='<div class="grid grid-cols-4 gap-3 mb-5 max-md:grid-cols-2">'
+    +'<button onclick="go(\'leads\')" class="card p-4 text-left hover:border-ai hover:shadow-pop transition-all"><div class="text-[20px]">🔥</div><div class="font-bold text-[13px] mt-1">Посмотреть горячие лиды</div><div class="text-[11.5px] text-faint mt-0.5">17 лидов ≥70%</div></button>'
+    +'<button onclick="go(\'inbox\');setTab(\'overdue\')" class="card p-4 text-left hover:border-ai hover:shadow-pop transition-all"><div class="text-[20px]">⏰</div><div class="font-bold text-[13px] mt-1">Просроченные SLA</div><div class="text-[11.5px] text-faint mt-0.5">7 диалогов</div></button>'
+    +'<button onclick="go(\'followups\')" class="card p-4 text-left hover:border-ai hover:shadow-pop transition-all"><div class="text-[20px]">📋</div><div class="font-bold text-[13px] mt-1">Начать касания</div><div class="text-[11.5px] text-faint mt-0.5">24 клиента в очереди</div></button>'
+    +'<button onclick="go(\'lost\')" class="card p-4 text-left hover:border-ai hover:shadow-pop transition-all"><div class="text-[20px]">📉</div><div class="font-bold text-[13px] mt-1">Анализ потерь</div><div class="text-[11.5px] text-faint mt-0.5">₸1.24M сегодня</div></button></div>';
+  h+='<div class="card p-5"><div class="sec mb-3">Что умеет copilot внутри процессов</div><div class="grid grid-cols-3 gap-2 text-[12.5px] max-md:grid-cols-1">';
+  var caps=['Читает диалог и определяет намерение','Сверяет вопрос с базой знаний и остатками','Пишет черновик ответа в стиле магазина','Создаёт лид, задачу или заказ из диалога','Назначает менеджера по региону и товару','Планирует касания и следит за SLA'];
+  for(var i=0;i<caps.length;i++) h+='<div class="flex items-start gap-2 bg-page border border-line rounded-lg px-3 py-2.5"><span class="text-ai shrink-0">✦</span>'+caps[i]+'</div>';
+  h+='</div></div>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function hBars(data,unit){
+  var max=0; for(var i=0;i<data.length;i++) if(data[i].v>max) max=data[i].v;
+  var h='';
+  for(var j=0;j<data.length;j++){
+    var d=data[j];
+    h+='<div class="flex items-center gap-3 py-1.5"><span class="w-[150px] shrink-0 text-[12.5px] text-mut truncate">'+d.l+'</span>'
+      +'<div class="flex-1 bg-page rounded-md h-6 overflow-hidden border border-line"><div class="h-full rounded-md" style="width:'+Math.max(4,Math.round(d.v/max*100))+'%;background:'+(d.c||'#1FA855')+'"></div></div>'
+      +'<span class="w-[100px] text-right text-[12.5px] font-bold whitespace-nowrap">'+(unit==='₸'?fmt(d.v):d.v+'%')+'</span></div>';
+  }
+  return '<div>'+h+'</div>';
+}
+function funnel(){
+  var steps=[{n:'Лиды из WhatsApp',v:482,pct:100,c:'#BBE7C9'},{n:'Квалифицированы AI',v:214,pct:44.4,c:'#7FD6A0'},{n:'Заказы',v:126,pct:26.1,c:'#1FA855'},{n:'Оплачены',v:104,pct:21.6,c:'#128C42'}];
+  var h='<div class="space-y-2">';
+  for(var i=0;i<steps.length;i++){ var s=steps[i];
+    h+='<div class="flex items-center gap-3"><span class="w-[150px] text-[12.5px] text-mut shrink-0">'+s.n+'</span><div class="flex-1 h-8 bg-page rounded-lg border border-line overflow-hidden"><div class="h-full flex items-center justify-end pr-2 text-white text-[12px] font-bold" style="width:'+s.pct+'%;min-width:52px;background:'+s.c+'">'+s.v+'</div></div><span class="w-[48px] text-right text-[12px] font-semibold text-faint">'+Math.round(s.pct)+'%</span></div>';
+  }
+  return h+'</div>';
+}
+function lineChart(){
+  var pts=[12,15,13,19,24,21,28,33,30,38,44,49];
+  var w=560,hgt=150,max=55;
+  var coords=[];
+  for(var i=0;i<pts.length;i++) coords.push((i*(w/(pts.length-1))).toFixed(1)+','+(hgt-pts[i]/max*hgt).toFixed(1));
+  var poly=coords.join(' ');
+  var area='0,'+hgt+' '+poly+' '+w+','+hgt;
+  var labels=['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+  var xl=''; for(var l=0;l<12;l+=2) xl+='<text x="'+(l*(w/11))+'" y="'+(hgt+16)+'" font-size="10" fill="#8A938C" text-anchor="middle">'+labels[l]+'</text>';
+  return '<svg viewBox="0 -8 '+w+' '+(hgt+26)+'" class="w-full" style="height:170px">'
+    +'<polygon points="'+area+'" fill="#EAF7EE"/>'
+    +'<polyline points="'+poly+'" fill="none" stroke="#1FA855" stroke-width="2.5" stroke-linecap="round"/>'
+    +'<circle cx="'+w+'" cy="'+(hgt-pts[11]/max*hgt)+'" r="4" fill="#1FA855"/>'+xl+'</svg>';
+}
+function donut(items,total){
+  var acc=0, circles='', r=60, C=2*Math.PI*r;
+  for(var i=0;i<items.length;i++){
+    var frac=items[i].v/total, dash=(frac*C).toFixed(1), off=(-acc*C).toFixed(1);
+    circles+='<circle cx="80" cy="80" r="'+r+'" fill="none" stroke="'+items[i].c+'" stroke-width="20" stroke-dasharray="'+dash+' '+(C-dash)+'" stroke-dashoffset="'+off+'" transform="rotate(-90 80 80)"/>';
+    acc+=frac;
+  }
+  var legend='';
+  for(var j=0;j<items.length;j++) legend+='<div class="flex items-center gap-2 text-[12px] py-0.5"><span class="dot" style="background:'+items[j].c+'"></span><span class="text-mut">'+items[j].l+'</span><b class="ml-auto pl-3">'+items[j].t+'</b></div>';
+  return '<div class="flex items-center gap-4 flex-wrap"><svg width="150" height="150" viewBox="0 0 160 160">'+circles+'<text x="80" y="76" text-anchor="middle" font-size="15" font-weight="700" fill="#111A14">₸24.8M</text><text x="80" y="92" text-anchor="middle" font-size="9" fill="#8A938C">выручка</text></svg><div class="flex-1 min-w-[140px]">'+legend+'</div></div>';
+}
+function chartCard(title,inner,note){
+  return '<div class="card p-4"><div class="font-bold text-[13.5px] mb-3">'+title+(note?' <span class="font-normal text-[11px] text-faint">· '+note+'</span>':'')+'</div>'+inner+'</div>';
+}
+function respRow(t,cv,c,w){
+  return '<div class="flex items-center gap-2"><span class="w-[80px] text-mut shrink-0 text-[12px]">'+t+'</span><div class="flex-1 h-5 bg-page border border-line rounded"><div class="h-full rounded" style="width:'+w+'%;background:'+c+'"></div></div><b class="w-[40px] text-right text-[12px]">'+cv+'</b></div>';
+}
+
+function renderRevenue(){
+  var h = pageHead('Выручка','Откуда приходят деньги и где мы их теряем.','Экспорт',"toast('Экспорт отчёта (CSV/XLSX) — демо')");
+  h+='<div class="grid grid-cols-6 gap-3 mb-5 max-lg:grid-cols-3 max-md:grid-cols-2">'
+    +kpiCard('₸24.8M','Выручка','+18% к прошлому месяцу','#188554')
+    +kpiCard('482','Лиды из WhatsApp')
+    +kpiCard('214','Квалифицированы AI')
+    +kpiCard('126','Заказы')
+    +kpiCard('26.1%','Конверсия лид → заказ')
+    +kpiCard('4м 12с','Среднее время ответа','SLA команды: 5 мин','#D97706')+'</div>';
+  h+='<div class="grid grid-cols-2 gap-4 mb-4 max-md:grid-cols-1">'
+    +chartCard('Динамика выручки, ₸ млн','<div id="lc"></div>')
+    +chartCard('Воронка: Лид → Qualified → Заказ → Оплата',funnel(),'за 30 дней')
+    +'</div>';
+  h+='<div class="grid grid-cols-2 gap-4 mb-4 max-md:grid-cols-1">'
+    +chartCard('Выручка по менеджерам',hBars([{l:'Алекс Морган',v:8400000},{l:'Мария Иванова',v:6800000},{l:'Данияр Ахметов',v:5200000},{l:'Без менеджера (потери)',v:1240000,c:'#FBCFD1'}],'₸'))
+    +chartCard('Выручка по товарам',hBars([{l:'iPhone 17 Pro',v:9100000},{l:'iPhone 17 Pro Max',v:5400000},{l:'MacBook Air M4',v:3900000},{l:'AirPods Pro',v:2800000},{l:'Apple Watch S10',v:2100000},{l:'Прочее',v:1500000,c:'#BBE7C9'}],'₸'))
+    +'</div>';
+  h+='<div class="grid grid-cols-3 gap-4 max-md:grid-cols-1">'
+    +chartCard('Источники лидов',donut([{l:'WhatsApp',v:62,t:'62%',c:'#1FA855'},{l:'Instagram Direct',v:18,t:'18%',c:'#6D5BD0'},{l:'Сайт / click-to-chat',v:12,t:'12%',c:'#2563EB'},{l:'Рекомендации',v:8,t:'8%',c:'#D97706'}],100))
+    +chartCard('Время ответа ↔ конверсия','<div class="text-[12.5px] space-y-2">'
+      +respRow('< 2 мин','41%','#188554',100)+respRow('2–5 мин','28%','#7FD6A0',68)+respRow('5–15 мин','14%','#D97706',34)+respRow('> 15 мин','5%','#E5484D',12)
+      +'<div class="text-[11px] text-faint pt-1">Ответ быстрее 2 минут почти удваивает конверсию.</div></div>')
+    +chartCard('Конверсия касаний',hBars([{l:'Напоминание о наличии',v:23,c:'#1FA855'},{l:'Скидка за решение сегодня',v:18,c:'#1FA855'},{l:'Оптовое предложение',v:31,c:'#128C42'},{l:'«Просто напоминаем»',v:6,c:'#FBCFD1'}],'%'),'доля покупок после сообщения')
+    +'</div>';
+  h+='<p class="text-[11.5px] text-faint mt-4">Все числа — демонстрационные для mockup-презентации.</p>';
+  document.getElementById('genericInner').innerHTML=h;
+  document.getElementById('lc').innerHTML=lineChart();
+}
+
+function renderPerformance(){
+  var h = pageHead('Эффективность продаж','Операционные метрики команды: скорость, качество обработки, деньги. Без игровых бейджей.','Настроить SLA команды',"toast('SLA команды: первый ответ ≤ 5 минут (демо)')");
+  var mgrs=[
+    {n:'Алекс Морган',r:8400000,l:142,cv:31,rt:'2м 41с',hot:52,sla:98},
+    {n:'Мария Иванова',r:6800000,l:126,cv:27,rt:'4м 12с',hot:38,sla:91},
+    {n:'Данияр Ахметов',r:5200000,l:98,cv:22,rt:'6м 05с',hot:29,sla:84},
+    {n:'Лиды без менеджера',r:0,l:116,cv:0,rt:'—',hot:0,sla:0,no:true}
+  ];
+  h+='<div class="card overflow-hidden overflow-x-auto mb-4"><table class="tbl w-full min-w-[860px]"><thead><tr><th>Менеджер</th><th>Выручка</th><th>Лидов</th><th>Конверсия</th><th>Ср. ответ</th><th>Горячих обработано</th><th>Соблюдение SLA</th></tr></thead><tbody>';
+  for(var i=0;i<mgrs.length;i++){
+    var m=mgrs[i];
+    var slaChip = m.no ? '<span class="chip" style="background:#FDEBEC;color:#E5484D">0% — потерянные диалоги</span>' :
+      '<div class="flex items-center gap-2"><div class="w-16 h-1.5 bg-page rounded-full overflow-hidden border border-line"><div class="h-full" style="width:'+m.sla+'%;background:'+(m.sla>=95?'#188554':m.sla>=88?'#D97706':'#E5484D')+'"></div></div><span class="text-[12px] font-semibold">'+m.sla+'%</span></div>';
+    h+='<tr class="row-hover'+(m.no?' bg-[#FFF7F7]':'')+'"><td><div class="flex items-center gap-2.5">'+(m.no?'<span class="w-7 h-7 rounded-full bg-hotSoft flex items-center justify-center text-hot font-bold text-[11px]">!</span>':av(m.n,28))+'<span class="font-semibold text-[13px]">'+escapeHtml(m.n)+'</span></div></td>'
+      +'<td class="font-bold text-[13px] whitespace-nowrap">'+(m.r?fmt(m.r):'—')+'</td><td>'+m.l+'</td><td class="font-semibold">'+m.cv+'%</td><td>'+m.rt+'</td><td>'+m.hot+'</td><td>'+slaChip+'</td></tr>';
+  }
+  h+='</tbody></table></div>';
+  h+='<div class="grid grid-cols-3 gap-4 max-md:grid-cols-1">'
+    +chartCard('Выручка по менеджерам',hBars([{l:'Алекс Морган',v:8400000},{l:'Мария Иванова',v:6800000},{l:'Данияр Ахметов',v:5200000}],'₸'))
+    +chartCard('Время первого ответа, мин','<div class="text-[12.5px] space-y-2">'+respRow('Алекс','2.7','#188554',45)+respRow('Мария','4.2','#7FD6A0',70)+respRow('Данияр','6.1','#D97706',100)+'</div>','цель ≤ 5 мин')
+    +chartCard('Что влияет на результат','<ul class="text-[12.5px] text-mut space-y-2 leading-snug"><li>• Скорость ответа — главный фактор конверсии (см. «Выручка»).</li><li>• 116 лидов без менеджера = ₸1.24M упущенной выручки за месяц.</li><li>• Касания с AI повышают возврат «подумающих» клиентов на 18%.</li></ul>')
+    +'</div>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function lossCard(t,v,d,c){ return '<div class="card p-4 border-l-4" style="border-left-color:'+c+'"><div class="text-[12px] text-mut">'+t+'</div><div class="text-[20px] font-extrabold mt-0.5" style="color:'+c+'">'+v+'</div><div class="text-[11px] text-faint mt-1">'+d+'</div></div>'; }
+function barsMini(vals){
+  var max=Math.max.apply(null,vals), s='';
+  var days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  for(var i=0;i<vals.length;i++){
+    var bh=vals[i]/max*95;
+    s+='<rect x="'+(i*42+8)+'" y="'+(105-bh)+'" width="26" height="'+bh+'" rx="4" fill="'+(vals[i]>300?'#E5484D':'#F6B4B7')+'"/>'
+     +'<text x="'+(i*42+21)+'" y="118" font-size="9" fill="#8A938C" text-anchor="middle">'+days[i]+'</text>';
+  }
+  return s;
+}
+function renderLost(){
+  var h = pageHead('Упущенная выручка','Где именно теряются продажи — и что можно вернуть прямо сейчас.','✦ План возврата',"toast('AI-план возврата: 3 цепочки касаний поставлены в очередь на сегодня')");
+  h+='<div class="grid grid-cols-3 gap-4 mb-5 max-md:grid-cols-1">'
+    +'<div class="card p-5" style="border-color:#F6D5D7;background:linear-gradient(180deg,#FFF7F7,#fff)"><div class="sec" style="color:#E5484D">Потенциальная упущенная выручка</div><div class="text-[32px] font-extrabold tracking-tight text-hot mt-1">₸1 240 000</div><div class="text-[12px] text-mut mt-1">за сегодня · оценка AI по неотвеченным и забытым лидам</div></div>'
+    +chartCard('Причины потерь',hBars([{l:'Нет касания после интереса',v:390000,c:'#E5484D'},{l:'Лиды без ответа',v:420000,c:'#cc3b40'},{l:'Медленные ответы (>15 мин)',v:280000,c:'#D97706'},{l:'Товара нет в наличии',v:150000,c:'#8A938C'}],'₸'))
+    +chartCard('Потери по дням, ₸ тыс','<svg viewBox="0 0 300 120" class="w-full" style="height:120px">'+barsMini([180,240,150,310,220,420,390])+'</svg>','за неделю')
+    +'</div>';
+  h+='<div class="sec mb-2">Как считаем</div>';
+  h+='<div class="grid grid-cols-4 gap-3 mb-6 max-md:grid-cols-2">'
+    +lossCard('Лиды без ответа','₸420 000','диалог открыт, ответа нет > 1 ч','#E5484D')
+    +lossCard('Медленные ответы','₸280 000','ответ дан, но клиент уже остыл','#D97706')
+    +lossCard('Нет касания','₸390 000','интерес был — продолжения нет','#B91C1C')
+    +lossCard('Out of stock','₸150 000','спросили — нечего предложить','#8A938C')+'</div>';
+  h+='<div class="sec mb-2">Возвратимые возможности</div>';
+  var rec=[
+    {n:'Анна Петрова',v:699000,d:'касания нет 2 дня · готова купить'},
+    {n:'Тимур Садыков',v:1890000,d:'ждёт КП по оптовой цене'},
+    {n:'Айгерим Нургали',v:149000,d:'SLA нарушен, менеджер не назначен'},
+    {n:'Сергей Дворецкий',v:999000,d:'Z Fold7 поступит завтра — некому сообщить'}
+  ];
+  h+='<div class="card overflow-hidden overflow-x-auto"><table class="tbl w-full min-w-[760px]"><thead><tr><th>Клиент</th><th>Ситуация</th><th>Потенциал</th><th style="width:300px">Действия</th></tr></thead><tbody>';
+  for(var i=0;i<rec.length;i++){ var r=rec[i];
+    h+='<tr class="row-hover"><td><div class="flex items-center gap-2.5">'+av(r.n,28)+'<span class="font-semibold text-[13px] whitespace-nowrap">'+escapeHtml(r.n)+'</span></div></td><td class="text-[12.5px] text-mut">'+escapeHtml(r.d)+'</td><td class="font-bold text-[13px] text-hot whitespace-nowrap">'+fmt(r.v)+'</td>'
+      +'<td><div class="flex gap-1.5"><button onclick="reviewConv(\''+escapeHtml(r.n)+'\')" class="btn btn-s btn-sm whitespace-nowrap">К диалогу</button><button onclick="aiSend(\''+escapeHtml(r.n)+'\')" class="btn btn-a btn-sm whitespace-nowrap">✦ Начать касание</button></div></td></tr>';
+  }
+  h+='</tbody></table></div>';
+  h+='<p class="text-[11.5px] text-faint mt-3">Оценки являются демонстрационными: в продукте расчёт идёт по реальным диалогам, остаткам и истории сделок.</p>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function renderIntegrations(){
+  var h = pageHead('Интеграции','FlowZap — центр продаж, а данные текут из ваших систем: склад, платежи, таблицы.','+ Подключить',"toast('Каталог интеграций: 1С, Bitrix24, amoCRM, Kaspi Pay и др. (демо)')");
+  function icard(ic,name,desc,status,btn){
+    var st = status==='ok' ? '<span class="chip" style="background:#E3F5EB;color:#188554">● Подключено</span>' : status==='sync' ? '<span class="chip" style="background:#E8EFFD;color:#2563EB">● Синхронизация…</span>' : '<span class="chip" style="background:#EFF2EF;color:#8A938C">○ Не подключено</span>';
+    return '<div class="card p-4 flex flex-col"><div class="flex items-start gap-3"><div class="w-10 h-10 rounded-xl bg-page border border-line flex items-center justify-center text-[18px] shrink-0">'+ic+'</div><div class="min-w-0"><div class="font-bold text-[13.5px]">'+name+'</div><div class="text-[12px] text-mut mt-0.5 leading-snug">'+desc+'</div></div><div class="ml-auto shrink-0">'+st+'</div></div><div class="mt-3 pt-3 border-t border-line">'+btn+'</div></div>';
+  }
+  function grp(t,inner){ return '<div class="sec mb-2 mt-6">'+t+'</div><div class="grid grid-cols-3 gap-3 max-md:grid-cols-1">'+inner+'</div>'; }
+  h+=grp('WhatsApp',
+    icard('🟢','WhatsApp Business API','Официальный канал: диалоги, шаблоны, статусы доставки.','ok','<div class="text-[11.5px] text-mut leading-relaxed">Номер: <b>+7 700 000 00 00</b> · Имя: <b>Alma Store</b><br>Сообщений сегодня: <b>1 248</b> · Диалогов: <b>312</b><br>Шаблоны: <b>14 активных</b> · API usage: <b>38% лимита</b></div><div class="flex gap-1.5 mt-2"><button onclick="toast(\'Статус канала: зелёный индикатор · все системы работают\')" class="btn btn-s btn-sm">Статус канала</button><button onclick="toast(\'Управление шаблонами сообщений (демо)\')" class="btn btn-s btn-sm">Шаблоны</button></div>')
+    +icard('📶','WhatsApp Cloud (Meta)','Подключение дополнительных номеров магазина.','none','<button onclick="toast(\'Мастер подключения номера Meta (демо)\')" class="btn btn-p btn-sm">Подключить</button>')
+  );
+  h+=grp('CRM и учёт',
+    icard('🧩','amoCRM / Bitrix24','Двусторонняя синхронизация лидов и сделок.','none','<button onclick="toast(\'Мастер подключения CRM (демо)\')" class="btn btn-p btn-sm">Подключить</button>')
+    +icard('📒','1С:Предприятие','Остатки, цены, документы отгрузки.','sync','<button onclick="toast(\'1С: настройка обмена (демо)\')" class="btn btn-s btn-sm">Настроить обмен</button>')
+    +icard('📦','МойСклад','Синхронизация склада и заказов раз в 5 минут.','ok','<button onclick="toast(\'МойСклад: последняя синхронизация 2 мин назад\')" class="btn btn-s btn-sm">Открыть</button>')
+  );
+  h+=grp('Платежи и доставка',
+    icard('💳','Kaspi Pay / Kaspi Red','Оплата и рассрочка прямо из переписки.','ok','<button onclick="toast(\'Kaspi: 74 платежа за неделю\')" class="btn btn-s btn-sm">Открыть</button>')
+    +icard('🚚','Halyk Post / CDEK','Расчёт стоимости и трекинг доставок.','none','<button onclick="toast(\'Подключение службы доставки (демо)\')" class="btn btn-p btn-sm">Подключить</button>')
+  );
+  h+=grp('Данные и автоматизация',
+    icard('📊','Google Sheets','Выгрузка заказов и лидов в таблицы магазина.','ok','<button onclick="toast(\'Google Sheets: лист обновлён сегодня в 09:00\')" class="btn btn-s btn-sm">Открыть</button>')
+    +icard('🔗','Webhooks / REST API','События FlowZap в вашу инфраструктуру.','none','<button onclick="toast(\'API-ключи и вебхуки (демо)\')" class="btn btn-p btn-sm">Подключить</button>')
+    +icard('🤖','OpenAI (для AI-функций)','Модель отвечает клиентам на основе базы знаний.','ok','<button onclick="toast(\'AI-провайдер активен, лимиты в норме\')" class="btn btn-s btn-sm">Настройки</button>')
+  );
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function sw(label,desc,on){
+  return '<div class="flex items-center gap-3 py-3 border-b border-line last:border-0"><div class="min-w-0"><div class="text-[13px] font-semibold">'+label+'</div><div class="text-[11.5px] text-faint">'+desc+'</div></div><label class="relative inline-flex items-center cursor-pointer ml-auto shrink-0"><input type="checkbox" '+(on?'checked':'')+' onchange="toast(\'Настройка изменена (демо)\')" class="sr-only peer"><div class="w-9 h-5 bg-[#DDE2DD] rounded-full peer-checked:bg-wa after:content-[\'\'] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:bg-white after:rounded-full after:transition-all peer-checked:after:translate-x-4"></div></label></div>';
+}
+function renderSettings(){
+  var h = pageHead('Настройки','Рабочее пространство Alma Store · режим «WhatsApp-first».','Сохранить',"toast('Изменения сохранены (демо)')");
+  h+='<div class="grid grid-cols-2 gap-4 max-md:grid-cols-1">'
+    +'<div class="card p-5"><div class="sec mb-2">Рабочее пространство</div>'
+    +'<div class="space-y-3 text-[13px]"><div><label class="sec block mb-1">Название</label><input class="inp" value="Alma Store"></div>'
+    +'<div><label class="sec block mb-1">Валюта</label><select class="inp"><option>KZT ₸ — казахстанский тенге</option><option>USD $</option></select></div>'
+    +'<div><label class="sec block mb-1">Часовой пояс</label><select class="inp"><option>(GMT+5) Алматы</option><option>(GMT+5) Астана</option></select></div>'
+    +'<div><label class="sec block mb-1">Менеджеры</label><div class="flex gap-2 flex-wrap mt-1">'+av('Алекс Морган',28)+av('Мария Иванова',28)+av('Данияр Ахметов',28)+'<span class="w-7 h-7 rounded-full border border-dashed border-[#CBD3CB] text-faint flex items-center justify-center cursor-pointer" onclick="toast(\'Пригласить менеджера (демо)\')">+</span></div></div></div></div>'
+    +'<div class="card p-5"><div class="sec mb-1">Продажи и AI</div>'
+    +sw('SLA первого ответа — 5 минут','при нарушении — эскалация руководителю',true)
+    +sw('AI черновики ответов','предлагать ответ в каждом новом диалоге',true)
+    +sw('Автоопределение намерений','классификация «покупка / цена / доставка»',true)
+    +sw('Авто-распределение лидов','по городу, товару и загрузке менеджера',true)
+    +sw('Автокасания через 24 часа','если клиент молчит после интереса',true)
+    +sw('AI отвечает без менеджера','полная автоответка ночью — выкл.',false)
+    +'</div>'
+    +'<div class="card p-5 col-span-2 max-md:col-span-1"><div class="sec mb-2">Канал WhatsApp</div><div class="flex flex-wrap gap-6 text-[13px] items-center"><span>Номер: <b>+7 700 000 00 00</b></span><span>Имя: <b>Alma Store</b></span><span class="flex items-center gap-1.5"><span class="dot" style="background:#1FA855"></span><b class="text-ok">Подключён</b> · лимит 10 000 диалогов/сут</span><button onclick="toast(\'Проверка соединения WhatsApp: OK, задержка 240 мс\')" class="btn btn-s btn-sm ml-auto">Проверить соединение</button></div></div>'
+    +'</div>';
+  document.getElementById('genericInner').innerHTML=h;
+}
+
+function renderGeneric(p){
+  var map={leads:renderLeads, customers:renderCustomers, orders:renderOrders, products:renderProducts, inventory:renderInventory, followups:renderFollowups, automations:renderAutomations, aiassistant:renderAIAssistant, knowledge:renderKnowledge, revenue:renderRevenue, performance:renderPerformance, lost:renderLost, integrations:renderIntegrations, settings:renderSettings};
+  if(map[p]) map[p](); else renderLeads();
+}
+
+/* ============================================================
+   МОДАЛКИ: заказ · назначение · AI-действия · ⌘K · товары
+   ============================================================ */
+function fillOrderForm(custName, sku, city, mgr){
+  var ch='';
+  for(var i=0;i<CUSTOMERS.length;i++) ch+='<option'+(CUSTOMERS[i].name===custName?' selected':'')+'>'+escapeHtml(CUSTOMERS[i].name)+'</option>';
+  ch+='<option'+(custName==='ТОО «Алтын Дән»'?' selected':'')+'>ТОО «Алтын Дән»</option>';
+  document.getElementById('ordCust').innerHTML=ch;
+  var ph='';
+  for(var j=0;j<PRODUCTS.length;j++) ph+='<option value="'+PRODUCTS[j].sku+'"'+(PRODUCTS[j].sku===sku?' selected':'')+'>'+escapeHtml(PRODUCTS[j].name)+' — '+fmt(PRODUCTS[j].price)+' (остаток '+PRODUCTS[j].stock+')</option>';
+  document.getElementById('ordProd').innerHTML=ph;
+  orderCustChanged(); orderProdChanged();
+  if(city) document.getElementById('ordCity').value = (['Алматы','Астана','Шымкент','Караганда'].indexOf(city)>=0)?city:'Алматы';
+  if(mgr && ['Алекс Морган','Мария Иванова','Данияр Ахметов'].indexOf(mgr)>=0) document.getElementById('ordMgr').value=mgr;
+}
+function orderCustChanged(){
+  var name=document.getElementById('ordCust').value;
+  var phone='';
+  for(var i=0;i<CUSTOMERS.length;i++) if(CUSTOMERS[i].name===name) phone=CUSTOMERS[i].phone;
+  if(!phone) phone='+7 700 000 00 00';
+  document.getElementById('ordPhone').value=phone;
+}
+function orderProdChanged(){
+  var p=prod(document.getElementById('ordProd').value);
+  if(p) document.getElementById('ordPrice').value=p.price;
+  orderRecalc();
+}
+function orderRecalc(){
+  var q=parseInt(document.getElementById('ordQty').value||'1',10);
+  var pr=parseInt(document.getElementById('ordPrice').value||'0',10);
+  document.getElementById('ordTotal').textContent=fmt(q*pr);
+}
+var ordCounter=1045;
+function saveOrder(){
+  var name=document.getElementById('ordCust').value;
+  var p=prod(document.getElementById('ordProd').value);
+  var q=parseInt(document.getElementById('ordQty').value||'1',10);
+  ORDERS.unshift({id:'FZ-'+(ordCounter++), cust:name, prods:p.name+(q>1?' ×'+q:''), amount:q*p.price, mgr:document.getElementById('ordMgr').value, status:'Новый', created:'Сегодня', pay:'Kaspi · ожидает'});
+  closeModal('orderModal');
+  toast('✓ Заказ на '+fmt(q*p.price)+' создан для '+escapeHtml(name)+' (демо-таблица обновлена)');
+  if(curPage==='orders') renderOrders();
+}
+
+function openAssign(){
+  var c=conv(curConv);
+  var mgrs=[{n:'Алекс Морган',r:'загрузка 62% · Алматы · iPhone',rec:c.mgr==='Алекс Морган'||c.city==='Алматы'},{n:'Мария Иванова',r:'загрузка 48% · регионы',rec:false},{n:'Данияр Ахметов',r:'загрузка 31% · Android',rec:c.city==='Астана'}];
+  var h='';
+  for(var i=0;i<mgrs.length;i++){
+    var m=mgrs[i];
+    h+='<button class="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-page cursor-pointer border border-transparent hover:border-line" onclick="assignTo(\''+escapeHtml(m.n)+'\')">'+av(m.n,32)
+      +'<div><div class="text-[13px] font-semibold">'+escapeHtml(m.n)+(m.rec?' <span class="chip ml-1" style="background:#F0EDFC;color:#6D5BD0">✦ рекомендует AI</span>':'')+'</div><div class="text-[11.5px] text-faint">'+m.r+'</div></div>'
+      +(c.mgr===m.n?'<span class="ml-auto chip" style="background:#E3F5EB;color:#188554">текущий</span>':'')+'</button>';
+  }
+  document.getElementById('assignList').innerHTML=h;
+  openModal('assignModal');
+}
+function assignTo(name){
+  conv(curConv).mgr=name;
+  closeModal('assignModal');
+  renderChat(); renderCustomer(); renderConvList();
+  toast('Диалог назначен: '+escapeHtml(name));
+}
+
+function renderAiActions(){
+  var h='';
+  for(var i=0;i<AIS.length;i++){
+    h+='<button onclick="aiAction(\''+escapeHtml(AIS[i])+'\')" class="flex items-center gap-2 text-left border border-line rounded-lg px-3 py-2.5 hover:border-ai hover:bg-aiSoft transition-colors"><span class="text-ai shrink-0">✦</span>'+escapeHtml(AIS[i])+'</button>';
+  }
+  document.getElementById('aiActionList').innerHTML=h;
+}
+function aiAction(a){
+  closeModal('aiModal');
+  var c=conv(curConv);
+  toast('AI-действие «'+a+'» выполнено по диалогу с '+escapeHtml(c.name)+' (демо)');
+}
+
+function cmdItems(){
+  var items=[];
+  items.push({g:'Действия',t:'+ Создать заказ',s:'из текущего диалога',fn:'closeModal(\'cmdModal\');createOrderFromConv()'});
+  items.push({g:'Действия',t:'Показать горячие лиды',s:'вкладка во Входящих',fn:'closeModal(\'cmdModal\');go(\'inbox\');setTab(\'hot\')'});
+  items.push({g:'Действия',t:'Показать просроченные SLA',s:'7 диалогов',fn:'closeModal(\'cmdModal\');go(\'inbox\');setTab(\'overdue\')'});
+  items.push({g:'Действия',t:'Открыть AI-помощника',s:'рекомендации на сегодня',fn:'closeModal(\'cmdModal\');go(\'aiassistant\')'});
+  items.push({g:'Навигация',t:'Лиды · канбан',s:'доска продаж',fn:'closeModal(\'cmdModal\');go(\'leads\')'});
+  items.push({g:'Навигация',t:'Упущенная выручка',s:'₸1.24M сегодня',fn:'closeModal(\'cmdModal\');go(\'lost\')'});
+  for(var i=0;i<CONVS.length;i++) items.push({g:'Диалоги',t:CONVS[i].name,s:'диалог WhatsApp · '+STATUS[CONVS[i].status].label,fn:'closeModal(\'cmdModal\');selectConv(\''+CONVS[i].id+'\')'});
+  for(var j=0;j<CUSTOMERS.length;j++) items.push({g:'Клиенты',t:CUSTOMERS[j].name,s:'карточка клиента · '+CUSTOMERS[j].city,fn:'closeModal(\'cmdModal\');go(\'customers\');showCustomer360('+j+')'});
+  for(var k=0;k<PRODUCTS.length;k++) items.push({g:'Товары',t:PRODUCTS[k].name,s:'SKU '+PRODUCTS[k].sku+' · '+fmt(PRODUCTS[k].price),fn:'closeModal(\'cmdModal\');go(\'products\');showProduct('+k+')'});
+  for(var o=0;o<ORDERS.length&&o<6;o++) items.push({g:'Заказы',t:ORDERS[o].id+' · '+ORDERS[o].cust,s:ORDERS[o].prods,fn:'closeModal(\'cmdModal\');go(\'orders\')'});
+  return items;
+}
+function renderCmd(){
+  var q=(document.getElementById('cmdInput').value||'').toLowerCase();
+  var all=cmdItems(), h='', lastG='';
+  for(var i=0;i<all.length;i++){
+    var it=all[i];
+    if(q && (it.t.toLowerCase().indexOf(q)<0 && it.s.toLowerCase().indexOf(q)<0)) continue;
+    if(it.g!==lastG){ h+='<div class="sec px-3 pt-3 pb-1">'+it.g+'</div>'; lastG=it.g; }
+    h+='<button onclick="'+it.fn+'" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-page cursor-pointer focus-visible:bg-page outline-none"><span class="text-[13px] font-medium">'+escapeHtml(it.t)+'</span><span class="text-[11.5px] text-faint ml-auto truncate max-w-[220px]">'+escapeHtml(it.s)+'</span></button>';
+  }
+  if(!h) h='<div class="p-6 text-center text-[13px] text-faint">Ничего не найдено. Попробуйте: «Анна», «горячие», «создать заказ», «iPhone».</div>';
+  document.getElementById('cmdResults').innerHTML=h;
+}
+
+function renderProdPick(){
+  var h='';
+  for(var i=0;i<PRODUCTS.length;i++){
+    var p=PRODUCTS[i];
+    h+='<button class="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-page cursor-pointer border border-transparent hover:border-line focus-visible:bg-page" onclick="closeModal(\'productModal\');insertProductMsg(\''+p.sku+'\')">'
+      +'<div class="w-9 h-9 rounded-lg bg-page border border-line flex items-center justify-center">📱</div>'
+      +'<div class="min-w-0"><div class="text-[13px] font-semibold truncate">'+escapeHtml(p.name)+'</div><div class="text-[11.5px] text-faint">'+fmt(p.price)+' · остаток '+p.stock+'</div></div>'
+      +'<span class="ml-auto">'+availChip(p)+'</span></button>';
+  }
+  document.getElementById('prodPickList').innerHTML=h;
+}
+
+function init(){
+  renderNav(); renderTabs(); renderConvList(); renderChat(); renderCustomer();
+  renderAiActions(); renderProdPick();
+  go('inbox');
+}
+init();
+</script>
+</body>
+</html>
