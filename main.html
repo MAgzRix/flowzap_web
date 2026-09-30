@@ -4516,26 +4516,25 @@ function toggleAutoLead() {
 }
 
 // ============ INTERACTIVE ONBOARDING TOUR ============
-// ============ INTERACTIVE ONBOARDING TOUR ============
 let tourStep = 0;
 const tourSteps = [
   { target: '[data-tab="dashboard"]', title: 'Главная панель', description: 'Здесь вы видите общую статистику и ключевые метрики вашего бизнеса.', position: 'right' },
-  { target: '[data-tab="leads"]', title: 'Лиды', description: 'Управляйте потенциальными клиентами. Все входящие заявки автоматически создаются здесь.', position: 'right' },
-  { target: '[data-tab="orders"]', title: 'Заказы', description: 'Отслеживайте статусы заказов от создания до доставки.', position: 'right' },
-  { target: '[data-tab="warehouse"]', title: 'Склад', description: 'Контролируйте запасы товаров, получайте уведомления о низких остатках.', position: 'right' },
-  { target: '[data-tab="ai-automation"]', title: 'AI Автоматизация', description: 'Настройте AI-агентов для автоматических ответов клиентам 24/7.', position: 'right' },
-  { target: '[data-tab="employees"]', title: 'Сотрудники', description: 'Добавляйте команду, назначайте роли и отслеживайте активные сессии.', position: 'right' },
-  { target: '[data-tab="event-log"]', title: 'Журнал событий', description: 'Отслеживайте все действия в системе: кто отправил шаблон, кто зашел в аккаунт и т.д.', position: 'right' },
-  { target: '[data-tab="subscription"]', title: 'Оплата и подписка', description: 'Управляйте тарифом, оплачивайте подписку через Kaspi Pay или получите счет для юр лиц.', position: 'right' },
-  { target: '[data-tab="settings"]', title: 'Настройки', description: 'Конфигурируйте платформу под ваши нужды, включая автосоздание лидов и коннекторы.', position: 'right' },
-  { target: '[data-tab="connectors"]', title: 'Коннекторы', description: 'Интеграции с CRM, мессенджерами и другими сервисами. Подключайте AmoCRM, Bitrix24, Google Docs и другие.', position: 'right' },
-  { target: '[data-tab="suggestions"]', title: 'Предложения', description: 'Отправьте идею улучшения платформы или поддержите предложения других пользователей.', position: 'right' },
+  { target: '[data-tab="appointments"]', title: 'Коммуникации', description: 'Всё общение с клиентами в одном месте: мессенджер и календарь встреч.', position: 'right' },
+  { target: '[data-tab="leads"]', title: 'CRM', description: 'Лиды, заказы, товары и склад — полный цикл работы с клиентами и продажами.', position: 'right' },
+  { target: '[data-tab="lead-scoring"]', title: 'Оценка лидов', description: 'AI рассчитывает score каждого лида. Здесь же — настройки критериев оценки «Как считается оценка» и рейтинг лидов по score с фильтрами 🔥 Горячие / Тёплые / ❄️ Холодные.', position: 'right' },
+  { target: '[data-tab="wa-commerce"]', title: 'WhatsApp Business API', description: 'Каталог и продажи прямо в WhatsApp, а также утверждённые шаблоны сообщений.', position: 'right' },
+  { target: '[data-tab="ai-automation"]', title: 'AI и автоматизация', description: 'AI-агенты 24/7, классификация входящих и CRM-триггеры работают на вас автоматически.', position: 'right' },
+  { target: '[data-tab="forecasting"]', title: 'Аналитика и продажи', description: 'Аналитика и прогноз продаж помогают принимать решения на основе данных.', position: 'right' },
+  { target: '[data-tab="settings"]', title: 'Платформа', description: 'Настройки, коннекторы с AmoCRM и Bitrix24, сотрудники и подписка.', position: 'right' },
+  { target: '[data-tab="event-log"]', title: 'Безопасность', description: 'Журнал событий и активные сессии — полный контроль действий в системе.', position: 'right' },
   { target: '[onclick="startOnboardingTour()"]', title: 'Тур по платформе', description: 'Вы всегда можете перезапустить этот тур, чтобы освежить знания!', position: 'left' }
 ];
 
 function startOnboardingTour() {
+  endTour();
+  switchTab('dashboard');
   tourStep = 0;
-  showTourStep();
+  setTimeout(showTourStep, 350);
 }
 
 function showTourStep() {
@@ -4544,7 +4543,11 @@ function showTourStep() {
   const step = tourSteps[tourStep];
   const targetEl = document.querySelector(step.target);
   if (!targetEl) { tourStep++; showTourStep(); return; }
-  
+
+  // If the step is a tab in the sidebar, open it so the user sees the section
+  const tabName = targetEl.getAttribute('data-tab');
+  if (tabName && typeof switchTab === 'function') switchTab(tabName);
+
   targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   const rect = targetEl.getBoundingClientRect();
   const padding = 8;
