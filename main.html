@@ -214,6 +214,11 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Настройки
     </a>
+    <a href="#" onclick="switchTab('data-management'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="data-management">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5.133V19"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v4m0 0l-2-2m2 2l2-2"/></svg>
+      Управление данными
+      <span class="ml-auto badge-new">NEW</span>
+    </a>
     <a href="#" onclick="switchTab('connectors'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="connectors">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
       Коннекторы
@@ -2171,6 +2176,134 @@ tailwind.config = {
       </div>
     </div>
 
+    <!-- ============ TAB: DATA MANAGEMENT ============ -->
+    <div id="tab-data-management" class="tab-content hidden p-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-semibold">Управление данными</h3>
+            <p class="text-sm text-textSecondary mt-1">Массовый импорт и экспорт данных платформы (Excel / CSV)</p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button onclick="openDmImportModal()" class="px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-white hover:bg-bgDefault transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v9m0 0l-3.5-3.5M12 13l3.5-3.5"/></svg>
+              Импорт
+            </button>
+            <button onclick="openDmExportModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 13V4m0 0L8.5 7.5M12 4l3.5 3.5"/></svg>
+              Экспорт
+            </button>
+          </div>
+        </div>
+
+        <!-- Разделы данных -->
+        <div class="bg-white rounded-xl border border-divider divide-y divide-divider overflow-hidden">
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-bgDefault transition">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">Л</div>
+              <div>
+                <h4 class="font-medium text-sm">Лиды</h4>
+                <p class="text-xs text-textSecondary mt-0.5">Поддерживается экспорт и импорт через Excel/CSV.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-xs text-textSecondary">248 записей</span>
+              <button onclick="openDmImportModal('leads')" class="text-xs font-medium text-primary hover:underline">Импорт</button>
+              <button onclick="openDmExportModal('leads')" class="text-xs font-medium text-primary hover:underline">Экспорт</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-bgDefault transition">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">К</div>
+              <div>
+                <h4 class="font-medium text-sm">Контакты</h4>
+                <p class="text-xs text-textSecondary mt-0.5">Поддерживается экспорт и импорт через Excel/CSV.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-xs text-textSecondary">1 204 записи</span>
+              <button onclick="openDmImportModal('contacts')" class="text-xs font-medium text-primary hover:underline">Импорт</button>
+              <button onclick="openDmExportModal('contacts')" class="text-xs font-medium text-primary hover:underline">Экспорт</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-bgDefault transition">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 font-bold text-sm">С</div>
+              <div>
+                <h4 class="font-medium text-sm">Сделки</h4>
+                <p class="text-xs text-textSecondary mt-0.5">Поддерживается экспорт в Excel/CSV.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-xs text-textSecondary">86 сделок</span>
+              <span class="chip bg-gray-200 text-gray-500">только экспорт</span>
+              <button onclick="openDmExportModal('deals')" class="text-xs font-medium text-primary hover:underline">Экспорт</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-bgDefault transition">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-sm">О</div>
+              <div>
+                <h4 class="font-medium text-sm">Компании</h4>
+                <p class="text-xs text-textSecondary mt-0.5">Поддерживается экспорт в Excel/CSV.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-xs text-textSecondary">57 компаний</span>
+              <span class="chip bg-gray-200 text-gray-500">только экспорт</span>
+              <button onclick="openDmExportModal('companies')" class="text-xs font-medium text-primary hover:underline">Экспорт</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-bgDefault transition">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-red-500 font-bold text-sm">Р</div>
+              <div>
+                <h4 class="font-medium text-sm">Расходы</h4>
+                <p class="text-xs text-textSecondary mt-0.5">Поддерживается экспорт в Excel/CSV.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-xs text-textSecondary">312 операций</span>
+              <span class="chip bg-gray-200 text-gray-500">только экспорт</span>
+              <button onclick="openDmExportModal('expenses')" class="text-xs font-medium text-primary hover:underline">Экспорт</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Последние операции -->
+        <div class="bg-white rounded-xl border border-divider p-6 mt-6">
+          <h4 class="font-medium mb-4">Последние операции</h4>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center justify-between pb-3 border-b border-divider">
+              <div class="flex items-center gap-3">
+                <span class="chip bg-green-100 text-green-700">Импорт</span>
+                <span>contacts_import.xlsx · 342 контакта</span>
+              </div>
+              <span class="text-xs text-textSecondary">Вчера, 14:32 · Асель Ж.</span>
+            </div>
+            <div class="flex items-center justify-between pb-3 border-b border-divider">
+              <div class="flex items-center gap-3">
+                <span class="chip bg-blue-100 text-blue-700">Экспорт</span>
+                <span>leads_september.csv · 248 лидов</span>
+              </div>
+              <span class="text-xs text-textSecondary">28 сент., 09:15 · Мария К.</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="chip bg-blue-100 text-blue-700">Экспорт</span>
+                <span>deals_Q3.xlsx · 86 сделок</span>
+              </div>
+              <span class="text-xs text-textSecondary">25 сент., 18:40 · Александр П.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ============ TAB: EMPLOYEES ============ -->
     <div id="tab-employees" class="tab-content hidden p-6">
       <div class="max-w-6xl mx-auto">
@@ -3172,6 +3305,116 @@ tailwind.config = {
   </div>
 </div>
 
+<!-- ============ DATA MANAGEMENT: EXPORT MODAL (MOCKUP) ============ -->
+<div id="dmExportModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-lg w-full slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-semibold">Экспорт данных</h3>
+        <p class="text-sm text-textSecondary mt-1">Выберите данные и формат файла</p>
+      </div>
+      <button onclick="closeDmExportModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-4">
+      <div class="space-y-2.5">
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-divider hover:bg-bgDefault transition cursor-pointer">
+          <input type="checkbox" value="leads" class="dm-export-item w-4 h-4 accent-[#2d9583]" checked>
+          <span class="text-sm font-medium flex-1">Лиды</span>
+          <span class="chip bg-green-100 text-green-700">Excel / CSV · импорт тоже</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-divider hover:bg-bgDefault transition cursor-pointer">
+          <input type="checkbox" value="contacts" class="dm-export-item w-4 h-4 accent-[#2d9583]">
+          <span class="text-sm font-medium flex-1">Контакты</span>
+          <span class="chip bg-green-100 text-green-700">Excel / CSV · импорт тоже</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-divider hover:bg-bgDefault transition cursor-pointer">
+          <input type="checkbox" value="deals" class="dm-export-item w-4 h-4 accent-[#2d9583]">
+          <span class="text-sm font-medium flex-1">Сделки</span>
+          <span class="chip bg-gray-200 text-gray-500">только Excel / CSV</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-divider hover:bg-bgDefault transition cursor-pointer">
+          <input type="checkbox" value="companies" class="dm-export-item w-4 h-4 accent-[#2d9583]">
+          <span class="text-sm font-medium flex-1">Компании</span>
+          <span class="chip bg-gray-200 text-gray-500">только Excel / CSV</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-divider hover:bg-bgDefault transition cursor-pointer">
+          <input type="checkbox" value="expenses" class="dm-export-item w-4 h-4 accent-[#2d9583]">
+          <span class="text-sm font-medium flex-1">Расходы</span>
+          <span class="chip bg-gray-200 text-gray-500">только Excel / CSV</span>
+        </label>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-2">Формат файла</label>
+        <select id="dmExportFormat" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option value="xlsx">Excel (.xlsx)</option>
+          <option value="csv">CSV (.csv)</option>
+        </select>
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 bg-bgDefault rounded-b-xl">
+      <button onclick="closeDmExportModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-white rounded-lg transition">Отмена</button>
+      <button onclick="mockAction(this,'Файл готовится к скачиванию ⬇️')" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 13V4m0 0L8.5 7.5M12 4l3.5 3.5M7 17h10"/></svg>
+        Скачать
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DATA MANAGEMENT: IMPORT MODAL (MOCKUP) ============ -->
+<div id="dmImportModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
+    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
+      <div>
+        <h3 class="text-lg font-semibold">Импорт данных</h3>
+        <p class="text-sm text-textSecondary mt-1">Загрузите контакты и лиды через Excel/CSV</p>
+      </div>
+      <button onclick="closeDmImportModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium mb-2">Тип данных</label>
+        <select id="dmImportType" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+          <option value="contacts">Контакты</option>
+          <option value="leads">Лиды</option>
+        </select>
+      </div>
+
+      <!-- Dropzone -->
+      <div class="border-2 border-dashed border-divider rounded-xl p-8 text-center bg-bgDefault hover:border-primary transition cursor-pointer" onclick="mockAction(this,'Файл contacts_upload.xlsx выбран ✅')">
+        <svg class="w-10 h-10 mx-auto text-textSecondary mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+        <div class="text-sm font-medium">Перетащите файл сюда или нажмите для выбора</div>
+        <div class="text-xs text-textSecondary mt-1.5">Поддерживаются форматы .xlsx и .csv, до 10 МБ</div>
+      </div>
+
+      <!-- Пример выбранных файлов -->
+      <div class="flex items-center justify-between p-3 rounded-lg border border-divider bg-white">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center text-green-600 font-bold text-[10px]">XLSX</div>
+          <div>
+            <div class="text-sm font-medium">contacts_upload.xlsx</div>
+            <div class="text-xs text-textSecondary">342 строки · колонки распознаны автоматически</div>
+          </div>
+        </div>
+        <span class="status-badge bg-success/10 text-success">Готов</span>
+      </div>
+
+      <div class="text-xs text-textSecondary bg-blue-50 border border-blue-100 rounded-lg p-3 leading-relaxed">
+        💡 Требования к файлу: обязательные колонки — <b>Имя</b>, <b>Телефон</b>. Необязательные — Email, Компания, Источник, Стадия. Файл-шаблон можно скачать в разделе «Экспорт».
+      </div>
+    </div>
+    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 bg-bgDefault rounded-b-xl sticky bottom-0">
+      <button onclick="closeDmImportModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-white rounded-lg transition">Отмена</button>
+      <button onclick="mockAction(this,'Импорт запущен: 342 записи обрабатываются 📥')" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Импортировать</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ WHATSAPP FLOWS EDITOR MODAL (MOCKUP) ============ -->
 <div id="wfEditorModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
   <div class="bg-white rounded-xl w-full max-w-[1180px] h-[92vh] flex flex-col overflow-hidden fade-in">
@@ -3669,6 +3912,7 @@ function switchTab(tab) {
     appointments: ['Встречи и созвоны', 'Планирование встреч, звонков и демо-сессий с клиентами'],
     'ai-automation': ['AI Автоматизация', 'Управление искусственным интеллектом'],
     settings: ['Настройки платформы', 'Общие настройки и конфигурация системы'],
+    'data-management': ['Управление данными', 'Импорт и экспорт лидов, контактов, сделок, компаний и расходов'],
     employees: ['Сотрудники', 'Управление доступом и ролями сотрудников'],
     'event-log': ['Журнал событий', 'Логирование действий сотрудников и системы'],
     subscription: ['Оплата и подписка', 'Управление тарифом и оплатой'],
@@ -5172,6 +5416,29 @@ function closeWfEditor() {
   const m = document.getElementById('wfEditorModal');
   m.classList.add('hidden');
   m.classList.remove('flex');
+}
+
+// ---- Управление данными: импорт / экспорт (мокап) ----
+const DM_NAMES = { leads: 'Лиды', contacts: 'Контакты', deals: 'Сделки', companies: 'Компании', expenses: 'Расходы' };
+function openDmExportModal(preset) {
+  document.querySelectorAll('.dm-export-item').forEach(cb => { cb.checked = (cb.value === preset); });
+  if (!preset) document.querySelector('.dm-export-item[value="leads"]').checked = true;
+  const m = document.getElementById('dmExportModal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeDmExportModal() {
+  const m = document.getElementById('dmExportModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+function openDmImportModal(type) {
+  const sel = document.getElementById('dmImportType');
+  sel.value = (type === 'leads') ? 'leads' : 'contacts';
+  const m = document.getElementById('dmImportModal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeDmImportModal() {
+  const m = document.getElementById('dmImportModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
 }
 function selectWfNode(i) {
   document.querySelectorAll('.wf-node').forEach((el, idx) => {
