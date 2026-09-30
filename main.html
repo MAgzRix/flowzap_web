@@ -114,6 +114,11 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Главная
     </a>
+    <a href="#" onclick="switchTab('getting-started'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="getting-started">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      Начало работы
+      <span class="ml-auto badge-new">NEW</span>
+    </a>
     <div class="nav-group-label">Коммуникации</div>
     <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
@@ -167,6 +172,11 @@ tailwind.config = {
     <a href="#" onclick="switchTab('templates'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="templates">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
       Шаблоны
+    </a>
+    <a href="#" onclick="switchTab('wa-flows'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="wa-flows">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 17a2 2 0 100 4 2 2 0 000-4zM8 9V7m0 0l2 2M8 7L6 9m12 4v-2m0 0l2 2m-2-2l-2 2"/></svg>
+      WhatsApp Flows
+      <span class="ml-auto badge-new">NEW</span>
     </a>
     <div class="nav-group-label">AI и автоматизация</div>
     <a href="#" onclick="switchTab('ai-automation'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="ai-automation">
@@ -267,6 +277,134 @@ tailwind.config = {
   </header>
 
   <div class="flex-1 p-8 overflow-auto scrollbar-thin">
+
+    <!-- ============ TAB: GETTING STARTED ============ -->
+    <div id="tab-getting-started" class="tab-content hidden p-6">
+
+      <!-- Прогресс бар сверху -->
+      <div class="bg-white rounded-xl border border-divider p-6 mb-6 sticky top-0 z-10">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-lg font-semibold">Начало работы</h3>
+            <p class="text-sm text-textSecondary mt-0.5">Инструкция: с чего и где начать работу в FlowZap</p>
+          </div>
+          <div class="text-right">
+            <div id="gsProgressText" class="text-2xl font-bold text-primary">40%</div>
+            <div class="text-xs text-textSecondary"><span id="gsDoneText">2</span> из <span id="gsTotalText">5</span> шагов</div>
+          </div>
+        </div>
+        <div class="w-full h-3 bg-bgDefault rounded-full overflow-hidden">
+          <div id="gsProgressBar" class="h-full bg-gradient-to-r from-primary to-primaryDark rounded-full transition-all duration-500" style="width: 40%"></div>
+        </div>
+        <div class="flex items-center gap-2 mt-3 text-xs text-textSecondary">
+          <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.64-1.333-3.41 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          Обязательные шаги отмечены меткой «Обязательно» — без них нельзя начать продажи
+        </div>
+      </div>
+
+      <!-- Чек-лист шагов -->
+      <div class="space-y-4">
+
+        <!-- Шаг 1 (обязательный) -->
+        <div class="bg-white rounded-xl border border-divider p-5 flex items-start gap-4">
+          <button onclick="toggleGsStep(this, 'gs-step-1')" class="mt-0.5 w-6 h-6 rounded-full border-2 border-success bg-success flex items-center justify-center shrink-0 transition">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+          </button>
+          <div class="hidden" data-gs-done="true"></div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h4 class="font-semibold gs-title line-through decoration-textSecondary/50">1. Подключите каналы связи</h4>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-error/10 text-error uppercase">Обязательно</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Начните отсюда: без подключённого канала переписка и продажи недоступны.</p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span class="px-3 py-1.5 rounded-lg bg-success/10 text-success text-xs font-medium border border-success/20">✓ WhatsApp Business API (WABA)</span>
+              <span class="px-3 py-1.5 rounded-lg bg-bgDefault text-textPrimary text-xs font-medium border border-divider">WhatsApp Web</span>
+              <span class="px-3 py-1.5 rounded-lg bg-bgDefault text-textPrimary text-xs font-medium border border-divider">Instagram Direct</span>
+              <span class="px-3 py-1.5 rounded-lg bg-bgDefault text-textPrimary text-xs font-medium border border-divider">Telegram</span>
+            </div>
+            <a href="#" onclick="switchTab('connectors'); return false;" class="inline-flex items-center gap-1 text-sm text-primary font-medium mt-3 hover:underline">Перейти в «Коннекторы» →</a>
+          </div>
+        </div>
+
+        <!-- Шаг 2 (обязательный) -->
+        <div class="bg-white rounded-xl border border-divider p-5 flex items-start gap-4">
+          <button onclick="toggleGsStep(this, 'gs-step-2')" class="mt-0.5 w-6 h-6 rounded-full border-2 border-success bg-success flex items-center justify-center shrink-0 transition">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+          </button>
+          <div class="hidden" data-gs-done="true"></div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h4 class="font-semibold gs-title line-through decoration-textSecondary/50">2. Добавьте шаблоны WABA</h4>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-error/10 text-error uppercase">Обязательно</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Шаблоны проходят модерацию Meta — отправьте первые 2–3 шаблона заранее, чтобы не ждать одобрения в момент старта.</p>
+            <a href="#" onclick="switchTab('templates'); return false;" class="inline-flex items-center gap-1 text-sm text-primary font-medium mt-3 hover:underline">Перейти в «Шаблоны» →</a>
+          </div>
+        </div>
+
+        <!-- Шаг 3 -->
+        <div class="bg-white rounded-xl border border-divider p-5 flex items-start gap-4">
+          <button onclick="toggleGsStep(this, 'gs-step-3')" class="mt-0.5 w-6 h-6 rounded-full border-2 border-divider hover:border-primary flex items-center justify-center shrink-0 bg-white transition">
+            <svg class="w-4 h-4 text-transparent check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+          </button>
+          <div class="hidden" data-gs-done="false"></div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h4 class="font-semibold gs-title">3. Создайте сотрудника</h4>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-bgDefault text-textSecondary uppercase">Рекомендуем</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Назначьте роли и права: менеджер по продажам, администратор, поддержка.</p>
+            <a href="#" onclick="switchTab('employees'); return false;" class="inline-flex items-center gap-1 text-sm text-primary font-medium mt-3 hover:underline">Перейти в «Сотрудники» →</a>
+          </div>
+        </div>
+
+        <!-- Шаг 4 -->
+        <div class="bg-white rounded-xl border border-divider p-5 flex items-start gap-4">
+          <button onclick="toggleGsStep(this, 'gs-step-4')" class="mt-0.5 w-6 h-6 rounded-full border-2 border-divider hover:border-primary flex items-center justify-center shrink-0 bg-white transition">
+            <svg class="w-4 h-4 text-transparent check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+          </button>
+          <div class="hidden" data-gs-done="false"></div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h4 class="font-semibold gs-title">4. Настройте триггеры и автоматизации</h4>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-bgDefault text-textSecondary uppercase">Рекомендуем</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Автоматические действия при смене статуса лида, безответных сообщениях и новых заказах.</p>
+            <a href="#" onclick="switchTab('triggers'); return false;" class="inline-flex items-center gap-1 text-sm text-primary font-medium mt-3 hover:underline">Перейти в «Триггеры» →</a>
+          </div>
+        </div>
+
+        <!-- Шаг 5 -->
+        <div class="bg-white rounded-xl border border-divider p-5 flex items-start gap-4">
+          <button onclick="toggleGsStep(this, 'gs-step-5')" class="mt-0.5 w-6 h-6 rounded-full border-2 border-divider hover:border-primary flex items-center justify-center shrink-0 bg-white transition">
+            <svg class="w-4 h-4 text-transparent check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+          </button>
+          <div class="hidden" data-gs-done="false"></div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h4 class="font-semibold gs-title">5. Пройдите тур по платформе</h4>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-bgDefault text-textSecondary uppercase">Опционально</span>
+            </div>
+            <p class="text-sm text-textSecondary mt-1">Короткий интерактивный обзор всех ключевых разделов FlowZap за 2 минуты.</p>
+            <a href="#" onclick="startOnboardingTour(); return false;" class="inline-flex items-center gap-1 text-sm text-primary font-medium mt-3 hover:underline">Запустить тур →</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Финальная плашка -->
+      <div id="gsCompleteBanner" class="hidden mt-6 bg-success/10 border border-success/20 rounded-xl p-5 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-success flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div>
+          <h4 class="font-semibold text-success">Все шаги выполнены — платформа готова к работе!</h4>
+          <p class="text-sm text-textSecondary">Можно принимать первые лиды и вести переговоры в мессенджере.</p>
+        </div>
+      </div>
+
+    </div>
 
     <!-- ============ TAB: ORDERS ============ -->
     <div id="tab-orders" class="tab-content hidden p-6">
@@ -620,6 +758,146 @@ tailwind.config = {
                 <button onclick="mockAction(this,'Настройки магазина сохранены ✅')" class="btn-primary w-full py-2 rounded-lg text-sm font-medium">Сохранить настройки</button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: WHATSAPP FLOWS ============ -->
+    <div id="tab-wa-flows" class="tab-content hidden p-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-semibold">WhatsApp Flows <span class="badge-new ml-2 align-middle">NEW</span></h3>
+            <p class="text-sm text-textSecondary mt-1">Интерактивные экраны внутри WhatsApp: запись, заказы, опросы и лид-формы без перехода на сайт</p>
+          </div>
+          <button onclick="openWfEditor()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            Создать свой WhatsApp Flow
+          </button>
+        </div>
+
+        <!-- My flows -->
+        <div class="bg-white rounded-xl border border-divider p-6 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-medium">Мои Flow</h4>
+            <span class="status-badge bg-success/10 text-success">● 2 опубликовано</span>
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="border border-divider rounded-xl p-4 hover:shadow-md transition">
+              <div class="flex items-start justify-between">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center text-lg">📅</div>
+                <span class="status-badge bg-success/10 text-success">Опубликован</span>
+              </div>
+              <div class="font-medium text-sm mt-3">Запись на приём — Стоматология</div>
+              <div class="text-xs text-textSecondary mt-0.5">Шаблон «Запись на приём» · обновлён 2 дня назад</div>
+              <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider text-xs text-textSecondary">
+                <span>Записей: <b class="text-textPrimary">38</b></span>
+                <button onclick="openWfEditor('Запись на приём — Стоматология')" class="text-primary font-medium hover:underline">Открыть в редакторе</button>
+              </div>
+            </div>
+            <div class="border border-divider rounded-xl p-4 hover:shadow-md transition">
+              <div class="flex items-start justify-between">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center text-lg">🛒</div>
+                <span class="status-badge bg-success/10 text-success">Опубликован</span>
+              </div>
+              <div class="font-medium text-sm mt-3">Заказ Nike Air Max</div>
+              <div class="text-xs text-textSecondary mt-0.5">Шаблон «Формы заказа» · обновлён сегодня</div>
+              <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider text-xs text-textSecondary">
+                <span>Заказов: <b class="text-textPrimary">17</b></span>
+                <button onclick="openWfEditor('Заказ Nike Air Max')" class="text-primary font-medium hover:underline">Открыть в редакторе</button>
+              </div>
+            </div>
+            <div class="border border-dashed border-divider rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition" onclick="openWfEditor()">
+              <div class="w-10 h-10 rounded-lg bg-bgDefault flex items-center justify-center mb-2">
+                <svg class="w-5 h-5 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+              </div>
+              <div class="text-sm font-medium text-textSecondary">Создать свой Flow</div>
+              <div class="text-xs text-textSecondary mt-0.5">с нуля или из шаблона</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ready-made templates -->
+        <div class="mb-3">
+          <h4 class="font-medium">Готовые шаблоны под WhatsApp Flows</h4>
+          <p class="text-xs text-textSecondary mt-1">Выберите шаблон — он откроется в редакторе с уже настроенными экранами</p>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-white rounded-xl border border-divider p-5 product-card">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center text-xl flex-shrink-0">📅</div>
+              <div>
+                <div class="font-medium text-sm">Запись на приём</div>
+                <span class="status-badge bg-info/10 text-info mt-0.5">Запись</span>
+              </div>
+            </div>
+            <p class="text-xs text-textSecondary leading-relaxed min-h-[64px]">Показывает свободные временные слоты через выбор даты и времени, позволяя пользователю выбрать напрямую.</p>
+            <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+              <span class="text-xs text-textSecondary">Конверсия ~62%</span>
+              <button onclick="useWfTemplate(this,'Запись на приём')" class="text-xs btn-primary px-3 py-1.5 rounded-lg font-medium">Использовать</button>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5 product-card">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center text-xl flex-shrink-0">🛒</div>
+              <div>
+                <div class="font-medium text-sm">Формы заказа</div>
+                <span class="status-badge bg-warning/10 text-warning mt-0.5">Продажи</span>
+              </div>
+            </div>
+            <p class="text-xs text-textSecondary leading-relaxed min-h-[64px]">Объединяет товары из вашего каталога WhatsApp со структурированным экраном выбора, чётко фиксируя количество и вариацию (цвет/размер).</p>
+            <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+              <span class="text-xs text-textSecondary">Конверсия ~48%</span>
+              <button onclick="useWfTemplate(this,'Формы заказа')" class="text-xs btn-primary px-3 py-1.5 rounded-lg font-medium">Использовать</button>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5 product-card">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center text-xl flex-shrink-0">⭐</div>
+              <div>
+                <div class="font-medium text-sm">Опросы и обратная связь</div>
+                <span class="status-badge bg-primary/10 text-primary mt-0.5">Fidelity</span>
+              </div>
+            </div>
+            <p class="text-xs text-textSecondary leading-relaxed min-h-[64px]">Вопросы с множественным выбором или оценкой дают гораздо более высокий процент ответов, чем свободный текст.</p>
+            <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+              <span class="text-xs text-textSecondary">Ответов ~71%</span>
+              <button onclick="useWfTemplate(this,'Опросы и обратная связь')" class="text-xs btn-primary px-3 py-1.5 rounded-lg font-medium">Использовать</button>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5 product-card">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-xl flex-shrink-0">📝</div>
+              <div>
+                <div class="font-medium text-sm">Регистрация / сбор лидов</div>
+                <span class="status-badge bg-success/10 text-success mt-0.5">Лиды</span>
+              </div>
+            </div>
+            <p class="text-xs text-textSecondary leading-relaxed min-h-[64px]">Собирает структурированную информацию вроде имени, email и сферы интересов для регистрации на кампанию или мероприятие.</p>
+            <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+              <span class="text-xs text-textSecondary">CPL −34%</span>
+              <button onclick="useWfTemplate(this,'Форма регистрации')" class="text-xs btn-primary px-3 py-1.5 rounded-lg font-medium">Использовать</button>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-divider p-5 product-card">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center text-xl flex-shrink-0">🎧</div>
+              <div>
+                <div class="font-medium text-sm">Маршрутизация в поддержку</div>
+                <span class="status-badge bg-error/10 text-error mt-0.5">Поддержка</span>
+              </div>
+            </div>
+            <p class="text-xs text-textSecondary leading-relaxed min-h-[64px]">Превращает вопрос «с чем вам нужна помощь» в выбираемые варианты, ускоряя направление к нужной команде или автоответу.</p>
+            <div class="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+              <span class="text-xs text-textSecondary">Time-to-reply −52%</span>
+              <button onclick="useWfTemplate(this,'Маршрутизация обращений')" class="text-xs btn-primary px-3 py-1.5 rounded-lg font-medium">Использовать</button>
+            </div>
+          </div>
+          <div class="bg-bgDefault rounded-xl border border-dashed border-divider p-5 flex flex-col items-center justify-center text-center">
+            <div class="text-2xl mb-2">✨</div>
+            <div class="text-sm font-medium">Больше шаблонов</div>
+            <p class="text-xs text-textSecondary mt-1">Каталог шаблонов Meta пополняется автоматически</p>
           </div>
         </div>
       </div>
@@ -2894,6 +3172,204 @@ tailwind.config = {
   </div>
 </div>
 
+<!-- ============ WHATSAPP FLOWS EDITOR MODAL (MOCKUP) ============ -->
+<div id="wfEditorModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+  <div class="bg-white rounded-xl w-full max-w-[1180px] h-[92vh] flex flex-col overflow-hidden fade-in">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-divider flex items-center justify-between bg-white flex-shrink-0">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center text-lg flex-shrink-0">🧭</div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <input id="wfNameInput" value="Запись на приём — Стоматология" class="text-base font-semibold bg-transparent border-none focus:outline-none focus:bg-bgDefault rounded px-1 -ml-1 truncate max-w-[340px]">
+            <span class="status-badge bg-success/10 text-success flex-shrink-0">Черновик</span>
+          </div>
+          <div class="text-xs text-textSecondary">Редактор WhatsApp Flow · экраны кликабельны — откройте настройки</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <button onclick="mockAction(this,'Flow сохранён как черновик ✅')" class="px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-white hover:bg-bgDefault transition">Сохранить</button>
+        <button onclick="mockAction(this,'Flow отправлен на проверку Meta 📨')" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Отправить на проверку Meta</button>
+        <button onclick="closeWfEditor()" class="p-2 hover:bg-bgDefault rounded-lg transition ml-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Body: workflow left + phone preview right -->
+    <div class="flex-1 flex overflow-hidden">
+      <!-- LEFT: Workflow settings -->
+      <div class="flex-1 overflow-y-auto scrollbar-thin bg-bgDefault p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="font-medium text-sm flex items-center gap-2">
+            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 17a2 2 0 100 4 2 2 0 000-4z"/></svg>
+            Workflow Flow
+          </h4>
+          <span class="chip bg-white border border-divider text-textSecondary">4 экрана · 1 ветвление</span>
+        </div>
+
+        <!-- Flow nodes (workflow) -->
+        <div class="space-y-0 max-w-md mx-auto" id="wfNodes">
+          <!-- Node 1 -->
+          <div class="wf-node bg-white border-2 border-primary rounded-xl p-4 cursor-pointer shadow-sm transition" data-wfnode="0" onclick="selectWfNode(0)">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="chip bg-primary text-white">1</span>
+                <span class="font-medium text-sm">Выбор услуги</span>
+              </div>
+              <span class="text-[10px] text-textSecondary uppercase tracking-wide">Экран формы</span>
+            </div>
+            <div class="text-xs text-textSecondary mt-2">RadioGroup · Чистка / Брекеты / Имплант</div>
+          </div>
+          <div class="flex justify-center py-1"><svg class="w-4 h-6 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m0 0l-4-4m4 4l4-4"/></svg></div>
+          <!-- Node 2 -->
+          <div class="wf-node bg-white border border-divider rounded-xl p-4 cursor-pointer hover:shadow-md transition" data-wfnode="1" onclick="selectWfNode(1)">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="chip bg-bgDefault text-textSecondary">2</span>
+                <span class="font-medium text-sm">Дата и время</span>
+              </div>
+              <span class="text-[10px] text-textSecondary uppercase tracking-wide">Экран формы</span>
+            </div>
+            <div class="text-xs text-textSecondary mt-2">Календарь + свободные слоты из CRM</div>
+          </div>
+          <div class="flex justify-center py-1"><svg class="w-4 h-6 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m0 0l-4-4m4 4l4-4"/></svg></div>
+          <!-- Node 3 (branch) -->
+          <div class="wf-node bg-white border border-divider rounded-xl p-4 cursor-pointer hover:shadow-md transition" data-wfnode="2" onclick="selectWfNode(2)">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="chip bg-warning/15 text-warning">◆</span>
+                <span class="font-medium text-sm">Слот занят?</span>
+              </div>
+              <span class="text-[10px] text-textSecondary uppercase tracking-wide">Ветвление</span>
+            </div>
+            <div class="flex gap-2 mt-2 text-[10px]">
+              <span class="chip bg-success/10 text-success">Да → предложить другой слот</span>
+              <span class="chip bg-info/10 text-info">Нет → подтвердить</span>
+            </div>
+          </div>
+          <div class="flex justify-center py-1"><svg class="w-4 h-6 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m0 0l-4-4m4 4l4-4"/></svg></div>
+          <!-- Node 4 -->
+          <div class="wf-node bg-white border border-divider rounded-xl p-4 cursor-pointer hover:shadow-md transition" data-wfnode="3" onclick="selectWfNode(3)">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="chip bg-success/15 text-success">✓</span>
+                <span class="font-medium text-sm">Подтверждение</span>
+              </div>
+              <span class="text-[10px] text-textSecondary uppercase tracking-wide">Финальный экран</span>
+            </div>
+            <div class="text-xs text-textSecondary mt-2">Создать запись в CRM + шаблон «Ждём вас»</div>
+          </div>
+        </div>
+
+        <button onclick="mockAction(this,'Новый экран добавлен в workflow')" class="mt-4 w-full max-w-md mx-auto block border border-dashed border-divider rounded-xl py-2.5 text-sm text-textSecondary hover:border-primary hover:text-primary transition bg-white">
+          + Добавить экран
+        </button>
+
+        <!-- Settings panel of selected node -->
+        <div id="wfNodeSettings" class="mt-5 max-w-md mx-auto bg-white border border-divider rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h5 id="wfNodeTitle" class="font-medium text-sm">Настройки экрана: Выбор услуги</h5>
+            <span class="chip bg-primary/10 text-primary" id="wfNodeChip">Экран 1 из 4</span>
+          </div>
+          <div class="space-y-4 text-sm">
+            <div>
+              <label class="block text-xs font-medium text-textSecondary mb-1.5">Заголовок экрана (виден клиенту)</label>
+              <input type="text" value="Выберите услугу" class="w-full px-3 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-textSecondary mb-1.5">Тип компонента</label>
+              <select class="w-full px-3 py-2 bg-white border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
+                <option>Choice — варианты выбора (RadioGroup)</option>
+                <option>Date & Time picker</option>
+                <option>Dropdown</option>
+                <option>TextInput</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-textSecondary mb-1.5">Варианты</label>
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span><input type="text" value="Чистка зубов — 15 000 ₸" class="flex-1 px-3 py-1.5 bg-bgDefault border border-divider rounded-lg text-xs"></div>
+                <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span><input type="text" value="Брекеты — от 250 000 ₸" class="flex-1 px-3 py-1.5 bg-bgDefault border border-divider rounded-lg text-xs"></div>
+                <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span><input type="text" value="Имплант — от 180 000 ₸" class="flex-1 px-3 py-1.5 bg-bgDefault border border-divider rounded-lg text-xs"></div>
+                <button onclick="mockAction(this,'Вариант добавлен')" class="text-xs text-primary font-medium hover:underline">+ Добавить вариант</button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-divider">
+              <div>
+                <div class="text-sm">Обязательный выбор</div>
+                <div class="text-xs text-textSecondary">Клиент не сможет продолжить без выбора</div>
+              </div>
+              <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm">Сохранять ответ в лид</div>
+                <div class="text-xs text-textSecondary">Поле «Услуга» в карточке лида CRM</div>
+              </div>
+              <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Phone preview -->
+      <div class="w-[360px] flex-shrink-0 border-l border-divider bg-white p-6 overflow-y-auto scrollbar-thin flex flex-col items-center">
+        <div class="text-sm font-medium self-start mb-1">Как это видит клиент</div>
+        <div class="text-xs text-textSecondary self-start mb-4">Предпросмотр Flow в WhatsApp на телефоне</div>
+        <div class="w-64 rounded-[2rem] border-4 border-gray-800 bg-[#ECE5DD] overflow-hidden shadow-inner flex-shrink-0" style="height: 500px;">
+          <!-- WA header -->
+          <div class="bg-[#075E54] text-white text-xs px-3 py-2 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-[10px]">🦷</div>
+            <div class="min-w-0">
+              <div class="font-semibold truncate">Dental Clinic</div>
+              <div class="text-[9px] opacity-80">онлайн</div>
+            </div>
+          </div>
+          <!-- Chat area -->
+          <div class="p-2.5 space-y-2">
+            <div class="bg-white rounded-lg p-2 shadow-sm max-w-[90%]">
+              <div class="text-[10px] text-textSecondary mb-0.5">Здравствуйте! Запишитесь на приём 👇</div>
+              <div class="text-[9px] text-right text-textSecondary">10:24</div>
+            </div>
+            <!-- Flow card -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+              <div class="bg-[#075E54]/90 text-white px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[10px] font-semibold">Dental Clinic</span>
+                <svg class="w-3 h-3 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </div>
+              <div class="p-2.5">
+                <div class="text-[11px] font-semibold mb-2">Выберите услугу</div>
+                <div class="space-y-1.5 text-[10px]">
+                  <label class="flex items-center gap-2 border border-divider rounded-lg px-2 py-1.5 cursor-pointer hover:bg-bgDefault">
+                    <span class="w-3 h-3 rounded-full border-2 border-[#075E54] flex-shrink-0"></span> Чистка зубов — 15 000 ₸
+                  </label>
+                  <label class="flex items-center gap-2 bg-[#075E54]/5 border border-[#075E54] rounded-lg px-2 py-1.5 cursor-pointer">
+                    <span class="w-3 h-3 rounded-full border-2 border-[#075E54] flex items-center justify-center flex-shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#075E54]"></span></span> Брекеты — от 250 000 ₸
+                  </label>
+                  <label class="flex items-center gap-2 border border-divider rounded-lg px-2 py-1.5 cursor-pointer hover:bg-bgDefault">
+                    <span class="w-3 h-3 rounded-full border-2 border-gray-300 flex-shrink-0"></span> Имплант — от 180 000 ₸
+                  </label>
+                </div>
+                <div class="text-[9px] text-textSecondary mt-2 mb-1">Шаг 1 из 3</div>
+                <button onclick="mockAction(this,'Демо: переход к выбору даты 📅')" class="w-full text-[10px] bg-[#25D366] text-white rounded-md py-1.5 font-semibold hover:opacity-90 transition">Далее →</button>
+              </div>
+            </div>
+            <div class="bg-[#DCF8C6] rounded-lg p-2 shadow-sm max-w-[80%] ml-auto">
+              <div class="text-[10px]">Хочу записаться на брекеты</div>
+              <div class="text-[9px] text-right text-textSecondary">10:25 ✓✓</div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 w-full bg-bgDefault rounded-lg p-3 text-[11px] text-textSecondary">
+          <b class="text-textPrimary">Подсказка:</b> изменения слева мгновенно отражаются в предпросмотре. После проверки Meta Flow появится в чате как интерактивное сообщение с кнопкой «Записаться».
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ LEAD MODAL ============ -->
 <div id="leadModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
   <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
@@ -3203,6 +3679,8 @@ function switchTab(tab) {
     'ai-tools': ['AI Инструменты', 'Резюме диалогов, тональность и перевод'],
     'incoming-routing': ['Автоклассификация входящих', 'AI маршрутизирует диалоги нужным специалистам'],
     forecasting: ['Прогноз продаж', 'AI Forecasting — ML-прогноз выручки и спроса'],
+    'wa-flows': ['WhatsApp Flows', 'Готовые шаблоны и редактор интерактивных Flow для WhatsApp'],
+    'getting-started': ['Начало работы', 'Пошаговая инструкция: с чего начать работу в платформе'],
   };
   
   document.getElementById('pageTitle').textContent = titles[tab] ? titles[tab][0] : 'FlowZap';
@@ -3215,6 +3693,39 @@ function switchTab(tab) {
   if (tab === 'leads') renderLeads();
   if (tab === 'appointments') renderAppointments();
   if (tab === 'lead-scoring') renderLeadScores();
+}
+
+// ---------- НАЧАЛО РАБОТЫ (getting started) ----------
+function toggleGsStep(btn, stepId) {
+  const card = btn.closest('.bg-white');
+  const flag = card.querySelector('[data-gs-done]');
+  const title = card.querySelector('.gs-title');
+  const done = flag.dataset.gsDone === 'true';
+  flag.dataset.gsDone = done ? 'false' : 'true';
+  if (done) {
+    btn.classList.remove('bg-success', 'border-success');
+    btn.classList.add('bg-white', 'border-divider');
+    btn.querySelector('svg').classList.replace('text-white', 'text-transparent');
+    title.classList.remove('line-through', 'decoration-textSecondary/50');
+  } else {
+    btn.classList.add('bg-success', 'border-success');
+    btn.classList.remove('bg-white', 'border-divider');
+    btn.querySelector('svg').classList.replace('text-transparent', 'text-white');
+    title.classList.add('line-through', 'decoration-textSecondary/50');
+  }
+  updateGsProgress();
+}
+
+function updateGsProgress() {
+  const flags = document.querySelectorAll('#tab-getting-started [data-gs-done]');
+  const total = flags.length;
+  const doneCount = [...flags].filter(f => f.dataset.gsDone === 'true').length;
+  const pct = Math.round(doneCount / total * 100);
+  document.getElementById('gsProgressBar').style.width = pct + '%';
+  document.getElementById('gsProgressText').textContent = pct + '%';
+  document.getElementById('gsDoneText').textContent = doneCount;
+  document.getElementById('gsTotalText').textContent = total;
+  document.getElementById('gsCompleteBanner').classList.toggle('hidden', pct !== 100);
 }
 
 // ============ AI AUTOMATION TABS ============
@@ -4522,7 +5033,7 @@ const tourSteps = [
   { target: '[data-tab="appointments"]', title: 'Коммуникации', description: 'Всё общение с клиентами в одном месте: мессенджер и календарь встреч.', position: 'right' },
   { target: '[data-tab="leads"]', title: 'CRM', description: 'Лиды, заказы, товары и склад — полный цикл работы с клиентами и продажами.', position: 'right' },
   { target: '[data-tab="lead-scoring"]', title: 'Оценка лидов', description: 'AI рассчитывает score каждого лида. Здесь же — настройки критериев оценки «Как считается оценка» и рейтинг лидов по score с фильтрами 🔥 Горячие / Тёплые / ❄️ Холодные.', position: 'right' },
-  { target: '[data-tab="wa-commerce"]', title: 'WhatsApp Business API', description: 'Каталог и продажи прямо в WhatsApp, а также утверждённые шаблоны сообщений.', position: 'right' },
+  { target: '[data-tab="wa-commerce"]', title: 'WhatsApp Business API', description: 'Каталог и продажи прямо в WhatsApp, утверждённые шаблоны сообщений и интерактивные WhatsApp Flows (запись, заказы, опросы).', position: 'right' },
   { target: '[data-tab="ai-automation"]', title: 'AI и автоматизация', description: 'AI-агенты 24/7, классификация входящих и CRM-триггеры работают на вас автоматически.', position: 'right' },
   { target: '[data-tab="forecasting"]', title: 'Аналитика и продажи', description: 'Аналитика и прогноз продаж помогают принимать решения на основе данных.', position: 'right' },
   { target: '[data-tab="settings"]', title: 'Платформа', description: 'Настройки, коннекторы с AmoCRM и Bitrix24, сотрудники и подписка.', position: 'right' },
@@ -4640,6 +5151,45 @@ function endTour() {
 
 // ---------- Utils for mockups ----------
 function mockAction(el, message) { showToast(message); }
+
+// ---------- WHATSAPP FLOWS (mockup) ----------
+const WF_NODES = [
+  { title: 'Выбор услуги', desc: 'RadioGroup · Чистка / Брекеты / Имплант' },
+  { title: 'Дата и время', desc: 'Календарь + свободные слоты из CRM' },
+  { title: 'Слот занят?', desc: 'Ветвление: да → другой слот, нет → подтвердить' },
+  { title: 'Подтверждение', desc: 'Создать запись в CRM + шаблон «Ждём вас»' },
+];
+
+function openWfEditor(name) {
+  const m = document.getElementById('wfEditorModal');
+  if (!m) return;
+  if (name) document.getElementById('wfNameInput').value = name;
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+  selectWfNode(0);
+}
+function closeWfEditor() {
+  const m = document.getElementById('wfEditorModal');
+  m.classList.add('hidden');
+  m.classList.remove('flex');
+}
+function selectWfNode(i) {
+  document.querySelectorAll('.wf-node').forEach((el, idx) => {
+    el.classList.toggle('border-2', idx === i);
+    el.classList.toggle('border-primary', idx === i);
+    el.classList.toggle('shadow-sm', idx === i);
+    el.classList.toggle('border-divider', idx !== i);
+  });
+  const t = document.getElementById('wfNodeTitle');
+  const c = document.getElementById('wfNodeChip');
+  if (t) t.textContent = 'Настройки: ' + WF_NODES[i].title;
+  if (c) c.textContent = 'Экран ' + (i + 1) + ' из ' + WF_NODES.length;
+}
+function useWfTemplate(btn, name) {
+  showToast('Шаблон «' + name + '» загружен в редактор');
+  openWfEditor(name + ' — новый Flow');
+}
+
 function showToggleMessage(name, on) { showToast(`${name}: ${on ? 'включено' : 'выключено'} (демо)`); }
 function withLoading(btnId, label, done, ms) {
   const btn = document.getElementById(btnId);
