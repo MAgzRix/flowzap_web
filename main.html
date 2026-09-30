@@ -92,6 +92,9 @@ tailwind.config = {
   .cat-rule { transition: all 0.15s; }
   .cat-rule:hover { box-shadow: 0 4px 14px rgba(47,43,61,.1); }
   .funnel-bar { transition: width 0.6s ease; }
+  /* ============ SIDEBAR GROUP LABELS (mockup) ============ */
+  .nav-group-label { padding: 18px 20px 6px; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: rgba(47, 43, 61, 0.35); user-select: none; }
+  .nav-group-label:first-child { padding-top: 4px; }
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -111,6 +114,7 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Главная
     </a>
+    <div class="nav-group-label">Коммуникации</div>
     <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
       Мессенджер
@@ -121,6 +125,11 @@ tailwind.config = {
       Встречи
       <span class="ml-auto badge-new">NEW</span>
     </a>
+    <a href="#" onclick="switchTab('templates'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="templates">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
+      Шаблоны
+    </a>
+    <div class="nav-group-label">CRM</div>
     <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       Контакты
@@ -131,7 +140,7 @@ tailwind.config = {
     </a>
     <a href="#" onclick="switchTab('lead-scoring'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="lead-scoring">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-      Lead Scoring
+      Оценка лидов
       <span class="ml-auto badge-new">NEW</span>
     </a>
     <a href="#" onclick="switchTab('orders'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="orders">
@@ -149,6 +158,7 @@ tailwind.config = {
       Склад
       <span class="ml-auto badge-new">NEW</span>
     </a>
+    <div class="nav-group-label">WhatsApp Business API</div>
     <a href="#" onclick="switchTab('wa-commerce'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="wa-commerce">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       WhatsApp Commerce
@@ -162,6 +172,7 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
       Аналитика
     </a>
+    <div class="nav-group-label">AI и автоматизация</div>
     <a href="#" onclick="switchTab('ai-automation'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="ai-automation">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
       AI Автоматизация
@@ -182,15 +193,13 @@ tailwind.config = {
       Триггеры
       <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" onclick="switchTab('faq'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="faq">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      FAQ ответы
+    <div class="nav-group-label">Аналитика и продажи</div>
+    <a href="#" onclick="switchTab('forecasting'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="forecasting">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+      Прогноз продаж
       <span class="ml-auto badge-new">NEW</span>
     </a>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
-      Шаблоны
-    </a>
+    <div class="nav-group-label">Платформа</div>
     <a href="#" onclick="switchTab('settings'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="settings">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Настройки
@@ -203,11 +212,6 @@ tailwind.config = {
     <a href="#" onclick="switchTab('employees'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="employees">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
       Сотрудники
-      <span class="ml-auto badge-new">NEW</span>
-    </a>
-    <a href="#" onclick="switchTab('whatsapp-flows'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="whatsapp-flows">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-      WhatsApp Flows
       <span class="ml-auto badge-new">NEW</span>
     </a>
     <a href="#" onclick="switchTab('event-log'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="event-log">
@@ -625,7 +629,7 @@ tailwind.config = {
       <div class="max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h3 class="text-lg font-semibold">AI-оценка лида (Lead Scoring) <span class="badge-new ml-2 align-middle">NEW</span></h3>
+            <h3 class="text-lg font-semibold">Оценка лидов <span class="badge-new ml-2 align-middle">NEW</span></h3>
             <p class="text-sm text-textSecondary mt-1">Модель оценивает вероятность закрытия каждого лида по 100-балльной шкале</p>
           </div>
           <div class="flex items-center gap-2">
@@ -1187,44 +1191,6 @@ tailwind.config = {
             <div id="leadsSuccess" class="space-y-2"></div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- ============ TAB: FAQ ============ -->
-    <div id="tab-faq" class="tab-content hidden p-6">
-      <div class="bg-white rounded-xl p-6 border border-divider mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <h3 class="text-lg font-semibold">FAQ ответы</h3>
-            <p class="text-sm text-textSecondary mt-1">База знаний для быстрых ответов клиентам</p>
-          </div>
-          <button onclick="openFaqModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            Добавить FAQ
-          </button>
-        </div>
-        
-        <!-- Filters -->
-        <div class="flex items-center gap-3 mb-4">
-          <input type="text" id="faqSearch" placeholder="Поиск по вопросам..." class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm w-64 focus:outline-none focus:border-primary" oninput="renderFaqs()">
-          <select id="faqCategoryFilter" onchange="renderFaqs()" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
-            <option value="all">Все категории</option>
-            <option value="Доставка">Доставка</option>
-            <option value="Оплата">Оплата</option>
-            <option value="Возврат">Возврат</option>
-            <option value="Товары">Товары</option>
-            <option value="Заказ">Заказ</option>
-            <option value="Другое">Другое</option>
-          </select>
-          <select id="faqStatusFilter" onchange="renderFaqs()" class="px-4 py-2 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
-            <option value="all">Все статусы</option>
-            <option value="active">Активные</option>
-            <option value="inactive">Неактивные</option>
-          </select>
-        </div>
-        
-        <!-- FAQ List -->
-        <div id="faqList" class="space-y-3"></div>
       </div>
     </div>
 
@@ -2032,64 +1998,6 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- ============ TAB: WHATSAPP FLOWS ============ -->
-    <div id="tab-whatsapp-flows" class="tab-content hidden p-6">
-      <div class="max-w-6xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h3 class="text-lg font-semibold">WhatsApp Flows</h3>
-            <p class="text-sm text-textSecondary mt-1">Конструктор интерактивных форм для WhatsApp</p>
-          </div>
-          <button onclick="openFlowModal()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-            Создать Flow
-          </button>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          <div class="connector-card bg-white rounded-xl border border-divider p-5 cursor-pointer">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
-                <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-              </div>
-              <span class="status-badge bg-success/10 text-success">Активен</span>
-            </div>
-            <h4 class="font-medium">Запись на встречу</h4>
-            <p class="text-sm text-textSecondary mt-2">Форма для записи клиентов на демонстрацию продукта</p>
-            <div class="mt-3 flex items-center gap-2 text-xs text-textSecondary">
-              <span>5 полей</span>
-              <span>•</span>
-              <span>234 использования</span>
-            </div>
-          </div>
-          
-          <div class="connector-card bg-white rounded-xl border border-divider p-5 cursor-pointer">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-              </div>
-              <span class="status-badge bg-gray-100 text-textSecondary">Черновик</span>
-            </div>
-            <h4 class="font-medium">Опрос удовлетворенности</h4>
-            <p class="text-sm text-textSecondary mt-2">Сбор обратной связи после завершения заказа</p>
-            <div class="mt-3 flex items-center gap-2 text-xs text-textSecondary">
-              <span>3 поля</span>
-              <span>•</span>
-              <span>0 использований</span>
-            </div>
-          </div>
-          
-          <div class="connector-card bg-white rounded-xl border border-dashed border-divider p-5 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition" onclick="openFlowModal()">
-            <div class="w-12 h-12 rounded-xl bg-bgDefault flex items-center justify-center mb-3">
-              <svg class="w-6 h-6 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-            </div>
-            <h4 class="font-medium text-textSecondary">Создать новый Flow</h4>
-            <p class="text-xs text-textSecondary mt-1">Интерактивная форма для WhatsApp</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- ============ TAB: EVENT LOG ============ -->
     <div id="tab-event-log" class="tab-content hidden p-6">
       <div class="max-w-6xl mx-auto">
@@ -2523,7 +2431,7 @@ tailwind.config = {
         <button onclick="switchTab('orders'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">🧾 Заказы</button>
         <button onclick="switchTab('warehouse'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">📦 Склад</button>
         <button onclick="switchTab('wa-commerce'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">🛍️ WhatsApp Commerce</button>
-        <button onclick="switchTab('lead-scoring'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">🎯 Lead Scoring</button>
+        <button onclick="switchTab('lead-scoring'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">🎯 Оценка лидов</button>
         <button onclick="switchTab('forecasting'); closeGlobalSearch();" class="px-3 py-1.5 rounded-lg text-xs bg-bgDefault hover:bg-primary/10 hover:text-primary transition">📈 Прогноз продаж</button>
       </div>
     </div>
@@ -2869,52 +2777,6 @@ tailwind.config = {
 <div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-textPrimary text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3 fade-in">
   <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
   <span id="toastMessage">Сохранено</span>
-</div>
-
-<!-- ============ FAQ MODAL ============ -->
-<div id="faqModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
-  <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin slide-in">
-    <div class="p-6 border-b border-divider flex items-center justify-between sticky top-0 bg-white z-10">
-      <h3 id="faqModalTitle" class="text-lg font-semibold">Добавить FAQ</h3>
-      <button onclick="closeFaqModal()" class="p-2 hover:bg-bgDefault rounded-lg transition">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <div class="p-6 space-y-5">
-      <div>
-        <label class="block text-sm font-medium mb-2">Вопрос</label>
-        <input id="faqQuestion" type="text" placeholder="Например: Как оформить доставку?" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
-      </div>
-      <div>
-        <label class="block text-sm font-medium mb-2">Ответ</label>
-        <textarea id="faqAnswer" rows="4" placeholder="Подробный ответ на вопрос..." class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary resize-none"></textarea>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium mb-2">Категория</label>
-          <select id="faqCategory" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
-            <option value="Доставка">Доставка</option>
-            <option value="Оплата">Оплата</option>
-            <option value="Возврат">Возврат</option>
-            <option value="Товары">Товары</option>
-            <option value="Заказ">Заказ</option>
-            <option value="Другое">Другое</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-2">Статус</label>
-          <select id="faqStatus" class="w-full px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm focus:outline-none focus:border-primary">
-            <option value="active">Активен</option>
-            <option value="inactive">Неактивен</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="p-6 border-t border-divider flex items-center justify-end gap-3 sticky bottom-0 bg-white">
-      <button onclick="closeFaqModal()" class="px-4 py-2 text-sm font-medium text-textSecondary hover:bg-bgDefault rounded-lg transition">Отмена</button>
-      <button onclick="saveFaq()" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium">Сохранить FAQ</button>
-    </div>
-  </div>
 </div>
 
 <!-- ============ TRIGGER MODAL ============ -->
@@ -3310,19 +3172,17 @@ function switchTab(tab) {
     orders: ['Заказы', 'Управление заказами, доставкой и оплатой'],
     products: ['Товары', 'Каталог товаров с финансовой моделью'],
     warehouse: ['Склад и запасы', 'Остатки, резервы и сроки годности'],
-    faq: ['FAQ ответы', 'Конструктор быстрых ответов'],
     triggers: ['Триггеры CRM', 'Автоматизация действий'],
     appointments: ['Встречи и созвоны', 'Планирование встреч, звонков и демо-сессий с клиентами'],
     'ai-automation': ['AI Автоматизация', 'Управление искусственным интеллектом'],
     settings: ['Настройки платформы', 'Общие настройки и конфигурация системы'],
     employees: ['Сотрудники', 'Управление доступом и ролями сотрудников'],
-    'whatsapp-flows': ['WhatsApp Flows', 'Конструктор интерактивных форм для WhatsApp'],
     'event-log': ['Журнал событий', 'Логирование действий сотрудников и системы'],
     subscription: ['Оплата и подписка', 'Управление тарифом и оплатой'],
     connectors: ['Коннекторы', 'Интеграции со сторонними сервисами'],
     suggestions: ['Предложения', 'Поделитесь идеями по улучшению платформы'],
     'wa-commerce': ['WhatsApp Commerce', 'Каталог товаров и продажи внутри WhatsApp'],
-    'lead-scoring': ['Lead Scoring', 'AI-оценка перспективности лидов'],
+    'lead-scoring': ['Оценка лидов', 'AI-оценка перспективности и настройки критериев оценки'],
     'ai-tools': ['AI Инструменты', 'Резюме диалогов, тональность и перевод'],
     'incoming-routing': ['Автоклассификация входящих', 'AI маршрутизирует диалоги нужным специалистам'],
     forecasting: ['Прогноз продаж', 'AI Forecasting — ML-прогноз выручки и спроса'],
@@ -3334,7 +3194,6 @@ function switchTab(tab) {
   if (tab === 'orders') renderOrders();
   if (tab === 'products') renderProducts();
   if (tab === 'warehouse') renderWarehouse();
-  if (tab === 'faq') renderFaqs();
   if (tab === 'triggers') renderTriggers();
   if (tab === 'leads') renderLeads();
   if (tab === 'appointments') renderAppointments();
@@ -4175,128 +4034,6 @@ function showToast(message) {
   setTimeout(() => toast.classList.add('hidden'), 2500);
 }
 
-// ============ FAQ ============
-let faqs = [
-  { id: 1, question: 'Как оформить доставку?', answer: 'Доставка осуществляется по Алматы и другим городам Казахстана. Срок доставки 2-5 рабочих дней.', category: 'Доставка', status: 'active', uses: 45, author: 'Александр', updatedAt: '2024-01-15' },
-  { id: 2, question: 'Какие способы оплаты доступны?', answer: 'Мы принимаем наличные, банковские карты, СБП и безналичный расчет для юридических лиц.', category: 'Оплата', status: 'active', uses: 38, author: 'Мария', updatedAt: '2024-01-14' },
-  { id: 3, question: 'Можно ли вернуть товар?', answer: 'Да, вы можете вернуть товар в течение 14 дней с момента покупки при сохранении чека и упаковки.', category: 'Возврат', status: 'active', uses: 22, author: 'Александр', updatedAt: '2024-01-13' },
-  { id: 4, question: 'Есть ли гарантия на товары?', answer: 'На все товары действует гарантия от производителя. Срок гарантии указан в гарантийном талоне.', category: 'Товары', status: 'active', uses: 31, author: 'Мария', updatedAt: '2024-01-12' },
-  { id: 5, question: 'Как изменить заказ?', answer: 'Вы можете изменить заказ до момента его отгрузки. Свяжитесь с менеджером для внесения изменений.', category: 'Заказ', status: 'inactive', uses: 15, author: 'Александр', updatedAt: '2024-01-10' },
-];
-
-let triggers = [
-  { id: 1, name: 'Новый заказ → сообщение клиенту', event: 'order_created', condition: { field: 'amount', op: 'gt', value: '50000' }, action: 'send_message', message: 'Спасибо за заказ! Мы начали его обработку.', active: true, createdAt: '2024-01-15' },
-  { id: 2, name: 'Лид создан → задача менеджеру', event: 'lead_created', condition: null, action: 'create_task', taskName: 'Обработать новый лид', taskPriority: 'high', active: true, createdAt: '2024-01-14' },
-  { id: 3, name: 'Переход в Успешно → отправить благодарность', event: 'stage_changed', stageFrom: 'negotiation', stageTo: 'success', condition: null, action: 'send_message', message: 'Благодарим за сотрудничество!', active: false, createdAt: '2024-01-13' },
-];
-
-let leads = [
-  { id: 1, name: 'Иван Петров', phone: '+7 777 123 4567', source: 'whatsapp', stage: 'new', comment: 'Интересуются кроссовками Nike', createdAt: '2024-01-15 10:00' },
-  { id: 2, name: 'Мария Сидорова', phone: '+7 777 987 6543', source: 'instagram', stage: 'working', comment: 'Запрос на опт', createdAt: '2024-01-14 14:30' },
-  { id: 3, name: 'Алексей Козлов', phone: '+7 777 555 1234', source: 'website', stage: 'proposal', comment: 'Отправлено КП', createdAt: '2024-01-13 09:15' },
-  { id: 4, name: 'Дмитрий Волков', phone: '+7 777 333 9876', source: 'call', stage: 'negotiation', comment: 'Обсуждаем условия доставки', createdAt: '2024-01-12 16:45' },
-  { id: 5, name: 'Елена Новикова', phone: '+7 777 111 2233', source: 'whatsapp', stage: 'success', comment: 'Успешно закрыто', createdAt: '2024-01-11 11:20' },
-];
-
-function renderFaqs() {
-  const search = document.getElementById('faqSearch').value.toLowerCase();
-  const catFilter = document.getElementById('faqCategoryFilter').value;
-  const statusFilter = document.getElementById('faqStatusFilter').value;
-  
-  let filtered = faqs.filter(f => {
-    const matchSearch = f.question.toLowerCase().includes(search) || f.answer.toLowerCase().includes(search);
-    const matchCat = catFilter === 'all' || f.category === catFilter;
-    const matchStatus = statusFilter === 'all' || f.status === statusFilter;
-    return matchSearch && matchCat && matchStatus;
-  });
-  
-  const list = document.getElementById('faqList');
-  if (filtered.length === 0) {
-    list.innerHTML = `<div class="bg-bgDefault rounded-xl p-12 text-center text-textSecondary">FAQ не найдены</div>`;
-    return;
-  }
-  
-  list.innerHTML = filtered.map(f => `
-    <div class="bg-white rounded-xl border border-divider p-5 hover:border-primary transition fade-in">
-      <div class="flex items-start justify-between gap-4">
-        <div class="flex-1">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="chip bg-primary/10 text-primary">${f.category}</span>
-            <span class="chip ${f.status === 'active' ? 'bg-success/10 text-success' : 'bg-textDisabled text-textSecondary'}">${f.status === 'active' ? 'Активен' : 'Неактивен'}</span>
-          </div>
-          <div class="font-semibold text-textPrimary mb-2">${f.question}</div>
-          <div class="text-sm text-textSecondary">${f.answer}</div>
-          <div class="flex items-center gap-4 mt-3 text-xs text-textDisabled">
-            <span>✍️ ${f.author}</span>
-            <span>📅 ${f.updatedAt}</span>
-            <span>👁️ Использован: ${f.uses} раз</span>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <button onclick="editFaq(${f.id})" class="p-2 hover:bg-bgDefault rounded-lg transition">
-            <svg class="w-4 h-4 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-          </button>
-          <button onclick="deleteFaq(${f.id})" class="p-2 hover:bg-error/10 rounded-lg transition">
-            <svg class="w-4 h-4 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function openFaqModal(id = null) {
-  document.getElementById('faqModalTitle').textContent = id ? 'Редактировать FAQ' : 'Добавить FAQ';
-  if (id) {
-    const f = faqs.find(x => x.id === id);
-    document.getElementById('faqQuestion').value = f.question;
-    document.getElementById('faqAnswer').value = f.answer;
-    document.getElementById('faqCategory').value = f.category;
-    document.getElementById('faqStatus').value = f.status;
-  } else {
-    ['faqQuestion', 'faqAnswer'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('faqCategory').value = 'Доставка';
-    document.getElementById('faqStatus').value = 'active';
-  }
-  document.getElementById('faqModal').classList.remove('hidden');
-}
-
-function closeFaqModal() {
-  document.getElementById('faqModal').classList.add('hidden');
-}
-
-function saveFaq() {
-  const question = document.getElementById('faqQuestion').value.trim();
-  const answer = document.getElementById('faqAnswer').value.trim();
-  if (!question || !answer) { showToast('Заполните вопрос и ответ'); return; }
-  
-  const data = {
-    question,
-    answer,
-    category: document.getElementById('faqCategory').value,
-    status: document.getElementById('faqStatus').value,
-    author: 'Александр',
-    updatedAt: new Date().toISOString().split('T')[0],
-    uses: 0,
-  };
-  
-  faqs.unshift({ id: Date.now(), ...data });
-  closeFaqModal();
-  renderFaqs();
-  showToast('FAQ сохранён');
-}
-
-function editFaq(id) {
-  openFaqModal(id);
-}
-
-function deleteFaq(id) {
-  if (!confirm('Удалить этот FAQ?')) return;
-  faqs = faqs.filter(f => f.id !== id);
-  renderFaqs();
-  showToast('FAQ удалён');
-}
-
 // ============ TRIGGERS ============
 function renderTriggers() {
   const list = document.getElementById('triggerList');
@@ -4711,7 +4448,6 @@ function viewAppointment(id) {
 renderOrders();
 renderProducts();
 renderWarehouse();
-renderFaqs();
 renderTriggers();
 renderLeads();
 renderAppointments();
@@ -4772,7 +4508,6 @@ const tourSteps = [
   { target: '[data-tab="warehouse"]', title: 'Склад', description: 'Контролируйте запасы товаров, получайте уведомления о низких остатках.', position: 'right' },
   { target: '[data-tab="ai-automation"]', title: 'AI Автоматизация', description: 'Настройте AI-агентов для автоматических ответов клиентам 24/7.', position: 'right' },
   { target: '[data-tab="employees"]', title: 'Сотрудники', description: 'Добавляйте команду, назначайте роли и отслеживайте активные сессии.', position: 'right' },
-  { target: '[data-tab="whatsapp-flows"]', title: 'WhatsApp Flows', description: 'Создавайте интерактивные формы для записи клиентов, опросов и сбора данных.', position: 'right' },
   { target: '[data-tab="event-log"]', title: 'Журнал событий', description: 'Отслеживайте все действия в системе: кто отправил шаблон, кто зашел в аккаунт и т.д.', position: 'right' },
   { target: '[data-tab="subscription"]', title: 'Оплата и подписка', description: 'Управляйте тарифом, оплачивайте подписку через Kaspi Pay или получите счет для юр лиц.', position: 'right' },
   { target: '[data-tab="settings"]', title: 'Настройки', description: 'Конфигурируйте платформу под ваши нужды, включая автосоздание лидов и коннекторы.', position: 'right' },
@@ -4908,7 +4643,7 @@ const gsPages = [
   { icon: '🛒', title: 'Товары', hint: 'Раздел · Каталог с финмоделью', action: () => switchTab('products') },
   { icon: '📦', title: 'Склад и запасы', hint: 'Раздел · Остатки и резервы', action: () => switchTab('warehouse') },
   { icon: '🛍️', title: 'WhatsApp Commerce — каталог в WhatsApp', hint: 'Новый раздел · Mockup', action: () => switchTab('wa-commerce') },
-  { icon: '🎯', title: 'Lead Scoring — AI-оценка лидов', hint: 'Новый раздел · Mockup', action: () => switchTab('lead-scoring') },
+  { icon: '🎯', title: 'Оценка лидов — AI-скоринг лидов', hint: 'Новый раздел · Mockup', action: () => switchTab('lead-scoring') },
   { icon: '✨', title: 'AI Инструменты — резюме, тональность, перевод', hint: 'Новый раздел · Mockup', action: () => switchTab('ai-tools') },
   { icon: '🤖', title: 'Автоклассификация входящих', hint: 'Новый раздел · Mockup', action: () => switchTab('incoming-routing') },
   { icon: '📈', title: 'Прогноз продаж (AI Forecasting)', hint: 'Новый раздел · Mockup', action: () => switchTab('forecasting') },
