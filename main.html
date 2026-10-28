@@ -145,6 +145,8 @@ tailwind.config = {
     .messenger-bubble { max-width: 88%; }
     #messengerThreadPanel { min-height: 560px; }
   }
+  .messenger-subgroup > summary { list-style: none; cursor: pointer; }
+  .messenger-subgroup + .messenger-subgroup { border-top: 1px solid #edf0f2; }
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -6128,6 +6130,24 @@ function b2bTimeNow() {
   const now = new Date();
   return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
 }
+
+function messengerChatRowMarkup(chat, showGroupLabel) {
+  const contact = b2bContact(chat.contactId);
+  const company = contact && b2bCompany(contact.companyId);
+  const group = b2bGroupForContact(chat.contactId);
+  const selected = chat.id === currentMessengerChatId;
+  const labels = (showGroupLabel ? (group ? '<span class="status-badge bg-teal-50 text-teal-800">' + crmEscape(group.name) + '</span>' : '<span class="status-badge bg-gray-100 text-gray-600">Без подгруппы</span>') : '') +
+    '<span class="status-badge ' + b2bStatusClass(chat.status) + '">' + b2bStatusLabel(chat.status) + '</span>' +
+    '<span class="text-[10px] text-textSecondary">' + crmEscape(chat.channel || '') + '</span>' +
+    (chat.unread ? '<span class="w-2 h-2 rounded-full bg-primary" aria-label="Непрочитанный диалог"></span>' : '');
+  return '<button type="button" data-chat-id="' + crmEscape(chat.id) + '" class="messenger-row ' + (selected ? 'is-selected ' : '') + 'w-full text-left p-4 border-l-2 ' + (selected ? 'border-primary ' : 'border-transparent ') + 'focus-visible:z-10">' +
+    '<div class="flex items-start gap-3"><div class="w-10 h-10 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-xs font-bold flex-shrink-0">' + crmEscape(contact ? contact.initials : '?') + '</div>' +
+    '<div class="min-w-0 flex-1"><div class="flex items-center justify-between gap-2"><span class="font-semibold text-sm text-textPrimary truncate">' + crmEscape(contact ? contact.name : 'Контакт') + '</span><span class="text-[11px] text-textSecondary flex-shrink-0">' + crmEscape(chat.messages.length ? chat.messages[chat.messages.length - 1].time : '') + '</span></div>' +
+    '<div class="text-xs text-textSecondary truncate mt-0.5">' + crmEscape(company ? company.name : '') + '</div>' +
+    '<div class="text-xs text-textSecondary truncate mt-2">' + crmEscape(b2bLastMessage(chat)) + '</div>' +
+    '<div class="flex items-center gap-1.5 mt-2 flex-wrap">' + labels + '</div></div></div></button>';
+}
+
 function renderMessenger() {
   const list = document.getElementById('messengerConversationList');
   if (!list) return;
@@ -6181,19 +6201,31 @@ function renderMessenger() {
     button.classList.toggle('text-textSecondary', !active);
     button.classList.toggle('font-medium', !active);
   });
-  list.innerHTML = filtered.length ? filtered.map(function(chat) {
-    const contact = b2bContact(chat.contactId);
-    const company = contact && b2bCompany(contact.companyId);
-    const group = b2bGroupForContact(chat.contactId);
-    const selected = chat.id === currentMessengerChatId;
-    return '<button type="button" data-chat-id="' + crmEscape(chat.id) + '" class="messenger-row ' + (selected ? 'is-selected ' : '') + 'w-full text-left p-4 border-l-2 ' + (selected ? 'border-primary ' : 'border-transparent ') + 'focus-visible:z-10">' +
-      '<div class="flex items-start gap-3"><div class="w-10 h-10 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-xs font-bold flex-shrink-0">' + crmEscape(contact ? contact.initials : '?') + '</div>' +
-      '<div class="min-w-0 flex-1"><div class="flex items-center justify-between gap-2"><span class="font-semibold text-sm text-textPrimary truncate">' + crmEscape(contact ? contact.name : 'Контакт') + '</span><span class="text-[11px] text-textSecondary flex-shrink-0">' + crmEscape(chat.messages.length ? chat.messages[chat.messages.length - 1].time : '') + '</span></div>' +
-      '<div class="text-xs text-textSecondary truncate mt-0.5">' + crmEscape(company ? company.name : '') + '</div>' +
-      '<div class="text-xs text-textSecondary truncate mt-2">' + crmEscape(b2bLastMessage(chat)) + '</div>' +
-      '<div class="flex items-center gap-1.5 mt-2 flex-wrap">' + (group ? '<span class="status-badge bg-teal-50 text-teal-800">' + crmEscape(group.name) + '</span>' : '<span class="status-badge bg-gray-100 text-gray-600">Без подгруппы</span>') +
-      (chat.unread ? '<span class="w-2 h-2 rounded-full bg-primary" aria-label="Непрочитанный диалог"></span>' : '') + '</div></div></div></button>';
-  }).join('') : '<div class="p-8 text-center"><div class="text-sm font-semibold text-textPrimary">Нет подходящих диалогов</div><p class="text-xs text-textSecondary mt-1">Измените фильтры или создайте подгруппу в карточке компании.</p></div>';
+
+  const subgroupSections = b2bGroups.map(function(group) {
+    const groupChats = filtered.filter(function(chat) {
+      const chatGroup = b2bGroupForContact(chat.contactId);
+      return chatGroup && chatGroup.id === group.id;
+    });
+    if (!groupChats.length) return '';
+    const company = b2bCompany(group.companyId);
+    const contactCount = new Set(groupChats.map(function(chat) { return chat.contactId; })).size;
+    const expanded = groupFilter === group.id || groupChats.some(function(chat) { return chat.id === currentMessengerChatId; });
+    return '<details class="b2b-group-dropdown messenger-subgroup bg-white" ' + (expanded ? 'open' : '') + '>' +
+      '<summary class="px-3 py-3 flex items-center justify-between gap-2 hover:bg-teal-50/60">' +
+        '<span class="min-w-0"><span class="flex items-center gap-2 flex-wrap"><span class="font-semibold text-sm text-textPrimary">' + crmEscape(group.name) + '</span><span class="status-badge bg-teal-50 text-teal-800">' + groupChats.length + ' ' + b2bPlural(groupChats.length, 'чат', 'чата', 'чатов') + '</span></span>' +
+        '<span class="block text-[11px] text-textSecondary mt-1">' + contactCount + ' ' + b2bPlural(contactCount, 'контакт', 'контакта', 'контактов') + (company ? ' · ' + crmEscape(company.name) : '') + ' · откройте список</span></span>' +
+        '<svg class="b2b-group-chevron w-4 h-4 text-textSecondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg>' +
+      '</summary>' +
+      '<div class="border-t border-divider">' + groupChats.map(function(chat) { return messengerChatRowMarkup(chat, false); }).join('') + '</div>' +
+    '</details>';
+  }).join('');
+  const ungroupedChats = filtered.filter(function(chat) { return !b2bGroupForContact(chat.contactId); });
+  list.innerHTML = filtered.length ?
+    '<div class="px-4 py-2 bg-bgDefault text-[11px] text-textSecondary border-b border-divider">Подгруппы · нажмите, чтобы увидеть контакты и диалоги</div>' +
+    subgroupSections +
+    ungroupedChats.map(function(chat) { return messengerChatRowMarkup(chat, true); }).join('') :
+    '<div class="p-8 text-center"><div class="text-sm font-semibold text-textPrimary">Нет подходящих диалогов</div><p class="text-xs text-textSecondary mt-1">Измените фильтры или создайте подгруппу в карточке компании.</p></div>';
   if (filtered.some(function(chat) { return chat.id === currentMessengerChatId; })) {
     // Keep the current thread when filters still include it.
   } else {
