@@ -95,6 +95,51 @@ tailwind.config = {
   /* ============ SIDEBAR GROUP LABELS (mockup) ============ */
   .nav-group-label { padding: 18px 20px 6px; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: rgba(47, 43, 61, 0.35); user-select: none; }
   .nav-group-label:first-child { padding-top: 4px; }
+
+  /* Product-wide UX refinements */
+  :root { color-scheme: light; }
+  html { scroll-behavior: smooth; }
+  body { color: #263342; -webkit-font-smoothing: antialiased; }
+  button, input, select, textarea { transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease; }
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible { outline: 3px solid rgba(45,149,131,.35); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+  @media (max-width: 900px) {
+    body.min-h-screen.flex { display: block; }
+    body.min-h-screen.flex > aside { position: sticky !important; top: 0; z-index: 40; width: 100% !important; height: auto !important; }
+    body.min-h-screen.flex > aside > div:first-child { padding: 10px 16px !important; }
+    body.min-h-screen.flex > aside > nav { display: flex; align-items: center; gap: 4px; max-height: none; overflow-x: auto; overflow-y: hidden; padding: 6px 12px; white-space: nowrap; border-top: 1px solid rgba(47,43,61,.06); }
+    body.min-h-screen.flex > aside > nav .nav-group-label { display: none; }
+    body.min-h-screen.flex > aside > nav .nav-item { flex: 0 0 auto; width: auto; padding: 8px 10px !important; border-radius: 8px; }
+    body.min-h-screen.flex > aside > nav .nav-item svg { display: none; }
+    body.min-h-screen.flex > aside > div.p-4.border-t { display: none; }
+    body.min-h-screen.flex > main { margin-left: 0 !important; }
+    body.min-h-screen.flex > main > header { padding: 12px 16px !important; }
+    body.min-h-screen.flex > main > div.flex-1 { padding: 12px !important; }
+  }
+  @media (max-width: 600px) {
+    body.min-h-screen.flex > main > header { align-items: flex-start; gap: 10px; }
+    #headerSearchInput { width: 136px; }
+    .tab-content { padding: 14px !important; }
+    .grid.grid-cols-5 { grid-template-columns: minmax(0,1fr) !important; }
+    .messenger-toolbar { align-items: stretch; }
+  }
+  .messenger-row { transition: background-color .14s ease, border-color .14s ease; }
+  .messenger-row:hover { background: #f7faf9; }
+  .messenger-row.is-selected { background: #edf7f3; border-color: #b8dfd2; }
+  .messenger-thread { background: radial-gradient(circle at 1px 1px, rgba(90,112,127,.10) 1px, transparent 1px) 0 0 / 18px 18px, #f5f8f7; }
+  .messenger-bubble { max-width: min(78%, 560px); padding: 10px 13px; border-radius: 14px; font-size: 13px; line-height: 1.5; box-shadow: 0 2px 5px rgba(31,50,65,.05); }
+  .messenger-bubble.client { border-bottom-left-radius: 5px; background: white; color: #344256; }
+  .messenger-bubble.manager { border-bottom-right-radius: 5px; background: #dff3e9; color: #244c3d; }
+  .messenger-row:focus-visible { outline-offset: -2px; }
+  .scenario-branch { border: 1px solid #e2e8ee; border-radius: 12px; background: #fff; }
+  .scenario-branch.is-fallback { border-style: dashed; background: #fafbfd; }
+  .scenario-route-active { border-color: #4aa28e !important; box-shadow: 0 0 0 2px rgba(45,149,131,.11); }
+  @media (max-width: 900px) {
+    .messenger-bubble { max-width: 88%; }
+    #messengerThreadPanel { min-height: 560px; }
+  }
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -120,7 +165,7 @@ tailwind.config = {
       <span class="ml-auto badge-new">NEW</span>
     </a>
     <div class="nav-group-label">Коммуникации</div>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
+    <a href="#" onclick="switchTab('messenger'); return false;" data-tab="messenger"> class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
       Мессенджер
       <span class="ml-auto bg-primary text-white text-xs px-2 py-0.5 rounded-full">12</span>
@@ -131,10 +176,11 @@ tailwind.config = {
       <span class="ml-auto badge-new">NEW</span>
     </a>
     <div class="nav-group-label">CRM</div>
-    <a href="#" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
+    <a href="#" onclick="switchTab('companies'); return false;" data-tab="companies"> class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-      Контакты
+      Компании
     </a>
+
     <a href="#" onclick="switchTab('leads'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="leads">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       Лиды
@@ -197,6 +243,11 @@ tailwind.config = {
     <a href="#" onclick="switchTab('triggers'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="triggers">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       Триггеры
+      <span class="ml-auto badge-new">NEW</span>
+    </a>
+    <a href="#" onclick="switchTab('scenarios'); return false;" class="nav-item relative flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary" data-tab="scenarios">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h10M4 19h6"/><circle cx="18" cy="12" r="2"/><circle cx="14" cy="19" r="2"/></svg>
+      Сценарии
       <span class="ml-auto badge-new">NEW</span>
     </a>
     <div class="nav-group-label">Аналитика и продажи</div>
@@ -1498,6 +1549,101 @@ tailwind.config = {
       </div>
     </div>
 
+
+    <!-- ============ TAB: MESSENGER ============ -->
+    <div id="tab-messenger" class="tab-content hidden p-6">
+      <div class="max-w-[1600px] mx-auto space-y-5">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-3"><h2 class="text-2xl font-bold text-textPrimary">Мессенджер</h2><span class="status-badge bg-green-100 text-green-700">единый inbox</span></div>
+            <p class="text-sm text-textSecondary mt-1">Обрабатывайте заявки компании и связанные диалоги из одного рабочего места.</p>
+          </div>
+          <button onclick="showToast('Новый диалог: выберите контакт из карточки компании')" class="btn-primary px-4 py-2.5 rounded-lg text-sm font-semibold">＋ Новый диалог</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="bg-white rounded-xl border border-divider px-5 py-4"><div class="text-xs text-textSecondary">Открытые диалоги</div><div id="messengerOpenCount" class="text-2xl font-bold text-textPrimary mt-1">—</div><div class="text-xs text-textSecondary mt-1">Требуют ответа менеджера</div></div>
+          <div class="bg-white rounded-xl border border-divider px-5 py-4"><div class="text-xs text-textSecondary">Непрочитанные</div><div id="messengerUnreadCount" class="text-2xl font-bold text-primary mt-1">—</div><div class="text-xs text-textSecondary mt-1">Новые сообщения клиентов</div></div>
+          <div class="bg-white rounded-xl border border-divider px-5 py-4"><div class="text-xs text-textSecondary">B2B подгруппы</div><div id="messengerGroupCount" class="text-2xl font-bold text-textPrimary mt-1">—</div><div class="text-xs text-textSecondary mt-1">Связанные контакты и их чаты</div></div>
+        </div>
+        <section class="bg-white border border-divider rounded-2xl overflow-hidden shadow-sm">
+          <div class="p-4 border-b border-divider space-y-3">
+            <div class="messenger-toolbar flex flex-wrap items-center gap-2">
+              <div class="relative flex-1 min-w-[220px]">
+                <input id="messengerSearch" type="search" oninput="renderMessenger()" placeholder="Контакт, компания или сообщение" class="w-full pl-10 pr-3 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm">
+                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 1 0-14 0 7 7 0 0 0 14 0Z"/></svg>
+              </div>
+              <select id="messengerCompanyFilter" onchange="renderMessenger()" class="px-3 py-2.5 bg-white border border-divider rounded-lg text-sm"><option value="all">Все компании</option></select>
+              <select id="messengerGroupFilter" onchange="renderMessenger()" class="px-3 py-2.5 bg-white border border-divider rounded-lg text-sm"><option value="all">Все подгруппы</option></select>
+              <select id="messengerStatusFilter" onchange="renderMessenger()" class="px-3 py-2.5 bg-white border border-divider rounded-lg text-sm"><option value="all">Все статусы</option><option value="open">Открытые</option><option value="waiting">Ждём клиента</option><option value="resolved">Закрытые</option></select>
+              <select id="messengerOwnerFilter" onchange="renderMessenger()" class="px-3 py-2.5 bg-white border border-divider rounded-lg text-sm"><option value="all">Все менеджеры</option></select>
+            </div>
+            <div class="flex flex-wrap gap-2" aria-label="Быстрые фильтры">
+              <button type="button" class="inbox-filter-chip active px-3 py-1.5 rounded-full text-xs font-semibold border border-primary bg-primary/5 text-primary" data-inbox-filter="all" onclick="setMessengerQuickFilter('all',this)">Все диалоги</button>
+              <button type="button" class="inbox-filter-chip px-3 py-1.5 rounded-full text-xs font-medium border border-divider text-textSecondary" data-inbox-filter="unread" onclick="setMessengerQuickFilter('unread',this)">Непрочитанные</button>
+              <button type="button" class="inbox-filter-chip px-3 py-1.5 rounded-full text-xs font-medium border border-divider text-textSecondary" data-inbox-filter="ungrouped" onclick="setMessengerQuickFilter('ungrouped',this)">Без подгруппы</button>
+              <button type="button" class="inbox-filter-chip px-3 py-1.5 rounded-full text-xs font-medium border border-divider text-textSecondary" data-inbox-filter="mine" onclick="setMessengerQuickFilter('mine',this)">Мои</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 xl:grid-cols-12 min-h-[650px]">
+            <aside class="xl:col-span-3 border-b xl:border-b-0 xl:border-r border-divider min-w-0">
+              <div class="px-4 py-3 flex items-center justify-between"><h3 class="font-semibold text-sm">Диалоги</h3><span id="messengerVisibleCount" class="text-xs text-textSecondary">—</span></div>
+              <div id="messengerConversationList" class="max-h-[270px] xl:max-h-[600px] overflow-y-auto divide-y divide-divider" aria-live="polite"></div>
+            </aside>
+            <section id="messengerThreadPanel" class="xl:col-span-6 flex flex-col min-w-0 border-b xl:border-b-0 xl:border-r border-divider">
+              <div id="messengerThreadHeader" class="px-5 py-4 border-b border-divider min-h-[76px]"></div>
+              <div id="messengerMessages" class="messenger-thread flex-1 min-h-[300px] overflow-y-auto p-4 md:p-6 space-y-3" aria-live="polite"></div>
+              <form id="messengerComposer" onsubmit="sendMessengerMessage(event)" class="p-3 md:p-4 border-t border-divider bg-white flex items-end gap-2">
+                <textarea id="messengerMessageInput" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();document.getElementById('messengerComposer').requestSubmit();}" placeholder="Напишите сообщение… (Enter — отправить)" class="flex-1 min-w-0 resize-none px-4 py-3 border border-divider rounded-xl text-sm focus:border-primary"></textarea>
+                <button type="submit" class="btn-primary rounded-xl px-4 py-3 font-semibold" aria-label="Отправить сообщение">➤</button>
+              </form>
+              <div class="px-4 pb-3 bg-white text-[11px] text-textSecondary">Демо-интерфейс: сообщения сохраняются в браузере этого макета.</div>
+            </section>
+            <aside id="messengerContext" class="xl:col-span-3 min-w-0 p-4 bg-bgDefault/60"></aside>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============ TAB: COMPANIES & B2B GROUPS ============ -->
+    <div id="tab-companies" class="tab-content hidden p-6">
+      <div class="max-w-7xl mx-auto space-y-5">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div><h2 class="text-2xl font-bold text-textPrimary">Компании и B2B-подгруппы</h2><p class="text-sm text-textSecondary mt-1">Объединяйте контакты одной компании и их чаты по закупке, филиалу или проекту.</p></div>
+          <button onclick="showToast('Добавление компании доступно в полной версии CRM')" class="px-4 py-2.5 border border-divider rounded-lg bg-white text-sm font-semibold hover:bg-bgDefault">＋ Добавить компанию</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="bg-white rounded-xl border border-divider p-4"><div class="text-xs text-textSecondary">Компании в работе</div><div id="b2bCompanyCount" class="text-2xl font-bold mt-1">—</div></div>
+          <div class="bg-white rounded-xl border border-divider p-4"><div class="text-xs text-textSecondary">Контакты B2B</div><div id="b2bContactCount" class="text-2xl font-bold mt-1">—</div></div>
+          <div class="bg-white rounded-xl border border-divider p-4"><div class="text-xs text-textSecondary">Подгруппы</div><div id="b2bSubgroupCount" class="text-2xl font-bold text-primary mt-1">—</div></div>
+        </div>
+        <div class="bg-teal-50 border border-teal-100 rounded-xl px-4 py-3 flex gap-3 items-start text-sm text-teal-900"><span class="text-lg">ⓘ</span><p><b>Как это работает:</b> выберите контакты одной компании и соберите их в подгруппу. В мессенджере фильтр покажет связанные переписки в контексте одной заявки.</p></div>
+        <div id="b2bCompanyList" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: AUTOMATION SCENARIOS ============ -->
+    <div id="tab-scenarios" class="tab-content hidden p-6">
+      <div class="max-w-7xl mx-auto space-y-5">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div><div class="flex items-center gap-3"><h2 class="text-2xl font-bold text-textPrimary">Сценарии автоматизации</h2><span class="status-badge bg-indigo-100 text-indigo-700">AI + CRM</span></div><p class="text-sm text-textSecondary mt-1">Путь от события до результата: условие, ответ клиенту и следующий шаг менеджера.</p></div>
+          <button onclick="createAutomationScenario()" class="btn-primary px-4 py-2.5 rounded-lg text-sm font-semibold">＋ Создать сценарий</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="bg-white rounded-xl border border-divider px-5 py-4"><div class="text-xs text-textSecondary">Активны</div><div id="scenarioActiveCount" class="text-2xl font-bold mt-1">—</div><div class="text-xs text-textSecondary mt-1">Автоматически обрабатывают события</div></div>
+          <div class="bg-white rounded-xl border border-divider px-5 py-4"><div class="text-xs text-textSecondary">Черновики</div><div id="scenarioDraftCount" class="text-2xl font-bold mt-1">—</div><div class="text-xs text-textSecondary mt-1">Требуют настройки или проверки</div></div>
+          <div class="bg-white rounded-xl border border-divider px-5 py-4"><div class="text-xs text-textSecondary">Ручной контроль</div><div class="text-2xl font-bold mt-1">24ч</div><div class="text-xs text-textSecondary mt-1">Эскалация при отсутствии ответа</div></div>
+        </div>
+        <section class="bg-white rounded-2xl border border-divider shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-divider flex flex-wrap items-center gap-3">
+            <input id="scenarioSearch" type="search" oninput="renderAutomationScenarios()" placeholder="Поиск сценария или события" class="flex-1 min-w-[220px] px-4 py-2.5 bg-bgDefault border border-divider rounded-lg text-sm">
+            <select id="scenarioStatusFilter" onchange="renderAutomationScenarios()" class="px-3 py-2.5 border border-divider rounded-lg text-sm bg-white"><option value="all">Все статусы</option><option value="active">Активные</option><option value="draft">Черновики</option></select>
+          </div>
+          <div id="automationScenarioList" class="divide-y divide-divider" aria-live="polite"></div>
+        </section>
+        <div class="text-xs text-textSecondary">Правило запускается только после публикации. Проверяйте тестовый маршрут перед включением.</div>
+      </div>
+    </div>
+
     <!-- ============ TAB: APPOINTMENTS ============ -->
     <div id="tab-appointments" class="tab-content hidden p-6">
       <div class="bg-white rounded-xl p-6 border border-divider mb-6">
@@ -1740,7 +1886,7 @@ tailwind.config = {
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div class="bg-white rounded-xl border border-divider shadow-sm p-6">
-                <h3 class="font-bold text-textPrimary mb-4">Популярные сценарии</h3>
+                <div class="flex items-center justify-between gap-3 mb-4"><h3 class="font-bold text-textPrimary">Популярные сценарии</h3><button onclick="switchTab('scenarios')" class="text-xs font-semibold text-primary hover:underline">Все сценарии →</button></div>
                 <div class="space-y-4">
                   <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div class="flex items-center gap-3">
@@ -3814,6 +3960,74 @@ tailwind.config = {
   </div>
 </div>
 
+
+<!-- ============ B2B SUBGROUP MODAL ============ -->
+<div id="b2bSubgroupModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="b2bSubgroupTitle">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
+    <div class="px-6 py-5 border-b border-divider flex items-start justify-between gap-4">
+      <div><h3 id="b2bSubgroupTitle" class="text-lg font-bold">Создать подгруппу</h3><p id="b2bSubgroupCompanyName" class="text-sm text-textSecondary mt-1"></p></div>
+      <button type="button" onclick="closeB2bSubgroupModal()" class="w-9 h-9 rounded-lg hover:bg-bgDefault text-textSecondary" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div><label for="b2bSubgroupName" class="block text-sm font-semibold mb-2">Название подгруппы</label><input id="b2bSubgroupName" maxlength="60" placeholder="Например: Закупки на 4 квартал" class="w-full px-4 py-2.5 border border-divider rounded-lg text-sm"></div>
+      <div><label for="b2bSubgroupOwner" class="block text-sm font-semibold mb-2">Ответственный менеджер</label><select id="b2bSubgroupOwner" class="w-full px-4 py-2.5 border border-divider rounded-lg text-sm"><option>Айгуль</option><option>Александр</option><option>Марат</option></select></div>
+      <fieldset><legend class="text-sm font-semibold mb-1">Контакты и их диалоги</legend><p class="text-xs text-textSecondary mb-3">Выберите не менее двух контактов этой компании. Их чаты появятся в фильтре подгруппы.</p><div id="b2bSubgroupMembers" class="space-y-2 max-h-56 overflow-y-auto"></div></fieldset>
+      <div id="b2bSubgroupError" class="hidden text-sm text-red-700 bg-red-50 rounded-lg p-3" role="alert"></div>
+    </div>
+    <div class="px-6 py-4 border-t border-divider bg-bgDefault flex justify-end gap-2 rounded-b-2xl">
+      <button type="button" onclick="closeB2bSubgroupModal()" class="px-4 py-2 rounded-lg text-sm font-medium border border-divider bg-white">Отмена</button>
+      <button type="button" onclick="saveB2bSubgroup()" class="btn-primary px-5 py-2 rounded-lg text-sm font-semibold">Создать подгруппу</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ AUTOMATION SCENARIO BUILDER MODAL ============ -->
+<div id="scenarioEditorModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-2 md:p-5" style="z-index:80" role="dialog" aria-modal="true" aria-labelledby="scenarioEditorName">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-[1480px] h-[96vh] flex flex-col overflow-hidden">
+    <header class="px-5 md:px-7 py-4 border-b border-divider flex flex-wrap items-center justify-between gap-3">
+      <div class="min-w-0 flex items-center gap-3">
+        <button type="button" onclick="closeAutomationScenario()" class="w-9 h-9 flex-shrink-0 rounded-lg border border-divider hover:bg-bgDefault" aria-label="Назад к сценариям">←</button>
+        <div class="min-w-0"><label for="scenarioEditorName" class="sr-only">Название сценария</label><input id="scenarioEditorName" maxlength="70" class="w-full min-w-[200px] text-lg md:text-xl font-bold border-0 border-b border-transparent focus:border-primary outline-none" value="Коммерческие предложения" oninput="updateAutomationScenarioName(this.value)"><div id="scenarioEditorMeta" class="text-xs text-textSecondary mt-1">Первое входящее сообщение → определить направление → ответить или передать менеджеру</div></div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="scenarioEditorStatus" class="status-badge bg-green-100 text-green-700">Активен</span>
+        <button type="button" onclick="saveAutomationScenario()" class="px-4 py-2 rounded-lg border border-divider bg-white text-sm font-semibold hover:bg-bgDefault">Сохранить</button>
+        <button type="button" onclick="toggleAutomationScenarioPublish()" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold">Опубликовать</button>
+        <button type="button" onclick="closeAutomationScenario()" class="w-9 h-9 rounded-lg hover:bg-bgDefault" aria-label="Закрыть">✕</button>
+      </div>
+    </header>
+    <div class="flex-1 overflow-y-auto p-3 md:p-5">
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 max-w-[1400px] mx-auto">
+        <section class="xl:col-span-7 space-y-4">
+          <div class="bg-bgDefault rounded-xl p-4 md:p-5 border border-divider">
+            <div class="flex flex-wrap items-center gap-3 text-sm">
+              <span class="px-3 py-2 bg-white rounded-lg border border-divider font-semibold">▶ Старт сценария</span><span class="text-textSecondary">→</span><span class="px-3 py-2 bg-white rounded-lg border border-divider font-semibold">Входящее сообщение</span><span class="text-textSecondary">→</span><span class="px-3 py-2 bg-teal-50 text-teal-800 rounded-lg border border-teal-100 font-semibold">Распознать направление КП</span>
+            </div>
+            <p class="text-xs text-textSecondary mt-3">Ветки проверяются сверху вниз. При нескольких совпадениях срабатывает первая; резервный ответ всегда остаётся последним.</p>
+          </div>
+          <div id="automationScenarioBranches" class="space-y-3"></div>
+          <button type="button" onclick="addAutomationScenarioBranch()" class="w-full px-4 py-3 border border-dashed border-primary/40 rounded-xl text-sm font-semibold text-primary hover:bg-teal-50">＋ Добавить направление</button>
+        </section>
+        <aside class="xl:col-span-5">
+          <div class="bg-white border border-divider rounded-2xl overflow-hidden flex flex-col min-h-[560px] xl:sticky xl:top-0">
+            <div class="px-5 py-4 border-b border-divider flex items-center justify-between"><div><h3 class="font-bold">Тестовый чат</h3><p class="text-xs text-textSecondary mt-1">Проверьте маршрутизацию до публикации</p></div><button type="button" onclick="clearAutomationScenarioTest()" class="text-xs px-2.5 py-1.5 border border-divider rounded-lg">Сбросить</button></div>
+            <div class="flex flex-wrap gap-2 p-3 border-b border-divider">
+              <button type="button" onclick="testAutomationScenario('Нужно КП на SMS-рассылку для базы из 20 000 клиентов')" class="px-2.5 py-1.5 rounded-full bg-bgDefault border border-divider text-xs">SMS-рассылка</button>
+              <button type="button" onclick="testAutomationScenario('Подключите WhatsApp Business через iWABA')" class="px-2.5 py-1.5 rounded-full bg-bgDefault border border-divider text-xs">WhatsApp / iWABA</button>
+              <button type="button" onclick="testAutomationScenario('Нужна CRM для отдела продаж')" class="px-2.5 py-1.5 rounded-full bg-bgDefault border border-divider text-xs">FlowZap CRM</button>
+            </div>
+            <div id="automationScenarioTestChat" class="flex-1 overflow-y-auto bg-bgDefault/70 p-4 space-y-3" aria-live="polite"></div>
+            <form onsubmit="sendAutomationScenarioTest(event)" class="p-3 border-t border-divider flex gap-2">
+              <input id="automationScenarioTestInput" class="min-w-0 flex-1 px-3 py-2.5 border border-divider rounded-lg text-sm" placeholder="Введите сообщение для теста" autocomplete="off">
+              <button class="btn-primary px-3 rounded-lg" type="submit" aria-label="Проверить сообщение">➤</button>
+            </form>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>
+
 <input type="file" id="xlsFileInput" accept=".xls,.xlsx" class="hidden">
 
 <script>
@@ -3904,6 +4118,9 @@ function switchTab(tab) {
   document.querySelectorAll('.nav-item').forEach(el => { el.classList.remove('active'); if (el.dataset && el.dataset.tab === tab) el.classList.add('active'); });
   
   const titles = {
+    messenger: ['Мессенджер', 'Единый inbox: фильтры, связанные чаты и B2B-подгруппы'],
+    companies: ['Компании', 'B2B-компании, контакты и подгруппы для совместной обработки заявок'],
+    scenarios: ['Сценарии автоматизации', 'Условия, ответы и маршрутизация обращений'],
     leads: ['Лиды', 'Воронка продаж и управление лидами'],
     orders: ['Заказы', 'Управление заказами, доставкой и оплатой'],
     products: ['Товары', 'Каталог товаров с финансовой моделью'],
@@ -3937,6 +4154,9 @@ function switchTab(tab) {
   if (tab === 'leads') renderLeads();
   if (tab === 'appointments') renderAppointments();
   if (tab === 'lead-scoring') renderLeadScores();
+  if (tab === 'messenger') renderMessenger();
+  if (tab === 'companies') renderCompanies();
+  if (tab === 'scenarios') renderAutomationScenarios();
 }
 
 // ---------- НАЧАЛО РАБОТЫ (getting started) ----------
@@ -5475,6 +5695,9 @@ function withLoading(btnId, label, done, ms) {
 
 // ---------- 1. GLOBAL SEARCH (Ctrl+K / Cmd+K) ----------
 const gsPages = [
+  { icon: '💬', title: 'Мессенджер — общий inbox', hint: 'Раздел · B2B-диалоги и фильтры', action: () => switchTab('messenger') },
+  { icon: '🏢', title: 'Компании и B2B-подгруппы', hint: 'Раздел · Контакты и связанные чаты', action: () => switchTab('companies') },
+  { icon: '⑂', title: 'Сценарии автоматизации', hint: 'Раздел · Маршрутизация и ответы', action: () => switchTab('scenarios') },
   { icon: '📋', title: 'Лиды', hint: 'Раздел · Воронка продаж', action: () => switchTab('leads') },
   { icon: '🧾', title: 'Заказы', hint: 'Раздел · CRM', action: () => switchTab('orders') },
   { icon: '🛒', title: 'Товары', hint: 'Раздел · Каталог с финмоделью', action: () => switchTab('products') },
@@ -5830,6 +6053,581 @@ function retrainForecast() {
     showToast('Модель обновлена на данных за сегодня 📈');
   }, 1800);
 }
+
+// ============ B2B MESSENGER + COMPANY SUBGROUPS ============
+const b2bCompanies = [
+  { id: 'co_arm', name: 'ТОО «Арман Трейд»', industry: 'Оптовая торговля', city: 'Алматы', contacts: ['c_asel', 'c_roman', 'c_dana'] },
+  { id: 'co_north', name: 'ТД «Север Маркет»', industry: 'Розничная сеть', city: 'Астана', contacts: ['c_nurlan', 'c_aigerim'] },
+  { id: 'co_berkut', name: 'ИП «Беркут»', industry: 'Дистрибуция', city: 'Шымкент', contacts: ['c_marat', 'c_yulia'] }
+];
+const b2bContacts = [
+  { id: 'c_asel', companyId: 'co_arm', name: 'Асель Жаксылык', initials: 'АЖ', role: 'Руководитель закупок', phone: '+7 701 234 5678' },
+  { id: 'c_roman', companyId: 'co_arm', name: 'Роман Ахметов', initials: 'РА', role: 'Финансовый директор', phone: '+7 707 311 0294' },
+  { id: 'c_dana', companyId: 'co_arm', name: 'Дана Сейтова', initials: 'ДС', role: 'Менеджер филиала', phone: '+7 747 609 8412' },
+  { id: 'c_nurlan', companyId: 'co_north', name: 'Нурлан Иманов', initials: 'НИ', role: 'Коммерческий директор', phone: '+7 701 555 1432' },
+  { id: 'c_aigerim', companyId: 'co_north', name: 'Айгерим Толеуова', initials: 'АТ', role: 'Байер', phone: '+7 775 203 1844' },
+  { id: 'c_marat', companyId: 'co_berkut', name: 'Марат Касымов', initials: 'МК', role: 'Владелец', phone: '+7 702 118 2300' },
+  { id: 'c_yulia', companyId: 'co_berkut', name: 'Юлия Садыкова', initials: 'ЮС', role: 'Операционный менеджер', phone: '+7 707 900 3510' }
+];
+function crmReadLocal(key, fallback) {
+  try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(fallback)); }
+  catch (_) { return JSON.parse(JSON.stringify(fallback)); }
+}
+function crmSaveLocal(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {}
+}
+let b2bGroups = crmReadLocal('flowzap-b2b-groups-v1', [
+  { id: 'g_arm_buying', companyId: 'co_arm', name: 'Закупки · Алматы', owner: 'Айгуль', memberIds: ['c_asel', 'c_roman'] },
+  { id: 'g_north_wholesale', companyId: 'co_north', name: 'Оптовые заявки', owner: 'Марат', memberIds: ['c_nurlan', 'c_aigerim'] }
+]);
+let b2bChats = crmReadLocal('flowzap-b2b-chats-v1', [
+  { id: 'chat_asel', contactId: 'c_asel', status: 'open', unread: true, owner: 'Айгуль', channel: 'WhatsApp', messages: [{ from: 'client', text: 'Добрый день! Нужен прайс на оптовую партию для двух магазинов.', time: '10:42' }, { from: 'manager', text: 'Здравствуйте, Асель! Подготовлю. Подскажите, пожалуйста, ориентир по объёму?', time: '10:47' }, { from: 'client', text: 'Около 300 единиц в месяц. Ещё подключится наш финансовый директор.', time: '11:06' }] },
+  { id: 'chat_roman', contactId: 'c_roman', status: 'waiting', unread: false, owner: 'Айгуль', channel: 'WhatsApp', messages: [{ from: 'client', text: 'Отправьте, пожалуйста, реквизиты и варианты оплаты по предложению.', time: 'Вчера' }, { from: 'manager', text: 'Отправила документы на почту, продублирую сюда после согласования.', time: 'Вчера' }] },
+  { id: 'chat_dana', contactId: 'c_dana', status: 'open', unread: false, owner: 'Александр', channel: 'WhatsApp', messages: [{ from: 'client', text: 'Для филиала в Алматы нужен отдельный график поставки.', time: '09:18' }] },
+  { id: 'chat_nurlan', contactId: 'c_nurlan', status: 'open', unread: true, owner: 'Марат', channel: 'WhatsApp', messages: [{ from: 'client', text: 'Какие условия для сети из 12 магазинов? Ищем поставщика на квартал.', time: '11:21' }] },
+  { id: 'chat_aigerim', contactId: 'c_aigerim', status: 'waiting', unread: false, owner: 'Марат', channel: 'WhatsApp', messages: [{ from: 'client', text: 'Сверяю ассортимент. Пришлите карточки товаров и остатки.', time: 'Вчера' }, { from: 'manager', text: 'Собираю каталог и доступные остатки, отправлю одним файлом.', time: 'Вчера' }] },
+  { id: 'chat_marat', contactId: 'c_marat', status: 'resolved', unread: false, owner: 'Александр', channel: 'Instagram', messages: [{ from: 'client', text: 'Спасибо, получили тестовую поставку. Вернёмся с объёмом на следующей неделе.', time: 'Пн' }] }
+]);
+let currentMessengerChatId = 'chat_asel';
+let messengerQuickFilter = 'all';
+let currentSubgroupCompanyId = null;
+
+function crmEscape(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, function(char) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+  });
+}
+function b2bCompany(id) { return b2bCompanies.find(function(company) { return company.id === id; }); }
+function b2bContact(id) { return b2bContacts.find(function(contact) { return contact.id === id; }); }
+function b2bGroupForContact(contactId) { return b2bGroups.find(function(group) { return group.memberIds.indexOf(contactId) >= 0; }); }
+function b2bChatForContact(contactId) { return b2bChats.find(function(chat) { return chat.contactId === contactId; }); }
+function b2bLastMessage(chat) {
+  const messages = chat && Array.isArray(chat.messages) ? chat.messages : [];
+  return messages.length ? messages[messages.length - 1].text : 'Нет сообщений';
+}
+function b2bPlural(count, one, few, many) {
+  const mod100 = count % 100;
+  if (mod100 >= 11 && mod100 <= 14) return many;
+  const mod10 = count % 10;
+  if (mod10 === 1) return one;
+  if (mod10 >= 2 && mod10 <= 4) return few;
+  return many;
+}
+function b2bStatusLabel(status) {
+  return { open: 'Открыт', waiting: 'Ждём клиента', resolved: 'Закрыт' }[status] || 'Открыт';
+}
+function b2bStatusClass(status) {
+  return { open: 'bg-green-100 text-green-700', waiting: 'bg-amber-100 text-amber-800', resolved: 'bg-gray-100 text-gray-600' }[status] || 'bg-green-100 text-green-700';
+}
+function b2bTimeNow() {
+  const now = new Date();
+  return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+}
+function renderMessenger() {
+  const list = document.getElementById('messengerConversationList');
+  if (!list) return;
+  const companySelect = document.getElementById('messengerCompanyFilter');
+  const groupSelect = document.getElementById('messengerGroupFilter');
+  const ownerSelect = document.getElementById('messengerOwnerFilter');
+  const previousCompany = companySelect.value || 'all';
+  const previousGroup = groupSelect.value || 'all';
+  const previousOwner = ownerSelect.value || 'all';
+  companySelect.innerHTML = '<option value="all">Все компании</option>' + b2bCompanies.map(function(company) { return '<option value="' + crmEscape(company.id) + '">' + crmEscape(company.name) + '</option>'; }).join('');
+  groupSelect.innerHTML = '<option value="all">Все подгруппы</option><option value="ungrouped">Без подгруппы</option>' + b2bGroups.map(function(group) { return '<option value="' + crmEscape(group.id) + '">' + crmEscape(group.name) + '</option>'; }).join('');
+  const owners = Array.from(new Set(b2bChats.map(function(chat) { return chat.owner; }).filter(Boolean)));
+  ownerSelect.innerHTML = '<option value="all">Все менеджеры</option>' + owners.map(function(owner) { return '<option value="' + crmEscape(owner) + '">' + crmEscape(owner) + '</option>'; }).join('');
+  companySelect.value = Array.from(companySelect.options).some(function(option) { return option.value === previousCompany; }) ? previousCompany : 'all';
+  groupSelect.value = Array.from(groupSelect.options).some(function(option) { return option.value === previousGroup; }) ? previousGroup : 'all';
+  ownerSelect.value = Array.from(ownerSelect.options).some(function(option) { return option.value === previousOwner; }) ? previousOwner : 'all';
+
+  const query = (document.getElementById('messengerSearch').value || '').trim().toLocaleLowerCase();
+  const companyFilter = companySelect.value;
+  const groupFilter = groupSelect.value;
+  const statusFilter = document.getElementById('messengerStatusFilter').value;
+  const ownerFilter = ownerSelect.value;
+  const filtered = b2bChats.filter(function(chat) {
+    const contact = b2bContact(chat.contactId);
+    const company = contact && b2bCompany(contact.companyId);
+    const group = b2bGroupForContact(chat.contactId);
+    const searchable = [contact && contact.name, company && company.name, b2bLastMessage(chat), group && group.name].join(' ').toLocaleLowerCase();
+    if (query && searchable.indexOf(query) < 0) return false;
+    if (companyFilter !== 'all' && (!contact || contact.companyId !== companyFilter)) return false;
+    if (groupFilter === 'ungrouped' && group) return false;
+    if (groupFilter !== 'all' && groupFilter !== 'ungrouped' && (!group || group.id !== groupFilter)) return false;
+    if (statusFilter !== 'all' && chat.status !== statusFilter) return false;
+    if (ownerFilter !== 'all' && chat.owner !== ownerFilter) return false;
+    if (messengerQuickFilter === 'unread' && !chat.unread) return false;
+    if (messengerQuickFilter === 'ungrouped' && group) return false;
+    if (messengerQuickFilter === 'mine' && chat.owner !== 'Александр') return false;
+    return true;
+  });
+  document.getElementById('messengerOpenCount').textContent = b2bChats.filter(function(chat) { return chat.status === 'open'; }).length;
+  document.getElementById('messengerUnreadCount').textContent = b2bChats.filter(function(chat) { return chat.unread; }).length;
+  document.getElementById('messengerGroupCount').textContent = b2bGroups.length;
+  document.getElementById('messengerVisibleCount').textContent = filtered.length + ' ' + b2bPlural(filtered.length, 'диалог', 'диалога', 'диалогов');
+  document.querySelectorAll('.inbox-filter-chip').forEach(function(button) {
+    const active = button.dataset.inboxFilter === messengerQuickFilter;
+    button.classList.toggle('active', active);
+    button.classList.toggle('border-primary', active);
+    button.classList.toggle('bg-primary/5', active);
+    button.classList.toggle('text-primary', active);
+    button.classList.toggle('font-semibold', active);
+    button.classList.toggle('border-divider', !active);
+    button.classList.toggle('text-textSecondary', !active);
+    button.classList.toggle('font-medium', !active);
+  });
+  list.innerHTML = filtered.length ? filtered.map(function(chat) {
+    const contact = b2bContact(chat.contactId);
+    const company = contact && b2bCompany(contact.companyId);
+    const group = b2bGroupForContact(chat.contactId);
+    const selected = chat.id === currentMessengerChatId;
+    return '<button type="button" data-chat-id="' + crmEscape(chat.id) + '" class="messenger-row ' + (selected ? 'is-selected ' : '') + 'w-full text-left p-4 border-l-2 ' + (selected ? 'border-primary ' : 'border-transparent ') + 'focus-visible:z-10">' +
+      '<div class="flex items-start gap-3"><div class="w-10 h-10 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-xs font-bold flex-shrink-0">' + crmEscape(contact ? contact.initials : '?') + '</div>' +
+      '<div class="min-w-0 flex-1"><div class="flex items-center justify-between gap-2"><span class="font-semibold text-sm text-textPrimary truncate">' + crmEscape(contact ? contact.name : 'Контакт') + '</span><span class="text-[11px] text-textSecondary flex-shrink-0">' + crmEscape(chat.messages.length ? chat.messages[chat.messages.length - 1].time : '') + '</span></div>' +
+      '<div class="text-xs text-textSecondary truncate mt-0.5">' + crmEscape(company ? company.name : '') + '</div>' +
+      '<div class="text-xs text-textSecondary truncate mt-2">' + crmEscape(b2bLastMessage(chat)) + '</div>' +
+      '<div class="flex items-center gap-1.5 mt-2 flex-wrap">' + (group ? '<span class="status-badge bg-teal-50 text-teal-800">' + crmEscape(group.name) + '</span>' : '<span class="status-badge bg-gray-100 text-gray-600">Без подгруппы</span>') +
+      (chat.unread ? '<span class="w-2 h-2 rounded-full bg-primary" aria-label="Непрочитанный диалог"></span>' : '') + '</div></div></div></button>';
+  }).join('') : '<div class="p-8 text-center"><div class="text-sm font-semibold text-textPrimary">Нет подходящих диалогов</div><p class="text-xs text-textSecondary mt-1">Измените фильтры или создайте подгруппу в карточке компании.</p></div>';
+  if (filtered.some(function(chat) { return chat.id === currentMessengerChatId; })) {
+    // Keep the current thread when filters still include it.
+  } else {
+    currentMessengerChatId = filtered.length ? filtered[0].id : null;
+  }
+  renderMessengerThread();
+}
+function renderMessengerThread() {
+  const header = document.getElementById('messengerThreadHeader');
+  const messageBox = document.getElementById('messengerMessages');
+  const context = document.getElementById('messengerContext');
+  if (!header || !messageBox || !context) return;
+  const chat = b2bChats.find(function(item) { return item.id === currentMessengerChatId; });
+  const composer = document.getElementById('messengerMessageInput');
+  const sendButton = document.querySelector('#messengerComposer button[type="submit"]');
+  if (!chat) {
+    header.innerHTML = '<div class="h-full flex items-center text-sm text-textSecondary">Выберите диалог в списке</div>';
+    messageBox.innerHTML = '<div class="m-auto text-center text-sm text-textSecondary">Нет диалога по текущим фильтрам</div>';
+    context.innerHTML = '<div class="rounded-xl bg-white border border-divider p-4 text-sm text-textSecondary">Карточка контакта появится после выбора диалога.</div>';
+    if (composer) composer.querySelector('textarea').disabled = true;
+    if (sendButton) sendButton.disabled = true;
+    return;
+  }
+  if (composer) composer.querySelector('textarea').disabled = false;
+  if (sendButton) sendButton.disabled = false;
+  const contact = b2bContact(chat.contactId);
+  const company = contact && b2bCompany(contact.companyId);
+  const group = b2bGroupForContact(chat.contactId);
+  header.innerHTML = '<div class="flex flex-wrap items-center justify-between gap-3"><div class="flex items-center gap-3 min-w-0"><div class="w-10 h-10 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-xs font-bold">' + crmEscape(contact ? contact.initials : '?') + '</div><div class="min-w-0"><div class="flex items-center gap-2 flex-wrap"><h3 class="font-bold text-textPrimary">' + crmEscape(contact ? contact.name : 'Контакт') + '</h3><span class="status-badge ' + b2bStatusClass(chat.status) + '">' + b2bStatusLabel(chat.status) + '</span></div><div class="text-xs text-textSecondary mt-1">' + crmEscape(company ? company.name : '') + ' · ' + crmEscape(contact ? contact.role : '') + '</div></div></div><div class="text-xs text-textSecondary">' + crmEscape(chat.channel) + '</div></div>';
+  messageBox.innerHTML = '<div class="text-center text-[11px] text-textSecondary pb-2">История диалога · ' + crmEscape(company ? company.name : '') + '</div>' + chat.messages.map(function(message) {
+    const manager = message.from === 'manager';
+    return '<div class="flex ' + (manager ? 'justify-end' : 'justify-start') + '"><div class="messenger-bubble ' + (manager ? 'manager' : 'client') + '">' + crmEscape(message.text) + '<div class="text-[10px] opacity-60 text-right mt-1">' + crmEscape(message.time) + '</div></div></div>';
+  }).join('');
+  messageBox.scrollTop = messageBox.scrollHeight;
+  const groupMembers = group ? group.memberIds.map(b2bContact).filter(Boolean) : [];
+  const groupChats = group ? b2bChats.filter(function(item) { return group.memberIds.indexOf(item.contactId) >= 0; }).length : 0;
+  context.innerHTML = '<div class="bg-white rounded-xl border border-divider p-4 mb-3"><div class="text-xs font-semibold uppercase tracking-wide text-textSecondary mb-3">Контакт</div><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold">' + crmEscape(contact ? contact.initials : '?') + '</div><div><div class="font-semibold text-sm">' + crmEscape(contact ? contact.name : '') + '</div><div class="text-xs text-textSecondary">' + crmEscape(contact ? contact.role : '') + '</div></div></div><div class="text-sm mt-4">' + crmEscape(contact ? contact.phone : '') + '</div><button type="button" data-open-company="' + crmEscape(contact ? contact.companyId : '') + '" class="text-xs font-semibold text-primary mt-3 hover:underline">Карточка компании →</button></div>' +
+    '<div class="bg-white rounded-xl border border-divider p-4 mb-3"><div class="flex items-center justify-between mb-3"><div class="text-xs font-semibold uppercase tracking-wide text-textSecondary">Компания</div><span class="status-badge bg-blue-50 text-blue-700">B2B</span></div><div class="font-semibold text-sm">' + crmEscape(company ? company.name : '') + '</div><div class="text-xs text-textSecondary mt-1">' + crmEscape(company ? company.industry + ' · ' + company.city : '') + '</div>' +
+    (group ? '<div class="mt-4 p-3 rounded-lg bg-teal-50 border border-teal-100"><div class="text-xs text-teal-800 font-semibold">Подгруппа · ' + crmEscape(group.name) + '</div><div class="text-[11px] text-teal-900/70 mt-1">' + groupMembers.length + ' ' + b2bPlural(groupMembers.length, 'контакт', 'контакта', 'контактов') + ' · ' + groupChats + ' ' + b2bPlural(groupChats, 'диалог', 'диалога', 'диалогов') + ' · менеджер ' + crmEscape(group.owner) + '</div><button type="button" data-open-group="' + crmEscape(group.id) + '" class="mt-2 text-xs font-semibold text-teal-800 hover:underline">Открыть все диалоги →</button></div>' : '<div class="mt-4 p-3 rounded-lg bg-gray-50 border border-divider text-xs text-textSecondary">Контакт пока не входит в подгруппу.</div>') +
+    '</div><div class="bg-white rounded-xl border border-divider p-4"><label for="messengerChatStatus" class="block text-xs font-semibold uppercase tracking-wide text-textSecondary mb-2">Статус диалога</label><select id="messengerChatStatus" onchange="updateMessengerChatStatus(this.value)" class="w-full px-3 py-2 border border-divider rounded-lg text-sm"><option value="open"' + (chat.status === 'open' ? ' selected' : '') + '>Открыт</option><option value="waiting"' + (chat.status === 'waiting' ? ' selected' : '') + '>Ждём клиента</option><option value="resolved"' + (chat.status === 'resolved' ? ' selected' : '') + '>Закрыт</option></select><label for="messengerChatOwner" class="block text-xs font-semibold uppercase tracking-wide text-textSecondary mt-4 mb-2">Ответственный</label><select id="messengerChatOwner" onchange="updateMessengerChatOwner(this.value)" class="w-full px-3 py-2 border border-divider rounded-lg text-sm">' + ['Александр','Айгуль','Марат'].map(function(owner) { return '<option' + (chat.owner === owner ? ' selected' : '') + '>' + owner + '</option>'; }).join('') + '</select></div>';
+}
+function selectMessengerChat(chatId) {
+  currentMessengerChatId = chatId;
+  const chat = b2bChats.find(function(item) { return item.id === chatId; });
+  if (chat) chat.unread = false;
+  crmSaveLocal('flowzap-b2b-chats-v1', b2bChats);
+  renderMessenger();
+}
+function setMessengerQuickFilter(filter, button) {
+  messengerQuickFilter = filter;
+  document.querySelectorAll('.inbox-filter-chip').forEach(function(item) { item.classList.remove('active'); });
+  if (button) button.classList.add('active');
+  renderMessenger();
+}
+function updateMessengerChatStatus(status) {
+  const chat = b2bChats.find(function(item) { return item.id === currentMessengerChatId; });
+  if (!chat) return;
+  chat.status = status;
+  crmSaveLocal('flowzap-b2b-chats-v1', b2bChats);
+  renderMessenger();
+  showToast('Статус диалога обновлён');
+}
+function updateMessengerChatOwner(owner) {
+  const chat = b2bChats.find(function(item) { return item.id === currentMessengerChatId; });
+  if (!chat) return;
+  chat.owner = owner;
+  crmSaveLocal('flowzap-b2b-chats-v1', b2bChats);
+  renderMessenger();
+  showToast('Ответственный менеджер изменён');
+}
+function sendMessengerMessage(event) {
+  event.preventDefault();
+  const input = document.getElementById('messengerMessageInput');
+  const text = input.value.trim();
+  const chat = b2bChats.find(function(item) { return item.id === currentMessengerChatId; });
+  if (!chat || !text) return;
+  chat.messages.push({ from: 'manager', text: text, time: b2bTimeNow() });
+  chat.status = 'open';
+  chat.unread = false;
+  crmSaveLocal('flowzap-b2b-chats-v1', b2bChats);
+  input.value = '';
+  renderMessenger();
+  showToast('Сообщение добавлено в демо-диалог');
+}
+function openMessengerGroup(groupId) {
+  switchTab('messenger');
+  const select = document.getElementById('messengerGroupFilter');
+  select.value = groupId;
+  renderMessenger();
+}
+function openB2bSubgroupModal(companyId) {
+  const company = b2bCompany(companyId);
+  if (!company) return;
+  currentSubgroupCompanyId = companyId;
+  document.getElementById('b2bSubgroupCompanyName').textContent = company.name + ' · ' + company.city;
+  document.getElementById('b2bSubgroupName').value = '';
+  document.getElementById('b2bSubgroupOwner').value = 'Айгуль';
+  document.getElementById('b2bSubgroupError').classList.add('hidden');
+  const members = b2bContacts.filter(function(contact) { return contact.companyId === companyId; });
+  document.getElementById('b2bSubgroupMembers').innerHTML = members.map(function(contact) {
+    const existing = b2bGroupForContact(contact.id);
+    return '<label class="flex items-center gap-3 p-3 border border-divider rounded-lg hover:bg-bgDefault cursor-pointer"><input class="b2b-subgroup-check w-4 h-4 accent-[#2d9583]" type="checkbox" value="' + crmEscape(contact.id) + '"><span class="w-8 h-8 rounded-full bg-teal-50 text-teal-800 flex items-center justify-center text-[10px] font-bold">' + crmEscape(contact.initials) + '</span><span class="flex-1 min-w-0"><span class="block text-sm font-medium">' + crmEscape(contact.name) + '</span><span class="block text-xs text-textSecondary">' + crmEscape(contact.role) + '</span></span>' + (existing ? '<span class="text-[10px] text-textSecondary">Сейчас: ' + crmEscape(existing.name) + '</span>' : '<span class="text-[10px] text-textSecondary">Без подгруппы</span>') + '</label>';
+  }).join('');
+  const modal = document.getElementById('b2bSubgroupModal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() { document.getElementById('b2bSubgroupName').focus(); }, 30);
+}
+function closeB2bSubgroupModal() {
+  const modal = document.getElementById('b2bSubgroupModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  document.body.style.overflow = '';
+}
+function saveB2bSubgroup() {
+  const error = document.getElementById('b2bSubgroupError');
+  const name = document.getElementById('b2bSubgroupName').value.trim();
+  const selected = Array.from(document.querySelectorAll('.b2b-subgroup-check:checked')).map(function(input) { return input.value; });
+  if (!name) { error.textContent = 'Введите название подгруппы.'; error.classList.remove('hidden'); return; }
+  if (selected.length < 2) { error.textContent = 'Для подгруппы выберите минимум два контакта.'; error.classList.remove('hidden'); return; }
+  b2bGroups.forEach(function(group) {
+    if (group.companyId === currentSubgroupCompanyId) group.memberIds = group.memberIds.filter(function(contactId) { return selected.indexOf(contactId) < 0; });
+  });
+  b2bGroups = b2bGroups.filter(function(group) { return group.memberIds.length >= 2; });
+  const owner = document.getElementById('b2bSubgroupOwner').value;
+  b2bGroups.push({ id: 'group_' + Date.now(), companyId: currentSubgroupCompanyId, name: name, owner: owner, memberIds: selected });
+  b2bChats.forEach(function(chat) { if (selected.indexOf(chat.contactId) >= 0) chat.owner = owner; });
+  crmSaveLocal('flowzap-b2b-groups-v1', b2bGroups);
+  crmSaveLocal('flowzap-b2b-chats-v1', b2bChats);
+  closeB2bSubgroupModal();
+  renderCompanies();
+  renderMessenger();
+  showToast('Подгруппа создана: связанные диалоги доступны в мессенджере');
+}
+function renderCompanies() {
+  const root = document.getElementById('b2bCompanyList');
+  if (!root) return;
+  document.getElementById('b2bCompanyCount').textContent = b2bCompanies.length;
+  document.getElementById('b2bContactCount').textContent = b2bContacts.length;
+  document.getElementById('b2bSubgroupCount').textContent = b2bGroups.length;
+  root.innerHTML = b2bCompanies.map(function(company) {
+    const contacts = b2bContacts.filter(function(contact) { return contact.companyId === company.id; });
+    const groups = b2bGroups.filter(function(group) { return group.companyId === company.id; });
+    const groupContent = groups.length ? groups.map(function(group) {
+      const members = group.memberIds.map(b2bContact).filter(Boolean);
+      const chats = b2bChats.filter(function(chat) { return group.memberIds.indexOf(chat.contactId) >= 0; });
+      return '<div class="border border-divider rounded-xl p-4 bg-white"><div class="flex flex-wrap items-start justify-between gap-3"><div><div class="font-semibold text-sm">' + crmEscape(group.name) + '</div><div class="text-xs text-textSecondary mt-1">' + members.length + ' ' + b2bPlural(members.length, 'контакт', 'контакта', 'контактов') + ' · ' + chats.length + ' ' + b2bPlural(chats.length, 'диалог', 'диалога', 'диалогов') + ' · менеджер ' + crmEscape(group.owner) + '</div></div><button type="button" data-open-group="' + crmEscape(group.id) + '" class="text-xs font-semibold text-primary hover:underline">Открыть диалоги →</button></div><div class="flex flex-wrap gap-2 mt-3">' + members.map(function(contact) { return '<span class="inline-flex items-center gap-1.5 px-2 py-1 bg-bgDefault rounded-full text-[11px]"><span class="w-5 h-5 rounded-full bg-teal-100 text-teal-800 inline-flex items-center justify-center font-bold">' + crmEscape(contact.initials) + '</span>' + crmEscape(contact.name) + '</span>'; }).join('') + '</div></div>';
+    }).join('') : '<div class="border border-dashed border-divider rounded-xl p-4 text-sm text-textSecondary bg-bgDefault">Подгрупп пока нет. Создайте первую и соберите связанные чаты.</div>';
+    return '<article class="bg-white rounded-2xl border border-divider shadow-sm overflow-hidden"><div class="p-5 border-b border-divider flex items-start justify-between gap-3"><div><div class="flex items-center gap-2"><h3 class="font-bold text-textPrimary">' + crmEscape(company.name) + '</h3><span class="status-badge bg-blue-50 text-blue-700">B2B</span></div><div class="text-xs text-textSecondary mt-1">' + crmEscape(company.industry) + ' · ' + crmEscape(company.city) + ' · ' + contacts.length + ' ' + b2bPlural(contacts.length, 'контакт', 'контакта', 'контактов')</div></div><button type="button" data-create-subgroup="' + crmEscape(company.id) + '" class="flex-shrink-0 px-3 py-2 border border-primary/30 text-primary rounded-lg text-xs font-semibold hover:bg-teal-50">＋ Подгруппа</button></div><div class="p-5 space-y-3"><div class="flex items-center justify-between"><h4 class="text-xs font-semibold uppercase tracking-wide text-textSecondary">Рабочие подгруппы</h4><span class="text-xs text-textSecondary">' + groups.length + '</span></div>' + groupContent + '<details class="pt-1"><summary class="cursor-pointer text-xs font-semibold text-textSecondary">Все контакты компании (' + contacts.length + ')</summary><div class="mt-3 space-y-2">' + contacts.map(function(contact) {
+      const group = b2bGroupForContact(contact.id);
+      const chat = b2bChatForContact(contact.id);
+      return '<div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-bgDefault"><div class="min-w-0"><div class="text-xs font-medium truncate">' + crmEscape(contact.name) + ' · ' + crmEscape(contact.role) + '</div><div class="text-[11px] text-textSecondary">' + (group ? 'Подгруппа: ' + crmEscape(group.name) : 'Без подгруппы') + '</div></div>' + (chat ? '<button type="button" data-chat-id="' + crmEscape(chat.id) + '" class="text-xs text-primary font-semibold">Открыть чат</button>' : '<span class="text-[11px] text-textSecondary">Нет чата</span>') + '</div>';
+    }).join('') + '</div></details></div></article>';
+  }).join('');
+}
+function openCompanyFromMessenger(companyId) {
+  switchTab('companies');
+  const card = document.querySelector('[data-create-subgroup="' + companyId + '"]');
+  if (card) card.closest('article').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ============ AUTOMATION SCENARIO LIBRARY + BUILDER ============
+function automationBranchDefaults() {
+  return [
+    { label: 'SMS-рассылки', terms: 'sms, смс, рассылка, массовая рассылка', response: 'Подготовлю КП на SMS-рассылки. Уточните, пожалуйста, примерный объём базы и сколько сообщений планируете отправлять.' },
+    { label: 'WhatsApp Business через iWABA', terms: 'whatsapp, вацап, waba, iwaba, business api', response: 'Подготовлю КП на WhatsApp Business через iWABA. Подскажите размер базы и подключён ли у вас WhatsApp Business API.' },
+    { label: 'FlowZap CRM', terms: 'crm, flowzap, система управления продажами', response: 'Подготовлю КП на FlowZap CRM. Уточните, сколько сотрудников будет работать в CRM и какие каналы нужно подключить.' },
+    { label: 'Резервный ответ', terms: '', response: 'Помогу подобрать решение. Вам нужно КП на SMS-рассылки, WhatsApp Business через iWABA или FlowZap CRM?', fallback: true }
+  ];
+}
+const automationScenarioSeed = [
+  { id: 'scenario_quotes', name: 'Коммерческие предложения', trigger: 'Первое входящее сообщение', status: 'active', runs: 128, branches: automationBranchDefaults() },
+  { id: 'scenario_b2b', name: 'Новая B2B-заявка → менеджер', trigger: 'Компания запросила оптовые условия', status: 'active', runs: 42, branches: [
+    { label: 'Оптовый запрос', terms: 'опт, оптовый, b2b, поставка, сеть магазинов', response: 'Спасибо за запрос. Уточню объём и передам обращение B2B-менеджеру, который подготовит условия для вашей компании.' },
+    { label: 'Резервный ответ', terms: '', response: 'Передам ваш запрос специалисту. Подскажите, пожалуйста, название компании и удобное время для связи.', fallback: true }
+  ] },
+  { id: 'scenario_followup', name: 'Нет ответа 24 часа → follow-up', trigger: 'Клиент не ответил в течение суток', status: 'draft', runs: 0, branches: [
+    { label: 'Напоминание о предложении', terms: 'коммерческое предложение, кп, прайс', response: 'Здравствуйте! Удалось посмотреть наше предложение? Могу уточнить детали или подготовить альтернативный вариант.' },
+    { label: 'Резервный ответ', terms: '', response: 'Сценарий ждёт события и передаст диалог менеджеру, если клиент ответит.', fallback: true }
+  ] }
+];
+let automationScenarios = crmReadLocal('flowzap-automation-scenarios-v1', automationScenarioSeed);
+let currentAutomationScenarioId = null;
+let automationScenarioTestTurns = [];
+let automationScenarioSaveTimer = null;
+function automationScenario(id) { return automationScenarios.find(function(item) { return item.id === id; }); }
+function renderAutomationScenarios() {
+  const root = document.getElementById('automationScenarioList');
+  if (!root) return;
+  const activeCount = automationScenarios.filter(function(item) { return item.status === 'active'; }).length;
+  document.getElementById('scenarioActiveCount').textContent = activeCount;
+  document.getElementById('scenarioDraftCount').textContent = automationScenarios.length - activeCount;
+  const query = (document.getElementById('scenarioSearch').value || '').trim().toLocaleLowerCase();
+  const statusFilter = document.getElementById('scenarioStatusFilter').value;
+  const filtered = automationScenarios.filter(function(item) {
+    return (statusFilter === 'all' || item.status === statusFilter) && (!query || (item.name + ' ' + item.trigger).toLocaleLowerCase().indexOf(query) >= 0);
+  });
+  root.innerHTML = filtered.length ? filtered.map(function(item) {
+    const routes = item.branches.filter(function(branch) { return !branch.fallback; }).length;
+    const statusLabel = item.status === 'active' ? 'Активен' : 'Черновик';
+    const statusClass = item.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700';
+    return '<article class="p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-4 hover:bg-bgDefault/60 transition"><div class="w-11 h-11 rounded-xl bg-teal-50 text-primary flex items-center justify-center text-lg flex-shrink-0">⑂</div><div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><h3 class="font-semibold text-textPrimary">' + crmEscape(item.name) + '</h3><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></div><p class="text-xs text-textSecondary mt-1">Запуск: ' + crmEscape(item.trigger) + '</p><div class="flex flex-wrap items-center gap-3 mt-2 text-xs text-textSecondary"><span>' + routes + ' ' + b2bPlural(routes, 'ветка', 'ветки', 'веток') + ' маршрутизации</span><span>·</span><span>' + item.runs + ' запусков за неделю</span></div></div><button type="button" data-scenario-id="' + crmEscape(item.id) + '" class="px-4 py-2 rounded-lg border border-divider bg-white text-sm font-semibold hover:border-primary hover:text-primary">Настроить →</button></article>';
+  }).join('') : '<div class="p-10 text-center"><div class="font-semibold">Сценарии не найдены</div><p class="text-sm text-textSecondary mt-1">Измените поиск или статус.</p></div>';
+}
+function createAutomationScenario() {
+  const id = 'scenario_' + Date.now();
+  automationScenarios.unshift({ id: id, name: 'Новый сценарий', trigger: 'Первое входящее сообщение', status: 'draft', runs: 0, branches: [
+    { label: 'Новое направление КП', terms: '', response: 'Здравствуйте! Уточните, пожалуйста, детали запроса.' },
+    { label: 'Резервный ответ', terms: '', response: 'Передам ваш вопрос менеджеру, который поможет с подбором решения.', fallback: true }
+  ] });
+  crmSaveLocal('flowzap-automation-scenarios-v1', automationScenarios);
+  renderAutomationScenarios();
+  openAutomationScenario(id);
+}
+function openAutomationScenario(id) {
+  const item = automationScenario(id);
+  if (!item) return;
+  currentAutomationScenarioId = id;
+  automationScenarioTestTurns = [];
+  document.getElementById('scenarioEditorName').value = item.name;
+  document.getElementById('scenarioEditorMeta').textContent = item.trigger + ' → условие → ответ или задача менеджеру';
+  const modal = document.getElementById('scenarioEditorModal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  document.body.style.overflow = 'hidden';
+  renderAutomationScenarioBranches();
+  renderAutomationScenarioTestChat();
+  updateAutomationScenarioStatus();
+  setTimeout(function() { document.getElementById('scenarioEditorName').focus(); }, 30);
+}
+function closeAutomationScenario() {
+  saveAutomationScenario(true);
+  const modal = document.getElementById('scenarioEditorModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  document.body.style.overflow = '';
+  renderAutomationScenarios();
+}
+function updateAutomationScenarioStatus() {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item) return;
+  const badge = document.getElementById('scenarioEditorStatus');
+  badge.textContent = item.status === 'active' ? 'Активен' : 'Черновик';
+  badge.className = 'status-badge ' + (item.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700');
+  const button = document.querySelector('#scenarioEditorModal [onclick="toggleAutomationScenarioPublish()"]');
+  if (button) button.textContent = item.status === 'active' ? 'Снять с публикации' : 'Опубликовать';
+}
+function updateAutomationScenarioName(value) {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item) return;
+  item.name = value.trim() || 'Новый сценарий';
+  queueAutomationScenarioSave();
+}
+function updateAutomationScenarioBranch(index, field, value) {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item || !item.branches[index] || item.branches[index].fallback && field !== 'response') return;
+  item.branches[index][field] = value;
+  queueAutomationScenarioSave();
+  renderAutomationScenarioTestChat();
+  if (automationScenarioTestTurns.length) {
+    const routeIndex = routeAutomationScenario(automationScenarioTestTurns[automationScenarioTestTurns.length - 1].message).index;
+    document.querySelectorAll('#automationScenarioBranches .scenario-branch').forEach(function(card, index) { card.classList.toggle('scenario-route-active', index === routeIndex); });
+  }
+}
+function renderAutomationScenarioBranches() {
+  const root = document.getElementById('automationScenarioBranches');
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!root || !item) return;
+  const fallbackIndex = item.branches.findIndex(function(branch) { return branch.fallback; });
+  root.innerHTML = item.branches.map(function(branch, index) {
+    const fallback = Boolean(branch.fallback);
+    const number = fallback ? '↳' : String(index + 1);
+    const termsDisabled = fallback ? ' disabled' : '';
+    const labelDisabled = fallback ? ' disabled' : '';
+    const actions = fallback ? '<span class="text-[10px] text-textSecondary px-2">Всегда последняя</span>' : '<button type="button" data-branch-action="up" data-branch-index="' + index + '" class="w-8 h-8 rounded-lg hover:bg-bgDefault text-textSecondary" aria-label="Поднять приоритет">↑</button><button type="button" data-branch-action="down" data-branch-index="' + index + '" class="w-8 h-8 rounded-lg hover:bg-bgDefault text-textSecondary" aria-label="Опустить приоритет">↓</button><button type="button" data-branch-action="delete" data-branch-index="' + index + '" class="w-8 h-8 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-600" aria-label="Удалить направление">×</button>';
+    const routeIndex = automationScenarioTestTurns.length ? routeAutomationScenario(automationScenarioTestTurns[automationScenarioTestTurns.length - 1].message).index : -1;
+    return '<article class="scenario-branch ' + (fallback ? 'is-fallback ' : '') + (routeIndex === index ? 'scenario-route-active ' : '') + 'p-4 md:p-5" data-branch-index="' + index + '"><div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full ' + (fallback ? 'bg-gray-100 text-gray-600' : 'bg-teal-50 text-teal-800') + ' flex items-center justify-center text-xs font-bold flex-shrink-0">' + number + '</div><div class="flex-1 min-w-0"><div class="flex flex-wrap items-center justify-between gap-2 mb-4"><div><div class="font-semibold text-sm">' + (fallback ? 'Резервный маршрут' : 'Ветка ' + (index + 1) + ' · приоритет ' + (index + 1)) + '</div><div class="text-[11px] text-textSecondary mt-0.5">' + (fallback ? 'Срабатывает, если ни одно условие не подошло' : 'Переупорядочьте ветки, чтобы изменить приоритет') + '</div></div><div class="flex items-center gap-1">' + actions + '</div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-3"><div><label class="block text-[11px] font-semibold text-textSecondary mb-1.5">Направление</label><input data-branch-index="' + index + '" data-branch-field="label" value="' + crmEscape(branch.label) + '"' + labelDisabled + ' class="w-full px-3 py-2 border border-divider rounded-lg text-sm font-medium"></div><div><label class="block text-[11px] font-semibold text-textSecondary mb-1.5">Ключевые слова через запятую' + (fallback ? ' · условие «иначе»' : '') + '</label><input data-branch-index="' + index + '" data-branch-field="terms" value="' + crmEscape(branch.terms) + '"' + termsDisabled + ' placeholder="например: sms, рассылка" class="w-full px-3 py-2 border border-divider rounded-lg text-sm"></div></div><div class="mt-3"><label class="block text-[11px] font-semibold text-textSecondary mb-1.5">Ответ бота</label><textarea data-branch-index="' + index + '" data-branch-field="response" rows="3" class="w-full px-3 py-2 border border-divider rounded-lg text-sm leading-relaxed resize-y">' + crmEscape(branch.response) + '</textarea></div></div></div></article>';
+  }).join('');
+}
+function moveAutomationScenarioBranch(index, direction) {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item || item.branches[index].fallback) return;
+  const fallbackIndex = item.branches.findIndex(function(branch) { return branch.fallback; });
+  const maxIndex = fallbackIndex < 0 ? item.branches.length - 1 : fallbackIndex - 1;
+  const target = index + direction;
+  if (target < 0 || target > maxIndex) return;
+  const temp = item.branches[index]; item.branches[index] = item.branches[target]; item.branches[target] = temp;
+  renderAutomationScenarioBranches();
+  queueAutomationScenarioSave();
+}
+function deleteAutomationScenarioBranch(index) {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item || item.branches[index].fallback) return;
+  const normalCount = item.branches.filter(function(branch) { return !branch.fallback; }).length;
+  if (normalCount <= 1) { showToast('Оставьте минимум одно направление и резервный ответ'); return; }
+  item.branches.splice(index, 1);
+  renderAutomationScenarioBranches();
+  queueAutomationScenarioSave();
+}
+function addAutomationScenarioBranch() {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item) return;
+  const fallbackIndex = item.branches.findIndex(function(branch) { return branch.fallback; });
+  const newBranch = { label: 'Новое направление КП', terms: '', response: 'Здравствуйте! Уточните, пожалуйста, детали запроса.' };
+  item.branches.splice(fallbackIndex < 0 ? item.branches.length : fallbackIndex, 0, newBranch);
+  renderAutomationScenarioBranches();
+  queueAutomationScenarioSave();
+  const newInput = document.querySelector('#automationScenarioBranches [data-branch-field="label"][value="Новое направление КП"]');
+  const lastInput = document.querySelectorAll('#automationScenarioBranches [data-branch-field="label"]');
+  if (newInput) { newInput.focus(); newInput.select(); }
+}
+function normalizeScenarioText(value) {
+  return String(value || '').toLocaleLowerCase().replace(/ё/g, 'е').replace(/[.,!?;:()«»"“”]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function routeAutomationScenario(message) {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item) return { index: -1, branch: null, matches: [] };
+  const normalized = normalizeScenarioText(message);
+  const matches = item.branches.map(function(branch, index) { return { branch: branch, index: index }; }).filter(function(row) {
+    if (row.branch.fallback) return false;
+    return String(row.branch.terms || '').split(',').map(normalizeScenarioText).filter(Boolean).some(function(term) { return normalized.indexOf(term) >= 0; });
+  });
+  const selected = matches[0] || item.branches.map(function(branch, index) { return { branch: branch, index: index }; }).find(function(row) { return row.branch.fallback; });
+  return selected ? { index: selected.index, branch: selected.branch, matches: matches } : { index: -1, branch: null, matches: [] };
+}
+function renderAutomationScenarioTestChat() {
+  const root = document.getElementById('automationScenarioTestChat');
+  if (!root) return;
+  let html = '<div class="text-center text-[11px] text-textSecondary">Тестовый диалог · ответы не отправляются клиенту</div><div class="flex justify-start"><div class="messenger-bubble client">Напишите пример запроса — проверим условие и ответ.</div></div>';
+  automationScenarioTestTurns.forEach(function(turn) {
+    const result = routeAutomationScenario(turn.message);
+    const label = result.branch ? result.branch.label : 'Маршрут не найден';
+    const note = result.matches.length > 1 ? 'Совпали несколько веток · выбрана первая по приоритету' : (result.branch && result.branch.fallback ? 'Условие не совпало · резервный ответ' : 'Маршрут найден');
+    html += '<div class="flex justify-start"><div class="messenger-bubble client">' + crmEscape(turn.message) + '</div></div><div class="flex justify-end"><div class="messenger-bubble manager">' + crmEscape(result.branch ? result.branch.response : '') + '</div></div><div class="text-[10px] text-textSecondary -mt-2">→ ' + crmEscape(label) + ' · ' + note + '</div>';
+  });
+  root.innerHTML = html;
+  root.scrollTop = root.scrollHeight;
+}
+function testAutomationScenario(message) {
+  if (!String(message || '').trim()) return;
+  automationScenarioTestTurns.push({ message: String(message).trim() });
+  renderAutomationScenarioTestChat();
+  renderAutomationScenarioBranches();
+}
+function sendAutomationScenarioTest(event) {
+  event.preventDefault();
+  const input = document.getElementById('automationScenarioTestInput');
+  const message = input.value.trim();
+  if (!message) return;
+  testAutomationScenario(message);
+  input.value = '';
+  input.focus();
+}
+function clearAutomationScenarioTest() {
+  automationScenarioTestTurns = [];
+  renderAutomationScenarioTestChat();
+  renderAutomationScenarioBranches();
+}
+function queueAutomationScenarioSave() {
+  clearTimeout(automationScenarioSaveTimer);
+  automationScenarioSaveTimer = setTimeout(function() { saveAutomationScenario(true); }, 350);
+}
+function saveAutomationScenario(silent) {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item) return;
+  item.name = (document.getElementById('scenarioEditorName').value || '').trim() || 'Новый сценарий';
+  crmSaveLocal('flowzap-automation-scenarios-v1', automationScenarios);
+  renderAutomationScenarios();
+  if (!silent) showToast('Сценарий сохранён');
+}
+function toggleAutomationScenarioPublish() {
+  const item = automationScenario(currentAutomationScenarioId);
+  if (!item) return;
+  item.status = item.status === 'active' ? 'draft' : 'active';
+  saveAutomationScenario(true);
+  updateAutomationScenarioStatus();
+  showToast(item.status === 'active' ? 'Сценарий опубликован' : 'Сценарий снят с публикации');
+}
+function initB2bAutomationInteractions() {
+  const conversationList = document.getElementById('messengerConversationList');
+  if (conversationList) conversationList.addEventListener('click', function(event) {
+    const button = event.target.closest('[data-chat-id]');
+    if (button) selectMessengerChat(button.dataset.chatId);
+  });
+  const context = document.getElementById('messengerContext');
+  if (context) context.addEventListener('click', function(event) {
+    const companyButton = event.target.closest('[data-open-company]');
+    const groupButton = event.target.closest('[data-open-group]');
+    if (companyButton) openCompanyFromMessenger(companyButton.dataset.openCompany);
+    if (groupButton) openMessengerGroup(groupButton.dataset.openGroup);
+  });
+  const companyList = document.getElementById('b2bCompanyList');
+  if (companyList) companyList.addEventListener('click', function(event) {
+    const createButton = event.target.closest('[data-create-subgroup]');
+    const groupButton = event.target.closest('[data-open-group]');
+    const chatButton = event.target.closest('[data-chat-id]');
+    if (createButton) openB2bSubgroupModal(createButton.dataset.createSubgroup);
+    if (groupButton) openMessengerGroup(groupButton.dataset.openGroup);
+    if (chatButton) { switchTab('messenger'); selectMessengerChat(chatButton.dataset.chatId); }
+  });
+  const scenarioList = document.getElementById('automationScenarioList');
+  if (scenarioList) scenarioList.addEventListener('click', function(event) {
+    const button = event.target.closest('[data-scenario-id]');
+    if (button) openAutomationScenario(button.dataset.scenarioId);
+  });
+  const branchList = document.getElementById('automationScenarioBranches');
+  if (branchList) {
+    branchList.addEventListener('input', function(event) {
+      const field = event.target.dataset.branchField;
+      if (field) updateAutomationScenarioBranch(Number(event.target.dataset.branchIndex), field, event.target.value);
+    });
+    branchList.addEventListener('click', function(event) {
+      const button = event.target.closest('[data-branch-action]');
+      if (!button) return;
+      const index = Number(button.dataset.branchIndex);
+      if (button.dataset.branchAction === 'up') moveAutomationScenarioBranch(index, -1);
+      if (button.dataset.branchAction === 'down') moveAutomationScenarioBranch(index, 1);
+      if (button.dataset.branchAction === 'delete') deleteAutomationScenarioBranch(index);
+    });
+  }
+  ['b2bSubgroupModal','scenarioEditorModal'].forEach(function(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.addEventListener('click', function(event) {
+      if (event.target !== modal) return;
+      if (id === 'b2bSubgroupModal') closeB2bSubgroupModal();
+      else closeAutomationScenario();
+    });
+  });
+  window.addEventListener('keydown', function(event) {
+    if (event.key !== 'Escape') return;
+    const scenarioModal = document.getElementById('scenarioEditorModal');
+    const subgroupModal = document.getElementById('b2bSubgroupModal');
+    if (scenarioModal && !scenarioModal.classList.contains('hidden')) closeAutomationScenario();
+    else if (subgroupModal && !subgroupModal.classList.contains('hidden')) closeB2bSubgroupModal();
+  });
+}
+initB2bAutomationInteractions();
+
 </script>
 </body>
 </html>
